@@ -43,11 +43,11 @@ int creation_fichier_changelog()
     return 0;
 }
 
-int creation_fichier_ressource_h()
+int creation_fichier_resource_h()
 {
     FILE* fichier = NULL;
 
-    fichier = fopen("ressource.h", "w");
+    fichier = fopen("resource.h", "w");
 
     if(fichier == NULL)
     {
@@ -91,7 +91,7 @@ int update_fichier_changelog(char* version, char* commentaire)
     return 0;
 }
 
-int update_fichier_ressource_h(char* version)
+int update_fichier_resource_h(char* version)
 {
     FILE* fichier = NULL;
 
@@ -101,7 +101,7 @@ int update_fichier_ressource_h(char* version)
         return -1;
     }
 
-    fichier = fopen("ressource.h", "w");
+    fichier = fopen("resource.h", "w");
 
     if(fichier == NULL)
     {
@@ -121,7 +121,7 @@ void fonction_aide()
     printf("*                                                                                           *\n");
     printf("*         -> Liste des commandes                                                            *\n");
     printf("*                logator -help                                                              *\n");
-    printf("*         -> Creation fichier CHANGELOG.md et ressource.h :                                 *\n");
+    printf("*         -> Creation fichier CHANGELOG.md et resource.h :                                  *\n");
     printf("*                logator -creation                                                          *\n");
     printf("*                                                                                           *\n");
     printf("*         -> Ajout de nouvelle version :                                                    *\n");
@@ -136,7 +136,7 @@ void fonction_aide()
     printf("*********************************************************************************************\n");
 }
 
-int creation_fichier_ressource_rc(char* FileDescription, char* Executable_name, char* ProductName)
+int creation_fichier_resource_rc(char* FileDescription, char* Executable_name, char* ProductName)
 {
     FILE* fichier = NULL;
     char* tampon = NULL;

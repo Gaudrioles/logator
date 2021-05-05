@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
             printf("Creation impossible\n");
             return -1;
         }
-        else if(creation_fichier_ressource_h() != 0)
+        else if(creation_fichier_resource_h() != 0)
         {
             printf("Creation impossible\n");
             return -1;
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
         else
         {
             printf("Creation du fichier CHANGELOG.md\n");
-            printf("Creation du fichier ressource.h\n");
+            printf("Creation du fichier resource.h\n");
         }
 
     }
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
             printf("Ajout impossible\n");
             return -1;
         }
-        else if(update_fichier_ressource_h(argv[2]) != 0)
+        else if(update_fichier_resource_h(argv[2]) != 0)
         {
             printf("Ajout impossible\n");
             return -1;
@@ -46,14 +46,19 @@ int main(int argc, char *argv[])
         else
         {
             printf("Mise a jour du fichier CHANGELOG.md\n");
-            printf("Mise a jour du fichier ressource.h\n");
+            printf("Mise a jour du fichier resource.h\n");
         }
 
 
     }
     else if(strcmp(argv[1], "-resource") == 0)
     {
-        if(creation_fichier_ressource_rc(argv[2], argv[3], argv[4]) != 0)
+        if(argv[2] == NULL || argv[3] == NULL || argv[4] == NULL)
+        {
+            printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
+            return -1;
+        }
+        if(creation_fichier_resource_rc(argv[2], argv[3], argv[4]) != 0)
         {
             printf("Creation du fichier Resource.rc impossible\n");
         }
@@ -79,7 +84,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Mauvais argument -> logator.exe -help\n");
+        printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
         return -1;
     }
 
