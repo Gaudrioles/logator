@@ -121,6 +121,7 @@ void fonction_aide()
     printf("*                                                                                           *\n");
     printf("*         -> Liste des commandes                                                            *\n");
     printf("*                logator -help                                                              *\n");
+    printf("*                                                                                           *\n");
     printf("*         -> Creation fichier CHANGELOG.md et resource.h :                                  *\n");
     printf("*                logator -creation                                                          *\n");
     printf("*                                                                                           *\n");
