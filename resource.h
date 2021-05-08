@@ -1,6 +1,10 @@
 #ifndef RESOURCE_H_INCLUDED
 #define RESOURCE_H_INCLUDED
 
-#define APP_VERSION "1.0"
+#define APP_VERSION "1.2"
+#define APP_NAME ""
+#define INNOSETUP ""
 
+#endif // RESOURCE_H_INCLUDED
+#endif // RESOURCE_H_INCLUDED
 #endif // RESOURCE_H_INCLUDED

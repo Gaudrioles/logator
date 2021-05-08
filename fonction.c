@@ -3,10 +3,13 @@
 #include <string.h>
 #include <time.h>
 
-char* get_date_annee()
+#include "fichier.h"
+#include "fonction.h"
+
+char *get_date_annee()
 {
     time_t temps;
-    struct tm* tm_info;
+    struct tm *tm_info;
     char year[5];
 
     time(&temps);
@@ -24,9 +27,34 @@ char* get_date_annee()
     return (char *) memcpy (new, year, len);
 }
 
+void fonction_aide()
+{
+    printf("\n\n\t*********************************************************************************************\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*         -> Liste des commandes                                                            *\n");
+    printf("\t*                logator -help                                                              *\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*         -> Creation fichier CHANGELOG.md et resource.h :                                  *\n");
+    printf("\t*                logator -creation                                                          *\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*         -> Ajout de nouvelle version :                                                    *\n");
+    printf("\t*                logator -new \"version\" \"commentaire\"                                       *\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*         -> Creation fichier Resource.rc                                                   *\n");
+    printf("\t*                logator -resource \"FileDescription\"  \"ProductName\"                         *\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*         -> Creation fichier .gitignore :                                                  *\n");
+    printf("\t*                logator -gitignore                                                         *\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*         -> Activation innosetup :                                                         *\n");
+    printf("\t*                logator -innosetup \"TRUE\"                                                  *\n");
+    printf("\t*                                                                                           *\n");
+    printf("\t*********************************************************************************************\n");
+}
+
 int creation_fichier_changelog()
 {
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
 
     fichier = fopen("CHANGELOG.md", "w");
 
@@ -45,7 +73,7 @@ int creation_fichier_changelog()
 
 int creation_fichier_resource_h()
 {
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
 
     fichier = fopen("resource.h", "w");
 
@@ -54,93 +82,17 @@ int creation_fichier_resource_h()
         return -1;
     }
 
-    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n#define RESOURCE_H_INCLUDED\n\n#define APP_VERSION \"1.0\"\n\n#endif // RESOURCE_H_INCLUDED");
+    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n#define RESOURCE_H_INCLUDED\n\n#define APP_VERSION \"1.0\"\n#define APP_NAME \"\"\n#define INNOSETUP \"FALSE\"\n\n#endif // RESOURCE_H_INCLUDED");
 
     fclose(fichier);
 
     return 0;
 }
 
-int update_fichier_changelog(char* version, char* commentaire)
+int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 {
-    FILE* fichier = NULL;
-
-    if(version == NULL)
-    {
-        printf("-new erreur version\n");
-        return -1;
-    }
-
-    if(commentaire == NULL)
-    {
-        printf("-new mauvais commentaire\n");
-        return -1;
-    }
-
-    fichier = fopen("CHANGELOG.md", "a");
-
-    if(fichier == NULL)
-    {
-        return -1;
-    }
-
-    fprintf(fichier, "\nBUILD %s\n%s%s;", version, "-*- Add -*- ", commentaire);
-
-    fclose(fichier);
-
-    return 0;
-}
-
-int update_fichier_resource_h(char* version)
-{
-    FILE* fichier = NULL;
-
-    if(version == NULL)
-    {
-        printf("-new erreur version\n");
-        return -1;
-    }
-
-    fichier = fopen("resource.h", "w");
-
-    if(fichier == NULL)
-    {
-        return -1;
-    }
-
-    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n#define RESOURCE_H_INCLUDED\n\n#define APP_VERSION \"%s\"\n\n#endif // RESOURCE_H_INCLUDED", version);
-
-    fclose(fichier);
-
-    return 0;
-}
-
-void fonction_aide()
-{
-    printf("\n\n*********************************************************************************************\n");
-    printf("*                                                                                           *\n");
-    printf("*         -> Liste des commandes                                                            *\n");
-    printf("*                logator -help                                                              *\n");
-    printf("*                                                                                           *\n");
-    printf("*         -> Creation fichier CHANGELOG.md et resource.h :                                  *\n");
-    printf("*                logator -creation                                                          *\n");
-    printf("*                                                                                           *\n");
-    printf("*         -> Ajout de nouvelle version :                                                    *\n");
-    printf("*                logator -new \"version\" \"commentaire\"                                       *\n");
-    printf("*                                                                                           *\n");
-    printf("*         -> Creation fichier Resource.rc                                                   *\n");
-    printf("*                logator -resource \"FileDescription\" \"Executable_name\" \"ProductName\"        *\n");
-    printf("*                                                                                           *\n");
-    printf("*         -> Creation fichier .gitignore :                                                  *\n");
-    printf("*                logator -gitignore                                                         *\n");
-    printf("*                                                                                           *\n");
-    printf("*********************************************************************************************\n");
-}
-
-int creation_fichier_resource_rc(char* FileDescription, char* Executable_name, char* ProductName)
-{
-    FILE* fichier = NULL;
-    char* tampon = NULL;
+    FILE *fichier = NULL;
+    char *tampon = NULL;
 
     fichier = fopen("Resource.rc", "w");
 
@@ -173,7 +125,7 @@ int creation_fichier_resource_rc(char* FileDescription, char* Executable_name, c
     fprintf(fichier, "            VALUE \"FileDescription\", \"%s\"\n", FileDescription);
     fprintf(fichier, "            VALUE \"FileVersion\", APP_VERSION\n");
     fprintf(fichier, "            VALUE \"LegalCopyright\", \"Copyright (C) %s\"\n", tampon);
-    fprintf(fichier, "            VALUE \"OriginalFilename\", \"%s.exe\"\n", Executable_name);
+    fprintf(fichier, "            VALUE \"OriginalFilename\", \"%s.exe\"\n", ProductName);
     fprintf(fichier, "            VALUE \"ProductName\", \"%s\"\n", ProductName);
     fprintf(fichier, "            VALUE \"ProductVersion\", APP_VERSION\n");
     fprintf(fichier, "        END\n");
@@ -188,12 +140,14 @@ int creation_fichier_resource_rc(char* FileDescription, char* Executable_name, c
 
     free(tampon);
 
+    update_name_resource_h(ProductName);
+
     return 0;
 }
 
 int creation_fichier_gitignore()
 {
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
 
     fichier = fopen(".gitignore", "w");
 
@@ -207,6 +161,258 @@ int creation_fichier_gitignore()
 
 
     fclose(fichier);
+
+    return 0;
+}
+
+int update_fichier_changelog(char *version, char *commentaire)
+{
+    FILE *fichier = NULL;
+
+    if(version == NULL)
+    {
+        printf("-new erreur version\n");
+        return -1;
+    }
+
+    if(commentaire == NULL)
+    {
+        printf("-new mauvais commentaire\n");
+        return -1;
+    }
+
+    fichier = fopen("CHANGELOG.md", "a");
+
+    if(fichier == NULL)
+    {
+        return -1;
+    }
+
+    fprintf(fichier, "\nBUILD %s\n%s%s;", version, "-*- Add -*- ", commentaire);
+
+    fclose(fichier);
+
+    return 0;
+}
+
+int update_fichier_resource_h(char *version)
+{
+    FILE *fichier = NULL;
+    FILE *fichierTampon = NULL;
+
+    int nombre_ligne = 0;
+    int compteur = 0;
+    char chaine[1025] = "";
+
+    if(version == NULL)
+    {
+        printf("-new erreur version\n");
+        return -1;
+    }
+
+    nombre_ligne = nombre_de_ligne("resource.h");
+
+    if(nombre_ligne != -1)
+    {
+        fichier = fopen("resource.h", "r");
+        fichierTampon = fopen("update_fichier_resource_h.old", "w");
+
+        if(fichier == NULL || fichierTampon == NULL)
+        {
+            return -1;
+        }
+
+        for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+        {
+            fgets(chaine, 1024, fichier);
+            switch(compteur)
+            {
+                case 3 :
+                    fprintf(fichierTampon, "#define APP_VERSION \"%s\"\n", version);
+                    break;
+                default:
+                    fprintf(fichierTampon, "%s", chaine);
+                    break;
+            }
+        }
+
+        fclose(fichier);
+        fclose(fichierTampon);
+
+        remove("resource.h");
+        rename("update_fichier_resource_h.old", "resource.h");
+
+    }
+
+    return 0;
+}
+
+int update_name_resource_h(char *name)
+{
+    FILE *fichier = NULL;
+    FILE *fichierTampon = NULL;
+
+    int nombre_ligne = 0;
+    int compteur = 0;
+    char chaine[1025] = "";
+
+    nombre_ligne = nombre_de_ligne("resource.h");
+
+    if(nombre_ligne != -1)
+    {
+        fichier = fopen("resource.h", "r");
+        fichierTampon = fopen("update_name_resource_h.old", "w");
+
+        if(fichier == NULL || fichierTampon == NULL)
+        {
+            return -1;
+        }
+
+        for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+        {
+            fgets(chaine, 1024, fichier);
+            switch(compteur)
+            {
+                case 4:
+                    fprintf(fichierTampon, "#define APP_NAME \"%s\"\n", name);
+                    break;
+                default:
+                    fprintf(fichierTampon, "%s", chaine);
+                    break;
+            }
+        }
+
+        fclose(fichier);
+        fclose(fichierTampon);
+
+        remove("resource.h");
+        rename("update_name_resource_h.old", "resource.h");
+
+    }
+
+    return 0;
+}
+
+int update_innosetup(char *version)
+{
+    char *buffer = NULL;
+    char *buffer_bis = NULL;
+    char chaine[1025] = "";
+    size_t taille = 0;
+
+    buffer_bis = application_get_name();
+
+    char detecteur[] = "\"\"";
+    char *chaine_remove = strtok(buffer_bis, detecteur);
+    free(buffer_bis);
+
+    taille = strlen(chaine_remove) + strlen(".iss") + 1;
+
+    buffer = malloc (taille * sizeof (char));
+
+    sprintf(buffer, "%s.iss", chaine_remove);
+
+    FILE *fichier = NULL;
+    FILE *fichierTampon = NULL;
+
+    int nombre_ligne = 0;
+    int compteur = 0;
+
+    nombre_ligne = nombre_de_ligne(buffer);
+
+    if(nombre_ligne != -1)
+    {
+        fichier = fopen(buffer, "r");
+        fichierTampon = fopen("update_innosetup.old", "w");
+
+        if(fichier == NULL || fichierTampon == NULL)
+        {
+            return -1;
+        }
+
+        for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+        {
+            fgets(chaine, 1024, fichier);
+            switch(compteur)
+            {
+                case 4:
+                    fprintf(fichierTampon, "#define MyAppVersion \"%s\"\n", version);
+                    break;
+                default:
+                    fprintf(fichierTampon, "%s", chaine);
+                    break;
+            }
+        }
+    }
+
+    fclose(fichier);
+    fclose(fichierTampon);
+
+    remove(buffer);
+    rename("update_innosetup.old", buffer);
+
+    printf("Mise a jour du fichier %s\n", buffer);
+
+    free(buffer);
+
+    return 0;
+}
+
+int activation_innosetup(char *TRUE)
+{
+    FILE *fichier = NULL;
+    FILE *fichierTampon = NULL;
+
+    int nombre_ligne = 0;
+    int compteur = 0;
+    char chaine[1025] = "";
+
+    if(TRUE == NULL)
+    {
+        printf("-innosetup flags error\n");
+        return -1;
+    }
+    else if(strcmp(TRUE, "TRUE") == 0 || strcmp(TRUE, "FALSE") == 0)
+    {
+        nombre_ligne = nombre_de_ligne("resource.h");
+
+        if(nombre_ligne != -1)
+        {
+            fichier = fopen("resource.h", "r");
+            fichierTampon = fopen("activation_innosetup.old", "w");
+
+            if(fichier == NULL || fichierTampon == NULL)
+            {
+                return -1;
+            }
+
+            for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+            {
+                fgets(chaine, 1024, fichier);
+                switch(compteur)
+                {
+                    case 5 :
+                        fprintf(fichierTampon, "#define INNOSETUP \"%s\"\n", TRUE);
+                        break;
+                    default:
+                        fprintf(fichierTampon, "%s", chaine);
+                        break;
+                }
+            }
+
+            fclose(fichier);
+            fclose(fichierTampon);
+
+            remove("resource.h");
+            rename("activation_innosetup.old", "resource.h");
+
+        }
+    }
+    else
+    {
+            printf("-innosetup flags error\n");
+            return -1;
+    }
 
     return 0;
 }
