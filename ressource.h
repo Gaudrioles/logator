@@ -1,6 +1,0 @@
-#ifndef RESOURCE_H_INCLUDED
-#define RESOURCE_H_INCLUDED
-
-#define APP_VERSION "1.0"
-
-#endif // RESOURCE_H_INCLUDED

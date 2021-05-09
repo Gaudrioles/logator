@@ -82,7 +82,12 @@ int creation_fichier_resource_h()
         return -1;
     }
 
-    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n#define RESOURCE_H_INCLUDED\n\n#define APP_VERSION \"1.0\"\n#define APP_NAME \"\"\n#define INNOSETUP \"FALSE\"\n\n#endif // RESOURCE_H_INCLUDED");
+    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
+    fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
+    fprintf(fichier, "#define APP_VERSION \"1.0\"\n");
+    fprintf(fichier, "#define APP_NAME \"\"\n");
+    fprintf(fichier, "#define INNOSETUP \"FALSE\"\n\n");
+    fprintf(fichier, "#endif // RESOURCE_H_INCLUDED\n");
 
     fclose(fichier);
 
@@ -222,7 +227,7 @@ int update_fichier_resource_h(char *version)
             return -1;
         }
 
-        for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+        for(compteur = 0; compteur < nombre_ligne; compteur++)
         {
             fgets(chaine, 1024, fichier);
             switch(compteur)
@@ -239,8 +244,14 @@ int update_fichier_resource_h(char *version)
         fclose(fichier);
         fclose(fichierTampon);
 
-        remove("resource.h");
-        rename("update_fichier_resource_h.old", "resource.h");
+        if (remove("resource.h") != 0)
+        {
+            return -1;
+        }
+        if (rename("update_fichier_resource_h.old", "resource.h") != 0)
+        {
+            return -1;
+        }
 
     }
 
@@ -268,7 +279,7 @@ int update_name_resource_h(char *name)
             return -1;
         }
 
-        for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+        for(compteur = 0; compteur < nombre_ligne; compteur++)
         {
             fgets(chaine, 1024, fichier);
             switch(compteur)
@@ -285,9 +296,14 @@ int update_name_resource_h(char *name)
         fclose(fichier);
         fclose(fichierTampon);
 
-        remove("resource.h");
-        rename("update_name_resource_h.old", "resource.h");
-
+        if (remove("resource.h") != 0)
+        {
+            return -1;
+        }
+        if(rename("update_name_resource_h.old", "resource.h") != 0)
+        {
+            return -1;
+        }
     }
 
     return 0;
@@ -330,7 +346,7 @@ int update_innosetup(char *version)
             return -1;
         }
 
-        for(compteur = 0; compteur < nombre_ligne+1; compteur++)
+        for(compteur = 0; compteur < nombre_ligne; compteur++)
         {
             fgets(chaine, 1024, fichier);
             switch(compteur)
@@ -348,8 +364,14 @@ int update_innosetup(char *version)
     fclose(fichier);
     fclose(fichierTampon);
 
-    remove(buffer);
-    rename("update_innosetup.old", buffer);
+    if(remove(buffer) != 0)
+    {
+        return -1;
+    }
+    if(rename("update_innosetup.old", buffer) != 0)
+    {
+        return -1;
+    }
 
     printf("Mise a jour du fichier %s\n", buffer);
 
@@ -403,9 +425,14 @@ int activation_innosetup(char *TRUE)
             fclose(fichier);
             fclose(fichierTampon);
 
-            remove("resource.h");
-            rename("activation_innosetup.old", "resource.h");
-
+            if(remove("resource.h") != 0)
+            {
+                return -1;
+            }
+            if(rename("activation_innosetup.old", "resource.h") != 0)
+            {
+                return -1;
+            }
         }
     }
     else

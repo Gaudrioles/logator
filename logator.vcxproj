@@ -27,7 +27,6 @@
     <ClInclude Include="fichier.h" />
     <ClInclude Include="fonction.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ressource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
