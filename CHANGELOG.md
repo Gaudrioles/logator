@@ -13,3 +13,5 @@ BUILD 1.2
 -*- Add -*- Migration GCC -> MSVC;
 BUILD 1.3
 -*- Add -*- Correction fonction creation resource.h;
+BUILD 1.4
+-*- Add -*- Migration MSVC -> GCC;
