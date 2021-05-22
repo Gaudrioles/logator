@@ -110,8 +110,11 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 
     fprintf(fichier, "#include \"resource.h\"\n");
     fprintf(fichier, "#include <windows.h>\n\n");
+    fprintf(fichier, "#define VER_FILEVERSION             1,0,0,0\n");
+    fprintf(fichier, "#define VER_FILEVERSION_STR         \"1.0.0.0\\0\"\n\n");
     fprintf(fichier, "IDI_ICON1               ICON                    \"%s\"\n\n", "icons/icon.ico");
     fprintf(fichier, "VS_VERSION_INFO VERSIONINFO\n");
+    fprintf(fichier, " FILEVERSION 1,0,0,0\n");
     fprintf(fichier, " FILEFLAGSMASK 0x3fL\n");
     fprintf(fichier, "#ifdef _DEBUG\n");
     fprintf(fichier, " FILEFLAGS 0x1L\n");
@@ -128,11 +131,11 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
     fprintf(fichier, "        BEGIN\n");
     fprintf(fichier, "            VALUE \"CompanyName\", \"https://github.com/Gaudrioles\"\n");
     fprintf(fichier, "            VALUE \"FileDescription\", \"%s\"\n", FileDescription);
-    fprintf(fichier, "            VALUE \"FileVersion\", APP_VERSION\n");
+    fprintf(fichier, "            VALUE \"FileVersion\", VER_FILEVERSION_STR\n");
     fprintf(fichier, "            VALUE \"LegalCopyright\", \"Copyright (C) %s\"\n", tampon);
     fprintf(fichier, "            VALUE \"OriginalFilename\", \"%s.exe\"\n", ProductName);
     fprintf(fichier, "            VALUE \"ProductName\", \"%s\"\n", ProductName);
-    fprintf(fichier, "            VALUE \"ProductVersion\", APP_VERSION\n");
+    fprintf(fichier, "            VALUE \"ProductVersion\", APP_VERSION \"\\0\"\n");
     fprintf(fichier, "        END\n");
     fprintf(fichier, "    END\n");
     fprintf(fichier, "    BLOCK \"VarFileInfo\"\n");

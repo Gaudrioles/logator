@@ -15,3 +15,5 @@ BUILD 1.3
 -*- Add -*- Correction fonction creation resource.h;
 BUILD 1.4
 -*- Add -*- Migration MSVC -> GCC;
+BUILD 1.5
+-*- Add -*- Correction Mauvais argument et Correction creation resource.rc;

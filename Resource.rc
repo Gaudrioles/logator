@@ -1,9 +1,12 @@
 #include "resource.h"
 #include <windows.h>
 
-//IDI_ICON1               ICON                    "icons/icon.ico"
+#define VER_FILEVERSION             1,0,0,0
+#define VER_FILEVERSION_STR         "1.0.0.0\0"
+
 
 VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -20,11 +23,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "https://github.com/Gaudrioles"
             VALUE "FileDescription", "Gestionnaire CHANGELOG"
-            VALUE "FileVersion", APP_VERSION
+            VALUE "FileVersion", VER_FILEVERSION_STR
             VALUE "LegalCopyright", "Copyright (C) 2021"
             VALUE "OriginalFilename", "logator.exe"
-            VALUE "ProductName", "Logator Systeme"
-            VALUE "ProductVersion", APP_VERSION
+            VALUE "ProductName", "logator"
+            VALUE "ProductVersion", APP_VERSION "\0"
         END
     END
     BLOCK "VarFileInfo"

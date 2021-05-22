@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     if(argv[1] == NULL)
     {
-        printf("Mauvais argument\n");
+        printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
         return -1;
     }
 
