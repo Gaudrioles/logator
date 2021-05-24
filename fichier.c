@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "main.h"
+
 int nombre_de_ligne(char *fichier_nom)
 {
     FILE *fichier = NULL;
@@ -124,7 +126,7 @@ double get_version()
 
     int compteur = 0;
 
-    fichier = fopen("resource.h", "r");
+    fichier = fopen(RESOURCE_H_FILE, "r");
 
     if(fichier == NULL)
     {
@@ -143,7 +145,7 @@ double get_version()
                 break;
         }
     }
-    
+
     version = atof(buffer);
 
     version = version + 0.1;

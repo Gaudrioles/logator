@@ -21,3 +21,5 @@ BUILD 1.6
 -*- Add -*- Centralisation des messages printf dans message.c;
 BUILD 1.7
 -*- Add -*- Mise a jour de la version automatiquement;
+BUILD 1.8
+-*- Add -*- Ajout fonction suppression entree CHANGELOG;

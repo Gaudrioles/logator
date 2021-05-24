@@ -5,12 +5,7 @@
 #include "fonction.h"
 #include "fichier.h"
 #include "message.h"
-
-#define CHANGELOG_FILE      "CHANGELOG.md"
-#define RESOURCE_H_FILE     "resource.h"
-#define RESOURCE_RC_FILE    "Resource.rc"
-#define GITIGNORE_FILE      ".gitignore"
-
+#include "main.h"
 
 int main(int argc, char *argv[])
 {
@@ -114,6 +109,10 @@ int main(int argc, char *argv[])
                 printf_update_fichier("Innosetup_file");
             }
         }
+    }
+    else if(strcmp(argv[1], "-remove") == 0)
+    {
+        fonction_remove();
     }
     else
     {

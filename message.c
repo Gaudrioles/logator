@@ -23,6 +23,9 @@ void printf_aide()
     printf("\t*         -> Activation innosetup :                                                         *\n");
     printf("\t*                logator -innosetup \"TRUE\"                                                  *\n");
     printf("\t*                                                                                           *\n");
+    printf("\t*         -> Suppression entree CHANGELOG :                                                 *\n");
+    printf("\t*                logator -remove                                                            *\n");
+    printf("\t*                                                                                           *\n");
     printf("\t*********************************************************************************************\n");
 
     return;
@@ -39,7 +42,7 @@ void printf_new()
 void printf_update_fichier(char *fichier)
 {
     printf("Mise a jour du fichier %s\n", fichier);
-    
+
     return;
 }
 
@@ -71,7 +74,7 @@ void printf_creation_fichier(char *fichier, int oui)
     case -1:
         printf("Modification du fichier %s impossible\n", fichier);
         break;
-    
+
     default:
         break;
     }

@@ -9,9 +9,11 @@ int creation_fichier_gitignore();
 int update_fichier_changelog(double version, char *commentaire);
 int update_fichier_resource_h(double version);
 int update_innosetup(double version);
+int update_name_resource_h(char *name);
 
 int activation_innosetup(char *TRUE);
-int update_name_resource_h(char *name);
+
+int fonction_remove();
 
 char *get_date_annee();
 
