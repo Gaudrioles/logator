@@ -6,4 +6,6 @@ int innosetup_status();
 
 char *application_get_name();
 
+double get_version();
+
 #endif // FICHIER_H_INCLUDED

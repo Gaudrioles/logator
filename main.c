@@ -41,12 +41,13 @@ int main(int argc, char *argv[])
     }
     else if(strcmp(argv[1], "-new") == 0)
     {
-        if(update_fichier_changelog(argv[2], argv[3]) != 0)
+        double version = get_version();
+        if(update_fichier_changelog(version, argv[2]) != 0)
         {
             printf_new();
             return -1;
         }
-        else if(update_fichier_resource_h(argv[2]) != 0)
+        else if(update_fichier_resource_h(version) != 0)
         {
             printf_new();
             return -1;
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
 
         if(innosetup_status() == 1)
         {
-            update_innosetup(argv[2]);
+            update_innosetup(version);
         }
 
     }

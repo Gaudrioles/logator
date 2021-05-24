@@ -12,7 +12,7 @@ void printf_aide()
     printf("\t*                logator -creation                                                          *\n");
     printf("\t*                                                                                           *\n");
     printf("\t*         -> Ajout de nouvelle version :                                                    *\n");
-    printf("\t*                logator -new \"version\" \"commentaire\"                                       *\n");
+    printf("\t*                logator -new \"commentaire\"                                                 *\n");
     printf("\t*                                                                                           *\n");
     printf("\t*         -> Creation fichier Resource.rc                                                   *\n");
     printf("\t*                logator -resource \"FileDescription\"  \"ProductName\"                         *\n");
@@ -31,7 +31,7 @@ void printf_aide()
 void printf_new()
 {
     printf("-new mauvais commentaire\n");
-    printf("logator -new \"version\" \"commentaire\"\n");
+    printf("logator -new \"commentaire\"\n");
 
     return;
 }
@@ -83,14 +83,6 @@ void printf_resource()
 {
     printf("-resource mauvais commentaire");
     printf("logator -resource \"FileDescription\"  \"ProductName\"\n");
-
-    return;
-}
-
-void printf_innosetup()
-{
-    printf("-innosetup mauvais commentaire");
-    printf("logator -innosetup \"TRUE\"\n");
 
     return;
 }

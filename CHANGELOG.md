@@ -19,3 +19,5 @@ BUILD 1.5
 -*- Add -*- Correction Mauvais argument et Correction creation resource.rc;
 BUILD 1.6
 -*- Add -*- Centralisation des messages printf dans message.c;
+BUILD 1.7
+-*- Add -*- Mise a jour de la version automatiquement;

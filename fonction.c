@@ -151,15 +151,9 @@ int creation_fichier_gitignore()
     return 0;
 }
 
-int update_fichier_changelog(char *version, char *commentaire)
+int update_fichier_changelog(double version, char *commentaire)
 {
     FILE *fichier = NULL;
-
-    if(version == NULL)
-    {
-        printf_new();
-        return -1;
-    }
 
     if(commentaire == NULL)
     {
@@ -174,14 +168,14 @@ int update_fichier_changelog(char *version, char *commentaire)
         return -1;
     }
 
-    fprintf(fichier, "\nBUILD %s\n%s%s;", version, "-*- Add -*- ", commentaire);
+    fprintf(fichier, "\nBUILD %.1f\n%s%s;", version, "-*- Add -*- ", commentaire);
 
     fclose(fichier);
 
     return 0;
 }
 
-int update_fichier_resource_h(char *version)
+int update_fichier_resource_h(double version)
 {
     FILE *fichier = NULL;
     FILE *fichierTampon = NULL;
@@ -189,12 +183,6 @@ int update_fichier_resource_h(char *version)
     int nombre_ligne = 0;
     int compteur = 0;
     char chaine[1025] = "";
-
-    if(version == NULL)
-    {
-        printf_new();
-        return -1;
-    }
 
     nombre_ligne = nombre_de_ligne("resource.h");
 
@@ -214,7 +202,7 @@ int update_fichier_resource_h(char *version)
             switch(compteur)
             {
                 case 3 :
-                    fprintf(fichierTampon, "#define APP_VERSION \"%s\"\n", version);
+                    fprintf(fichierTampon, "#define APP_VERSION \"%.1f\"\n", version);
                     break;
                 default:
                     fprintf(fichierTampon, "%s", chaine);
@@ -290,7 +278,7 @@ int update_name_resource_h(char *name)
     return 0;
 }
 
-int update_innosetup(char *version)
+int update_innosetup(double version)
 {
     char *buffer = NULL;
     char *buffer_bis = NULL;
@@ -333,7 +321,7 @@ int update_innosetup(char *version)
             switch(compteur)
             {
                 case 4:
-                    fprintf(fichierTampon, "#define MyAppVersion \"%s\"\n", version);
+                    fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
                     break;
                 default:
                     fprintf(fichierTampon, "%s", chaine);

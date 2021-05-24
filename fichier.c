@@ -112,3 +112,44 @@ char *application_get_name()
 
     return (char*) memcpy (result, chaine, len);
 }
+
+double get_version()
+{
+    FILE *fichier = NULL;
+
+    char chaine[1025] = "";
+    char buffer[1025] = "";
+
+    double version = 0;
+
+    int compteur = 0;
+
+    fichier = fopen("resource.h", "r");
+
+    if(fichier == NULL)
+    {
+        return 0;
+    }
+
+    for(compteur =0;compteur < 6;compteur++)
+    {
+        switch(compteur)
+        {
+            case 3:
+                fscanf(fichier,"#define APP_VERSION \"%s\"", buffer);
+                break;
+            default:
+                fgets(chaine, 1024, fichier);
+                break;
+        }
+    }
+    
+    version = atof(buffer);
+
+    version = version + 0.1;
+
+    fclose(fichier);
+
+    return version;
+}
+
