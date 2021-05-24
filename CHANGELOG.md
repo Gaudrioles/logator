@@ -17,3 +17,5 @@ BUILD 1.4
 -*- Add -*- Migration MSVC -> GCC;
 BUILD 1.5
 -*- Add -*- Correction Mauvais argument et Correction creation resource.rc;
+BUILD 1.6
+-*- Add -*- Centralisation des messages printf dans message.c;

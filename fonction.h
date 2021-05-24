@@ -13,8 +13,6 @@ int update_innosetup(char *version);
 int activation_innosetup(char *TRUE);
 int update_name_resource_h(char *name);
 
-void fonction_aide();
-
 char *get_date_annee();
 
 #endif // FONCTION_H_INCLUDED

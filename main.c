@@ -4,12 +4,19 @@
 
 #include "fonction.h"
 #include "fichier.h"
+#include "message.h"
+
+#define CHANGELOG_FILE      "CHANGELOG.md"
+#define RESOURCE_H_FILE     "resource.h"
+#define RESOURCE_RC_FILE    "Resource.rc"
+#define GITIGNORE_FILE      ".gitignore"
+
 
 int main(int argc, char *argv[])
 {
     if(argv[1] == NULL)
     {
-        printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
+        printf_bad_flags();
         return -1;
     }
 
@@ -17,18 +24,18 @@ int main(int argc, char *argv[])
     {
         if(creation_fichier_changelog() != 0)
         {
-            printf("Creation impossible\n");
+            printf_creation_fichier(CHANGELOG_FILE, 0);
             return -1;
         }
         else if(creation_fichier_resource_h() != 0)
         {
-            printf("Creation impossible\n");
+            printf_creation_fichier(RESOURCE_H_FILE, 0);
             return -1;
         }
         else
         {
-            printf("Creation du fichier CHANGELOG.md\n");
-            printf("Creation du fichier resource.h\n");
+            printf_creation_fichier(CHANGELOG_FILE, 1);
+            printf_creation_fichier(RESOURCE_H_FILE, 1);
         }
 
     }
@@ -36,18 +43,18 @@ int main(int argc, char *argv[])
     {
         if(update_fichier_changelog(argv[2], argv[3]) != 0)
         {
-            printf("Ajout impossible\n");
+            printf_new();
             return -1;
         }
         else if(update_fichier_resource_h(argv[2]) != 0)
         {
-            printf("Ajout impossible\n");
+            printf_new();
             return -1;
         }
         else
         {
-            printf("Mise a jour du fichier CHANGELOG.md\n");
-            printf("Mise a jour du fichier resource.h\n");
+            printf_update_fichier(CHANGELOG_FILE);
+            printf_update_fichier(RESOURCE_H_FILE);
         }
 
         if(innosetup_status() == 1)
@@ -60,56 +67,56 @@ int main(int argc, char *argv[])
     {
         if(argv[2] == NULL || argv[3] == NULL)
         {
-            printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
+            printf_resource();
             return -1;
         }
         if(creation_fichier_resource_rc(argv[2], argv[3]) != 0)
         {
-            printf("Creation du fichier Resource.rc impossible\n");
+            printf_creation_fichier(RESOURCE_RC_FILE, 0);
         }
         else
         {
-            printf("Creation du fichier Resource.rc\n");
+            printf_creation_fichier(RESOURCE_RC_FILE, 1);
         }
     }
     else if(strcmp(argv[1], "-gitignore") == 0)
     {
         if(creation_fichier_gitignore() != 0)
         {
-            printf("Creation du fichier .gitignore impossible\n");
+            printf_creation_fichier(GITIGNORE_FILE, 0);
         }
         else
         {
-            printf("Creation du fichier .gitignore\n");
+            printf_creation_fichier(GITIGNORE_FILE, 1);
         }
     }
     else if(strcmp(argv[1], "-help") == 0)
     {
-        fonction_aide();
+        printf_aide();
     }
     else if(strcmp(argv[1], "-innosetup") == 0)
     {
         if(argv[2] == NULL)
         {
-            printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
+            printf_innosetup();
             return -1;
         }
         else
         {
             if(activation_innosetup(argv[2]) != 0)
             {
-                printf("activation innosetup impossible\n");
+                printf_creation_fichier("Innosetup_file", -1);
                 return -1;
             }
             else
             {
-                printf("update innosetup\n");
+                printf_update_fichier("Innosetup_file");
             }
         }
     }
     else
     {
-        printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
+        printf_bad_flags();
         return -1;
     }
 

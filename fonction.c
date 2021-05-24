@@ -5,6 +5,7 @@
 
 #include "fichier.h"
 #include "fonction.h"
+#include "message.h"
 
 char *get_date_annee()
 {
@@ -27,30 +28,7 @@ char *get_date_annee()
     return (char *) memcpy (new, year, len);
 }
 
-void fonction_aide()
-{
-    printf("\n\n\t*********************************************************************************************\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*         -> Liste des commandes                                                            *\n");
-    printf("\t*                logator -help                                                              *\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*         -> Creation fichier CHANGELOG.md et resource.h :                                  *\n");
-    printf("\t*                logator -creation                                                          *\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*         -> Ajout de nouvelle version :                                                    *\n");
-    printf("\t*                logator -new \"version\" \"commentaire\"                                       *\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*         -> Creation fichier Resource.rc                                                   *\n");
-    printf("\t*                logator -resource \"FileDescription\"  \"ProductName\"                         *\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*         -> Creation fichier .gitignore :                                                  *\n");
-    printf("\t*                logator -gitignore                                                         *\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*         -> Activation innosetup :                                                         *\n");
-    printf("\t*                logator -innosetup \"TRUE\"                                                  *\n");
-    printf("\t*                                                                                           *\n");
-    printf("\t*********************************************************************************************\n");
-}
+
 
 int creation_fichier_changelog()
 {
@@ -179,13 +157,13 @@ int update_fichier_changelog(char *version, char *commentaire)
 
     if(version == NULL)
     {
-        printf("-new erreur version\n");
+        printf_new();
         return -1;
     }
 
     if(commentaire == NULL)
     {
-        printf("-new mauvais commentaire\n");
+        printf_new();
         return -1;
     }
 
@@ -214,7 +192,7 @@ int update_fichier_resource_h(char *version)
 
     if(version == NULL)
     {
-        printf("-new erreur version\n");
+        printf_new();
         return -1;
     }
 
@@ -376,7 +354,7 @@ int update_innosetup(char *version)
         return -1;
     }
 
-    printf("Mise a jour du fichier %s\n", buffer);
+    printf_update_fichier(buffer);
 
     free(buffer);
 
@@ -394,7 +372,7 @@ int activation_innosetup(char *TRUE)
 
     if(TRUE == NULL)
     {
-        printf("-innosetup flags error\n");
+        printf_innosetup();
         return -1;
     }
     else if(strcmp(TRUE, "TRUE") == 0 || strcmp(TRUE, "FALSE") == 0)
@@ -440,7 +418,7 @@ int activation_innosetup(char *TRUE)
     }
     else
     {
-            printf("-innosetup flags error\n");
+            printf_innosetup();
             return -1;
     }
 
