@@ -61,7 +61,7 @@ int creation_fichier_resource_h()
         return -1;
     }
 
-    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
+    fprintf(fichier, "#ifdef RESOURCE_H_INCLUDED\n");
     fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
     fprintf(fichier, "#define APP_VERSION \"1.0\"\n");
     fprintf(fichier, "#define APP_NAME \"\"\n");
