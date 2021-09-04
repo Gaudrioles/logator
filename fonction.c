@@ -35,7 +35,7 @@ int creation_fichier_changelog()
 {
     FILE *fichier = NULL;
 
-    fichier = fopen("CHANGELOG.md", "w");
+    fichier = fopen(CHANGELOG_FILE, "w");
 
     if(fichier == NULL)
     {
@@ -54,20 +54,19 @@ int creation_fichier_resource_h()
 {
     FILE *fichier = NULL;
 
-    fichier = fopen("resource.h", "w");
+    fichier = fopen(RESOURCE_H_FILE, "w");
 
     if(fichier == NULL)
     {
         return -1;
     }
 
-    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
-    fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
-    fprintf(fichier, "#define APP_VERSION \"1.0\"\n");
-    fprintf(fichier, "#define APP_NAME \"\"\n");
-    fprintf(fichier, "#define INNOSETUP \"FALSE\"\n\n");
-    fprintf(fichier, "#endif // RESOURCE_H_INCLUDED");
-
+    fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
+                    "#define RESOURCE_H_INCLUDED\n\n"
+                    "#define APP_VERSION \"1.0\"\n"
+                    "#define APP_NAME \"\"\n"
+                    "#define INNOSETUP \"FALSE\"\n\n"
+                    "#endif // RESOURCE_H_INCLUDED");
     fclose(fichier);
 
     return 0;
@@ -87,42 +86,41 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 
     tampon = get_date_annee();
 
-    fprintf(fichier, "#include \"resource.h\"\n");
-    fprintf(fichier, "#include <windows.h>\n\n");
-    fprintf(fichier, "#define VER_FILEVERSION             1,0,0,0\n");
-    fprintf(fichier, "#define VER_FILEVERSION_STR         \"1.0.0.0\\0\"\n\n");
-    fprintf(fichier, "IDI_ICON1               ICON                    \"%s\"\n\n", "icons/icon.ico");
-    fprintf(fichier, "VS_VERSION_INFO VERSIONINFO\n");
-    fprintf(fichier, " FILEVERSION 1,0,0,0\n");
-    fprintf(fichier, " FILEFLAGSMASK 0x3fL\n");
-    fprintf(fichier, "#ifdef _DEBUG\n");
-    fprintf(fichier, " FILEFLAGS 0x1L\n");
-    fprintf(fichier, "#else\n");
-    fprintf(fichier, " FILEFLAGS 0x0L\n");
-    fprintf(fichier, "#endif\n");
-    fprintf(fichier, " FILEOS 0x40004L\n");
-    fprintf(fichier, " FILETYPE 0x1L\n");
-    fprintf(fichier, " FILESUBTYPE 0x0L\n");
-    fprintf(fichier, "BEGIN\n");
-    fprintf(fichier, "    BLOCK \"StringFileInfo\"\n");
-    fprintf(fichier, "    BEGIN\n");
-    fprintf(fichier, "        BLOCK \"040c04b0\"\n");
-    fprintf(fichier, "        BEGIN\n");
-    fprintf(fichier, "            VALUE \"CompanyName\", \"https://github.com/Gaudrioles\"\n");
-    fprintf(fichier, "            VALUE \"FileDescription\", \"%s\"\n", FileDescription);
-    fprintf(fichier, "            VALUE \"FileVersion\", VER_FILEVERSION_STR\n");
-    fprintf(fichier, "            VALUE \"LegalCopyright\", \"Copyright (C) %s\"\n", tampon);
-    fprintf(fichier, "            VALUE \"OriginalFilename\", \"%s.exe\"\n", ProductName);
-    fprintf(fichier, "            VALUE \"ProductName\", \"%s\"\n", ProductName);
-    fprintf(fichier, "            VALUE \"ProductVersion\", APP_VERSION \"\\0\"\n");
-    fprintf(fichier, "        END\n");
-    fprintf(fichier, "    END\n");
-    fprintf(fichier, "    BLOCK \"VarFileInfo\"\n");
-    fprintf(fichier, "    BEGIN\n");
-    fprintf(fichier, "        VALUE \"Translation\", 0x40c, 1200\n");
-    fprintf(fichier, "    END\n");
-    fprintf(fichier, "END\n");
-
+    fprintf(fichier, "#include \"resource.h\"\n"
+                    "#include <windows.h>\n\n"
+                    "#define VER_FILEVERSION             1,0,0,0\n"
+                    "#define VER_FILEVERSION_STR         \"1.0.0.0\\0\"\n\n"
+                    "IDI_ICON1               ICON                    \"icons/icon.ico\"\n\n"
+                    "VS_VERSION_INFO VERSIONINFO\n"
+                    " FILEVERSION 1,0,0,0\n"
+                    " FILEFLAGSMASK 0x3fL\n"
+                    "#ifdef _DEBUG\n"
+                    " FILEFLAGS 0x1L\n"
+                    "#else\n"
+                    " FILEFLAGS 0x0L\n"
+                    "#endif\n"
+                    " FILEOS 0x40004L\n"
+                    " FILETYPE 0x1L\n"
+                    " FILESUBTYPE 0x0L\n"
+                    "BEGIN\n"
+                    "    BLOCK \"StringFileInfo\"\n"
+                    "    BEGIN\n"
+                    "        BLOCK \"040c04b0\"\n"
+                    "        BEGIN\n"
+                    "            VALUE \"CompanyName\", \"https://github.com/Gaudrioles\"\n"
+                    "            VALUE \"FileDescription\", \"%s\"\n"
+                    "            VALUE \"FileVersion\", VER_FILEVERSION_STR\n"
+                    "            VALUE \"LegalCopyright\", \"Copyright (C) %s\"\n"
+                    "            VALUE \"OriginalFilename\", \"%s.exe\"\n"
+                    "            VALUE \"ProductName\", \"%s\"\n"
+                    "            VALUE \"ProductVersion\", APP_VERSION \"\\0\"\n"
+                    "        END\n"
+                    "    END\n"
+                    "    BLOCK \"VarFileInfo\"\n"
+                    "    BEGIN\n"
+                    "        VALUE \"Translation\", 0x40c, 1200\n"
+                    "    END\n"
+                    "END\n", FileDescription, tampon, ProductName, ProductName);
     fclose(fichier);
 
     free(tampon);
@@ -136,17 +134,22 @@ int creation_fichier_gitignore()
 {
     FILE *fichier = NULL;
 
-    fichier = fopen(".gitignore", "w");
+    fichier = fopen(GITIGNORE_FILE, "w");
 
     if(fichier == NULL)
     {
         return -1;
     }
 
-    fprintf(fichier, "# CodeBlocks Files\n*.depend\n*.layout\nbin/\nobj/\n\n");
-    fprintf(fichier, "# VSCode Files\n.vs/\nx64/\nx86/\n");
-
-
+    fprintf(fichier, "# CodeBlocks Files\n"
+                    "*.depend\n"
+                    "*.layout\n"
+                    "bin/\n"
+                    "obj/\n\n"
+                    "# VSCode Files\n"
+                    ".vs/\n"
+                    "x64/\n"
+                    "x86/\n");
     fclose(fichier);
 
     return 0;
@@ -162,7 +165,12 @@ int update_fichier_changelog(double version, char *commentaire)
         return -1;
     }
 
-    fichier = fopen("CHANGELOG.md", "a");
+    if(verif_fichier_existe(CHANGELOG_FILE) != 1)
+    {
+        return -1;
+    }
+
+    fichier = fopen(CHANGELOG_FILE, "a");
 
     if(fichier == NULL)
     {
@@ -185,11 +193,16 @@ int update_fichier_resource_h(double version)
     int compteur = 0;
     char chaine[1025] = "";
 
-    nombre_ligne = nombre_de_ligne("resource.h");
+    if(verif_fichier_existe(RESOURCE_H_FILE) != 1)
+    {
+        return -1;
+    }
+
+    nombre_ligne = nombre_de_ligne(RESOURCE_H_FILE);
 
     if(nombre_ligne != -1)
     {
-        fichier = fopen("resource.h", "r");
+        fichier = fopen(RESOURCE_H_FILE, "r");
         fichierTampon = fopen("update_fichier_resource_h.old", "w");
 
         if(fichier == NULL || fichierTampon == NULL)
@@ -214,11 +227,11 @@ int update_fichier_resource_h(double version)
         fclose(fichier);
         fclose(fichierTampon);
 
-        if (remove("resource.h") != 0)
+        if (remove(RESOURCE_H_FILE) != 0)
         {
             return -1;
         }
-        if (rename("update_fichier_resource_h.old", "resource.h") != 0)
+        if (rename("update_fichier_resource_h.old", RESOURCE_H_FILE) != 0)
         {
             return -1;
         }
@@ -237,11 +250,16 @@ int update_name_resource_h(char *name)
     int compteur = 0;
     char chaine[1025] = "";
 
-    nombre_ligne = nombre_de_ligne("resource.h");
+    if(verif_fichier_existe(RESOURCE_H_FILE) != 1)
+    {
+        return -1;
+    }
+
+    nombre_ligne = nombre_de_ligne(RESOURCE_H_FILE);
 
     if(nombre_ligne != -1)
     {
-        fichier = fopen("resource.h", "r");
+        fichier = fopen(RESOURCE_H_FILE, "r");
         fichierTampon = fopen("update_name_resource_h.old", "w");
 
         if(fichier == NULL || fichierTampon == NULL)
@@ -266,11 +284,11 @@ int update_name_resource_h(char *name)
         fclose(fichier);
         fclose(fichierTampon);
 
-        if (remove("resource.h") != 0)
+        if (remove(RESOURCE_H_FILE) != 0)
         {
             return -1;
         }
-        if(rename("update_name_resource_h.old", "resource.h") != 0)
+        if(rename("update_name_resource_h.old", RESOURCE_H_FILE) != 0)
         {
             return -1;
         }
@@ -297,6 +315,12 @@ int update_innosetup(double version)
     buffer = malloc (taille * sizeof (char));
 
     sprintf(buffer, "%s.iss", chaine_remove);
+
+    if(verif_fichier_existe(buffer) != 1)
+    {
+        free(buffer);
+        return -1;
+    }
 
     FILE *fichier = NULL;
     FILE *fichierTampon = NULL;
@@ -355,6 +379,11 @@ int activation_innosetup(char *TRUE)
     FILE *fichier = NULL;
     FILE *fichierTampon = NULL;
 
+    if(verif_fichier_existe(RESOURCE_H_FILE)!= 1)
+    {
+        return -1;
+    }
+
     int nombre_ligne = 0;
     int compteur = 0;
     char chaine[1025] = "";
@@ -366,11 +395,11 @@ int activation_innosetup(char *TRUE)
     }
     else if(strcmp(TRUE, "TRUE") == 0 || strcmp(TRUE, "FALSE") == 0)
     {
-        nombre_ligne = nombre_de_ligne("resource.h");
+        nombre_ligne = nombre_de_ligne(RESOURCE_H_FILE);
 
         if(nombre_ligne != -1)
         {
-            fichier = fopen("resource.h", "r");
+            fichier = fopen(RESOURCE_H_FILE, "r");
             fichierTampon = fopen("activation_innosetup.old", "w");
 
             if(fichier == NULL || fichierTampon == NULL)
@@ -394,11 +423,11 @@ int activation_innosetup(char *TRUE)
             fclose(fichier);
             fclose(fichierTampon);
 
-            if(remove("resource.h") != 0)
+            if(remove(RESOURCE_H_FILE) != 0)
             {
                 return -1;
             }
-            if(rename("activation_innosetup.old", "resource.h") != 0)
+            if(rename("activation_innosetup.old", RESOURCE_H_FILE) != 0)
             {
                 return -1;
             }
@@ -453,6 +482,11 @@ int remove_last_changelog_entry()
     int nombre_ligne = 0;
     int compteur = 0;
     char chaine[1025] = "";
+
+    if(verif_fichier_existe(CHANGELOG_FILE) != 1)
+    {
+        return -1;
+    }
 
     nombre_ligne = nombre_de_ligne(CHANGELOG_FILE);
 
@@ -516,6 +550,11 @@ int fonction_remove()
     char tampon[1];
 
     double version =  get_version();
+
+    if(verif_fichier_existe(CHANGELOG_FILE) != 1)
+    {
+        return -1;
+    }
 
     while(1)
     {

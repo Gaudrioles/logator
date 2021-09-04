@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "main.h"
 
@@ -155,3 +156,16 @@ double get_version()
     return version;
 }
 
+int verif_fichier_existe(char *fichier_nom)
+{
+    if(access(fichier_nom, F_OK) == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        printf("Le fichier %s est introuvable\n", fichier_nom);
+        return 0;
+    }
+    return 0;
+}

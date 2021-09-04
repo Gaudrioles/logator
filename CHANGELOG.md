@@ -23,3 +23,5 @@ BUILD 1.7
 -*- Add -*- Mise a jour de la version automatiquement;
 BUILD 1.8
 -*- Add -*- Ajout fonction suppression entree CHANGELOG;
+BUILD 1.9
+-*- Add -*- Ajout fonction verification si fichier existe;
