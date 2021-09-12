@@ -25,3 +25,7 @@ BUILD 1.8
 -*- Add -*- Ajout fonction suppression entree CHANGELOG;
 BUILD 1.9
 -*- Add -*- Ajout fonction verification si fichier existe;
+BUILD 2.0
+-*- Add -*- Remplacement du system de Construction CodeBlocks -> Makefile;
+BUILD 2.1
+-*- Add -*- Ajout gestion Makefile a la fonction creation_fichier_gitignore;

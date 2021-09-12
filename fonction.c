@@ -149,7 +149,10 @@ int creation_fichier_gitignore()
                     "# VSCode Files\n"
                     ".vs/\n"
                     "x64/\n"
-                    "x86/\n");
+                    "x86/\n\n"
+                    "# MakeFile\n"
+                    "*.o\n"
+                    "*.exe\n");
     fclose(fichier);
 
     return 0;
