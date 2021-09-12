@@ -29,3 +29,5 @@ BUILD 2.0
 -*- Add -*- Remplacement du system de Construction CodeBlocks -> Makefile;
 BUILD 2.1
 -*- Add -*- Ajout gestion Makefile a la fonction creation_fichier_gitignore;
+BUILD 2.2
+-*- Add -*- Modification du code pour compilation avec GCC ou MSVC;

@@ -1,7 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+
+#if defined(__GNUC__) || defined(__GNUG__)
+    #include <unistd.h>
+    
+    int verif_fichier_existe(char *fichier_nom)
+{
+    if(access(fichier_nom, F_OK) == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        printf("Le fichier %s est introuvable\n", fichier_nom);
+        return 0;
+    }
+    return 0;
+}
+#elif defined(_MSC_VER)
+    #include <windows.h>
+
+    int verif_fichier_existe(LPCSTR fichier_nom)
+    {
+        WIN32_FIND_DATAA FindFileData;
+        HANDLE handle = FindFirstFileA(fichier_nom, &FindFileData) ;
+
+        if(handle != INVALID_HANDLE_VALUE)
+        {
+            FindClose(handle);
+            return 1;
+        }
+        return 0;
+    }
+#endif
 
 #include "main.h"
 
@@ -36,8 +68,8 @@ int innosetup_status()
 {
     FILE *fichier = NULL;
 
-    char chaine[1025] = "";
-    char buffer[1025] = "";
+    char chaine[1025] = { 0 };
+    char buffer[1025] = { 0 };
 
     int compteur = 0;
 
@@ -54,7 +86,10 @@ int innosetup_status()
         switch(compteur)
         {
             case 5:
-                fscanf(fichier,"#define INNOSETUP %s", chaine);
+                if (fscanf(fichier, "#define INNOSETUP %s", chaine) == EOF)
+                {
+                    printf("Erreur fonction setup_status()\n");
+                }
                 break;
             default:
                 fgets(buffer, 1024, fichier);
@@ -83,8 +118,8 @@ char *application_get_name()
 {
     FILE *fichier = NULL;
 
-    char chaine[1025] = "";
-    char buffer[1025] = "";
+    char chaine[1025] = { 0 };
+    char buffer[1025] = { 0 };
 
     int compteur = 0;
 
@@ -100,7 +135,10 @@ char *application_get_name()
         switch(compteur)
         {
             case 4:
-                fscanf(fichier,"#define APP_NAME %s", chaine);
+                if(fscanf(fichier, "#define APP_NAME %s", chaine) == EOF)
+                {
+                    printf("Erreur Fonction application_get_name\n");
+                }
                 break;
             default:
                 fgets(buffer, 1024, fichier);
@@ -113,6 +151,11 @@ char *application_get_name()
     size_t len = strlen (chaine) + 1;
     char *result = (char*) malloc (len);
 
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
     return (char*) memcpy (result, chaine, len);
 }
 
@@ -120,8 +163,8 @@ double get_version()
 {
     FILE *fichier = NULL;
 
-    char chaine[1025] = "";
-    char buffer[1025] = "";
+    char chaine[1025] = { 0 };
+    char buffer[1025] = { 0 };
 
     double version = 0;
 
@@ -139,7 +182,10 @@ double get_version()
         switch(compteur)
         {
             case 3:
-                fscanf(fichier,"#define APP_VERSION \"%s\"", buffer);
+                if (fscanf(fichier, "#define APP_VERSION \"%s\"", buffer) == EOF)
+                {
+                    printf("Erreur fonction get_version()\n");
+                }
                 break;
             default:
                 fgets(chaine, 1024, fichier);
@@ -154,18 +200,4 @@ double get_version()
     fclose(fichier);
 
     return version;
-}
-
-int verif_fichier_existe(char *fichier_nom)
-{
-    if(access(fichier_nom, F_OK) == 0)
-    {
-        return 1;
-    }
-    else
-    {
-        printf("Le fichier %s est introuvable\n", fichier_nom);
-        return 0;
-    }
-    return 0;
 }

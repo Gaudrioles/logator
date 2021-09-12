@@ -356,10 +356,10 @@ int update_innosetup(double version)
                     break;
             }
         }
-    }
 
-    fclose(fichier);
-    fclose(fichierTampon);
+        fclose(fichier);
+        fclose(fichierTampon);
+    }
 
     if(remove(buffer) != 0)
     {
@@ -448,8 +448,8 @@ int activation_innosetup(char *TRUE)
 char *get_last_changelog_entry(char *filename)
 {
     FILE *fichier = NULL;
-    char chaine[1025];
-    char tampon[1025];
+    char chaine[1025] = { 0 };
+    char tampon[1025] = { 0 };
     int compteur = 0;
     int nombre_ligne= nombre_de_ligne(CHANGELOG_FILE);
 
@@ -474,7 +474,15 @@ char *get_last_changelog_entry(char *filename)
 
     fclose(fichier);
 
-    return strdup(chaine);
+    size_t len = strlen(chaine) + 1;
+    char* result = (char*)malloc(len);
+
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
+    return (char*)memcpy(result, chaine, len);
 }
 
 int remove_last_changelog_entry()
@@ -550,7 +558,7 @@ int remove_last_changelog_entry()
 int fonction_remove()
 {
     char *chaine = NULL;
-    char tampon[1];
+    char tampon = 0;
 
     double version =  get_version();
 
@@ -565,9 +573,12 @@ int fonction_remove()
         printf("Suppression de -> %s\nConfirmation [O]ui [N]on ? :", chaine);
         free(chaine);
 
-        scanf("%s", tampon);
+        if(scanf("%c", &tampon) == 0)
+        {
+            continue;
+        }
 
-        if(strcmp(tampon, "O") == 0 || strcmp(tampon, "o") == 0)
+        if(tampon == 'O' || tampon == 'o')
         {
             if(remove_last_changelog_entry() == 0)
             {
@@ -581,7 +592,7 @@ int fonction_remove()
 
 
         }
-        else if(strcmp(tampon, "N") == 0 || strcmp(tampon, "n") == 0)
+        else if(tampon == 'N' || tampon == 'n')
         {
             printf("Annulation de la suppression\n");
             break;
