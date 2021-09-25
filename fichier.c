@@ -37,6 +37,31 @@
 
 #include "main.h"
 
+char *remove_guillemet(char* source)
+{
+    char chaine[1024];
+    int compteur = 0;
+
+    size_t len = strlen(source);
+
+    while (compteur != len -2)
+    {
+        chaine[compteur] = source[compteur + 1];
+        compteur++;
+    }
+
+    len = strlen(chaine) + 1;
+
+    char* result = (char*)malloc(len);
+
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
+    return (char*)memcpy(result, chaine, len);
+}
+
 int nombre_de_ligne(char *fichier_nom)
 {
     FILE *fichier = NULL;
@@ -74,7 +99,7 @@ int innosetup_status()
     int compteur = 0;
 
 
-    fichier = fopen("resource.h", "r");
+    fichier = fopen(RESOURCE_H_FILE, "r");
 
     if(fichier == NULL)
     {
@@ -123,7 +148,7 @@ char *application_get_name()
 
     int compteur = 0;
 
-    fichier = fopen("resource.h", "r");
+    fichier = fopen(RESOURCE_H_FILE, "r");
 
     if(fichier == NULL)
     {

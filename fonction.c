@@ -213,6 +213,8 @@ int update_fichier_resource_h(double version)
             return -1;
         }
 
+        nombre_ligne = nombre_ligne + 1;
+
         for(compteur = 0; compteur < nombre_ligne; compteur++)
         {
             fgets(chaine, 1024, fichier);
@@ -220,6 +222,10 @@ int update_fichier_resource_h(double version)
             {
                 case 3 :
                     fprintf(fichierTampon, "#define APP_VERSION \"%.1f\"\n", version);
+                    break;
+                case 7 :
+                    fprintf(fichierTampon, "%s", chaine);
+                    compteur = nombre_ligne;
                     break;
                 default:
                     fprintf(fichierTampon, "%s", chaine);
@@ -270,6 +276,8 @@ int update_name_resource_h(char *name)
             return -1;
         }
 
+        nombre_ligne = nombre_ligne + 1;
+
         for(compteur = 0; compteur < nombre_ligne; compteur++)
         {
             fgets(chaine, 1024, fichier);
@@ -302,58 +310,70 @@ int update_name_resource_h(char *name)
 
 int update_innosetup(double version)
 {
-    char *buffer = NULL;
-    char *buffer_bis = NULL;
+    char* tampon = NULL;
+    char* buffer = NULL;
+
     char chaine[1025] = "";
-    size_t taille = 0;
+    size_t len = 0;
 
-    buffer_bis = application_get_name();
+    tampon = remove_guillemet(application_get_name());
 
-    char detecteur[] = "\"\"";
-    char *chaine_remove = strtok(buffer_bis, detecteur);
-    free(buffer_bis);
-
-    taille = strlen(chaine_remove) + strlen(".iss") + 1;
-
-    buffer = malloc (taille * sizeof (char));
-
-    sprintf(buffer, "%s.iss", chaine_remove);
-
-    if(verif_fichier_existe(buffer) != 1)
+    if (tampon == NULL)
     {
-        free(buffer);
         return -1;
     }
 
-    FILE *fichier = NULL;
-    FILE *fichierTampon = NULL;
+    len = strlen(tampon) + strlen(".iss") + 1;
+
+    buffer = malloc(len * sizeof(*buffer));
+
+    if (buffer == NULL)
+    {
+        return -1;
+    }
+
+    sprintf(buffer, "%s.iss", tampon);
+
+    free(tampon);
+
+    if (verif_fichier_existe(buffer) != 1)
+    {
+        printf("Fichier %s introuvable\n", buffer);
+
+        free(buffer);
+        return -1;
+    }
+    
+    FILE* fichier = NULL;
+    FILE* fichierTampon = NULL;
 
     int nombre_ligne = 0;
     int compteur = 0;
 
     nombre_ligne = nombre_de_ligne(buffer);
 
-    if(nombre_ligne != -1)
+    if (nombre_ligne != -1)
     {
         fichier = fopen(buffer, "r");
         fichierTampon = fopen("update_innosetup.old", "w");
 
-        if(fichier == NULL || fichierTampon == NULL)
+        if (fichier == NULL || fichierTampon == NULL)
         {
             return -1;
         }
 
-        for(compteur = 0; compteur < nombre_ligne; compteur++)
+        for (compteur = 0; compteur < nombre_ligne; compteur++)
         {
             fgets(chaine, 1024, fichier);
-            switch(compteur)
+
+            switch (compteur)
             {
-                case 4:
-                    fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
-                    break;
-                default:
-                    fprintf(fichierTampon, "%s", chaine);
-                    break;
+            case 4:
+                fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
+                break;
+            default:
+                fprintf(fichierTampon, "%s", chaine);
+                break;
             }
         }
 
@@ -361,11 +381,11 @@ int update_innosetup(double version)
         fclose(fichierTampon);
     }
 
-    if(remove(buffer) != 0)
+    if (remove(buffer) != 0)
     {
         return -1;
     }
-    if(rename("update_innosetup.old", buffer) != 0)
+    if (rename("update_innosetup.old", buffer) != 0)
     {
         return -1;
     }
@@ -490,64 +510,92 @@ int remove_last_changelog_entry()
     FILE *fichier = NULL;
     FILE *fichierTampon = NULL;
 
-    int nombre_ligne = 0;
+    int ligne = 0;
     int compteur = 0;
-    char chaine[1025] = "";
+    
+    size_t len = 0;
+
+    char *chaine = NULL;
+    char *tampon = NULL;
 
     if(verif_fichier_existe(CHANGELOG_FILE) != 1)
     {
         return -1;
     }
 
-    nombre_ligne = nombre_de_ligne(CHANGELOG_FILE);
+    ligne = nombre_de_ligne(CHANGELOG_FILE);
 
-    if(nombre_ligne != -1)
+    if (ligne == -1)
     {
-        fichier = fopen(CHANGELOG_FILE, "r");
-        fichierTampon = fopen("changelog.md.old", "w");
-
-        if(fichier == NULL || fichierTampon == NULL)
-        {
-            return -1;
-        }
-
-        for(compteur = 0; compteur < nombre_ligne - 1; compteur++)
-        {
-            if(compteur != nombre_ligne -2)
-            {
-                fgets(chaine, 1024, fichier);
-                fprintf(fichierTampon, "%s", chaine);
-            }
-            else
-            {
-                fgets(chaine, 1024, fichier);
-
-                size_t len =  strlen(chaine);
-
-                int i = 0;
-
-                for(i = 0; i < len-1; i++)
-                {
-                    fputc(chaine[i], fichierTampon);
-                }
-
-            }
-        }
-
-        fclose(fichier);
-        fclose(fichierTampon);
-
-        if (remove(CHANGELOG_FILE) != 0)
-        {
-            return -1;
-        }
-        if (rename("changelog.md.old", CHANGELOG_FILE) != 0)
-        {
-            return -1;
-        }
-
+        return -1;
     }
-    else
+    
+    fichier = fopen(CHANGELOG_FILE, "r");
+    fichierTampon = fopen("changelog.md.old", "w");
+    
+    if(fichier == NULL || fichierTampon == NULL)
+    {
+        return -1;
+    }
+
+    for (compteur = 0; compteur < ligne; compteur++)
+    {
+        chaine = malloc(1025 * sizeof(*chaine));
+        
+        if (chaine == NULL)
+        {
+            fclose(fichier);
+            fclose(fichierTampon);
+            return -1;
+        }
+
+        fgets(chaine, 1024, fichier);
+
+        if (chaine == NULL)
+        {
+            free(chaine);
+            return -1;
+        }
+
+        if (compteur != ligne - 2)
+        {
+            fprintf(fichierTampon, "%s", chaine);
+        }
+        else
+        {
+            tampon = malloc(1025 * sizeof(*chaine));
+
+            len = strlen(chaine);
+
+            if (tampon == NULL)
+            {
+                free(chaine);
+                free(tampon);
+                return -1;
+            }
+
+            memcpy(tampon, chaine, len -1);
+            
+            tampon[len] = '\0';
+
+            fprintf(fichierTampon, "%s", tampon);
+
+            free(tampon);
+
+            compteur = ligne;
+        }
+
+       free(chaine);
+    }
+    
+    fclose(fichier);
+    fclose(fichierTampon);
+    
+    if (remove(CHANGELOG_FILE) != 0)
+    {
+        return -1;
+    }
+    if (rename("changelog.md.old", CHANGELOG_FILE) != 0)
     {
         return -1;
     }

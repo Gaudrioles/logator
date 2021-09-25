@@ -31,3 +31,7 @@ BUILD 2.1
 -*- Add -*- Ajout gestion Makefile a la fonction creation_fichier_gitignore;
 BUILD 2.2
 -*- Add -*- Modification du code pour compilation avec GCC ou MSVC;
+BUILD 2.3
+-*- Add -*- Mise a jour de la fonction remove_last_changelog_entry;
+BUILD 2.4
+-*- Add -*- Correction du bug fonction update_innosetup;
