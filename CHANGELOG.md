@@ -35,3 +35,5 @@ BUILD 2.3
 -*- Add -*- Mise a jour de la fonction remove_last_changelog_entry;
 BUILD 2.4
 -*- Add -*- Correction du bug fonction update_innosetup;
+BUILD 2.5
+-*- Add -*- Bug fonction VerifExiste update_fichier_resource_h update_name_resource_h;

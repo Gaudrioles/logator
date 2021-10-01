@@ -3,64 +3,40 @@
 #include <string.h>
 
 #if defined(__GNUC__) || defined(__GNUG__)
-    #include <unistd.h>
-    
-    int verif_fichier_existe(char *fichier_nom)
+#include <unistd.h>
+
+int VerifExiste(char* Chemin)
 {
-    if(access(fichier_nom, F_OK) == 0)
+    if (access(Chemin, F_OK) == 0)
     {
         return 1;
     }
     else
     {
-        printf("Le fichier %s est introuvable\n", fichier_nom);
         return 0;
     }
+}
+
+#elif defined(_MSC_VER)
+#include <windows.h>
+
+int VerifExiste(char* Chemin)
+{
+    LPCSTR szPath = Chemin;
+
+    DWORD dwAttrib = GetFileAttributesA(szPath);
+
+    if (dwAttrib != INVALID_FILE_ATTRIBUTES)
+    {
+        return 1;
+    }
+
     return 0;
 }
-#elif defined(_MSC_VER)
-    #include <windows.h>
 
-    int verif_fichier_existe(LPCSTR fichier_nom)
-    {
-        WIN32_FIND_DATAA FindFileData;
-        HANDLE handle = FindFirstFileA(fichier_nom, &FindFileData) ;
-
-        if(handle != INVALID_HANDLE_VALUE)
-        {
-            FindClose(handle);
-            return 1;
-        }
-        return 0;
-    }
 #endif
 
 #include "main.h"
-
-char *remove_guillemet(char* source)
-{
-    char chaine[1024];
-    int compteur = 0;
-
-    size_t len = strlen(source);
-
-    while (compteur != len -2)
-    {
-        chaine[compteur] = source[compteur + 1];
-        compteur++;
-    }
-
-    len = strlen(chaine) + 1;
-
-    char* result = (char*)malloc(len);
-
-    if (result == NULL)
-    {
-        return NULL;
-    }
-
-    return (char*)memcpy(result, chaine, len);
-}
 
 int nombre_de_ligne(char *fichier_nom)
 {
@@ -146,24 +122,23 @@ char *application_get_name()
     char chaine[1025] = { 0 };
     char buffer[1025] = { 0 };
 
+    size_t len = 0;
+
     int compteur = 0;
 
-    fichier = fopen(RESOURCE_H_FILE, "r");
+    fichier = fopen("resource.h", "r");
 
     if(fichier == NULL)
     {
         return NULL;
     }
 
-    for(compteur =0;compteur < 6;compteur++)
+    for(compteur = 0; compteur < 5 ;compteur++)
     {
         switch(compteur)
         {
             case 4:
-                if(fscanf(fichier, "#define APP_NAME %s", chaine) == EOF)
-                {
-                    printf("Erreur Fonction application_get_name\n");
-                }
+                fgets(buffer, 1024, fichier);
                 break;
             default:
                 fgets(buffer, 1024, fichier);
@@ -173,7 +148,14 @@ char *application_get_name()
 
     fclose(fichier);
 
-    size_t len = strlen (chaine) + 1;
+    len = strlen(buffer) - 2;
+
+    for(compteur = 18; compteur < len; compteur++)
+    {
+        chaine[compteur - 18] = buffer[compteur];
+    }
+
+    len = strlen (chaine) + 1;
     char *result = (char*) malloc (len);
 
     if (result == NULL)
