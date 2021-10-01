@@ -11,7 +11,7 @@ int update_fichier_resource_h(double version);
 int update_innosetup(double version);
 int update_name_resource_h(char *name);
 
-int activation_innosetup(char *TRUE);
+int activation_innosetup(char* valeur);
 
 int fonction_remove();
 
