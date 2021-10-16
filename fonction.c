@@ -352,7 +352,13 @@ int update_innosetup(double version)
 
 		for (compteur = 0; compteur < nombre_ligne; compteur++)
 		{
-			fgets(chaine, 1024, fichier);
+			if(fgets(chaine, 1024, fichier) == NULL)
+			{
+			fclose(fichier);
+			fclose(fichierTampon);
+			return -1;
+		}
+
 
 			switch (compteur)
 			{
@@ -420,7 +426,13 @@ int activation_innosetup(char* Valeur)
 
 			for(compteur = 0; compteur < nombre_ligne +1 ; compteur++)
 			{
-				fgets(chaine, 1024, fichier);
+				if(fgets(chaine, 1024, fichier) == NULL)
+				{
+					fclose(fichier);
+					fclose(fichierTampon);
+					return -1;
+				}
+
 				if(compteur == 5)
 				{
 					fprintf(fichierTampon, "#define INNOSETUP \"%s\"\n", Valeur);
@@ -472,11 +484,20 @@ char *get_last_changelog_entry(char *filename)
 	{
 		if(compteur == nombre_ligne)
 		{
-			fgets(chaine, 1024, fichier);
+			if(fgets(chaine, 1024, fichier) == NULL)
+			{
+				fclose(fichier);
+				return NULL;
+			}
+
 		}
 		else
 		{
-			fgets(tampon, 1024, fichier);
+			if(fgets(tampon, 1024, fichier) == NULL)
+			{
+				fclose(fichier);
+				return NULL;
+			}
 		}
 	}
 
@@ -536,7 +557,12 @@ int remove_last_changelog_entry()
 			return -1;
 		}
 
-		fgets(chaine, 1024, fichier);
+		if(fgets(chaine, 1024, fichier) == NULL)
+		{
+			fclose(fichier);
+			fclose(fichierTampon);
+			return -1;
+		}
 
 		if(compteur != ligne -1)
 		{

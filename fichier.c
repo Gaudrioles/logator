@@ -93,7 +93,10 @@ int innosetup_status()
                 }
                 break;
             default:
-                fgets(buffer, 1024, fichier);
+                if(fgets(buffer, 1024, fichier) == NULL)
+                {
+                    return -1;
+                }
                 break;
         }
     }
@@ -138,10 +141,16 @@ char *application_get_name()
         switch(compteur)
         {
             case 4:
-                fgets(buffer, 1024, fichier);
+                if(fgets(buffer, 1024, fichier) == NULL)
+                {
+                    return NULL;
+                }
                 break;
             default:
-                fgets(buffer, 1024, fichier);
+                if(fgets(buffer, 1024, fichier) == NULL)
+                {
+                    return NULL;
+                }
                 break;
         }
     }
@@ -195,7 +204,10 @@ double get_version()
                 }
                 break;
             default:
-                fgets(chaine, 1024, fichier);
+                if(fgets(chaine, 1024, fichier) == NULL)
+                {
+                    return 0;
+                }
                 break;
         }
     }

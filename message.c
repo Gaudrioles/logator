@@ -1,6 +1,40 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef __unix__
+
+void printf_aide()
+{
+    printf("\n\n ==========================================================================\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Liste des commandes                                         *\n");
+    printf(" *                logator -help                                           *\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Creation fichier CHANGELOG.md et resource.h :               *\n");
+    printf(" *                logator -creation                                       *\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Ajout de nouvelle version :                                 *\n");
+    printf(" *                logator -new \"commentaire\"                              *\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Creation fichier Resource.rc                                *\n");
+    printf(" *                logator -resource \"FileDescription\"  \"ProductName\"      *\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Creation fichier .gitignore :                               *\n");
+    printf(" *                logator -gitignore                                      *\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Activation innosetup :                                      *\n");
+    printf(" *                logator -innosetup \"TRUE\"                               *\n");
+    printf(" *                                                                        *\n");
+    printf(" *         -> Suppression entree CHANGELOG :                              *\n");
+    printf(" *                logator -remove                                         *\n");
+    printf(" *                                                                        *\n");
+    printf(" ==========================================================================\n");
+
+    return;
+}
+
+#elif defined(_WIN32) || defined(WIN32)
+
 void printf_aide()
 {
     printf("\n\n\t*********************************************************************************************\n");
@@ -30,6 +64,10 @@ void printf_aide()
 
     return;
 }
+
+#endif
+
+
 
 void printf_new()
 {
