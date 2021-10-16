@@ -177,6 +177,7 @@ int creation_fichier_gitignore()
 					"obj/\n\n"
 					"# VSCode Files\n"
 					".vs/\n"
+					".vscode/\n"
 					"x64/\n"
 					"x86/\n\n"
 					"# MakeFile\n"
