@@ -2,46 +2,45 @@
 CC = gcc
 RC = windres
 
-BIN = logator.exe
+BIN = logator
 
 SRC= $(wildcard *.c)
-OBJ= $(SRC:.c=.o) Resource.o
+OBJ= $(SRC:.c=.o)
 
 RC_FILE = Resource.rc
 
-REP_INSTALL = D:/Bin/logator
-
 # Flags Compilateur #
  
-CFLAGS = -Wall -O2 -pedantic-errors
+CFLAGS =
  
 # Flags pour l'editeur de liens #
  
-LDFLAGS = -lmingw32
+LDFLAGS =
  
 # Construction du programme #
 
-all: $(BIN)
+.PHONY : all
+all : $(BIN)
 
-debug: CFLAGS += -DDEBUG -g
-debug: $(BIN)
-
-release: CFLAGS += -mwindows
-release: $(BIN)
+ifeq ($(OS),Windows_NT)
+CFLAGS += -Wall -O2 -pedantic-errors -mwindows
+LDFLAGS += -lmingw32
+OBJ += Resource.o
  
 $(BIN): $(OBJ)
 	$(CC) $^ -o $@ $(LDFLAGS)	
-
 %.o: %.c
 	$(RC) $(RC_FILE) -o Resource.o
-	$(CC) -o $@ -c $< $(CFLAGS)	
+	$(CC) -o $@ -c $< $(CFLAGS)
+endif
+ifeq ($(shell uname), Linux)
+CFLAGS += -Wall -O2 -pedantic-errors
 
-install: all
-	mkdir -p $(REP_INSTALL)
-	mv $(BIN) $(REP_INSTALL)/$(BIN)
-
-uninstall : all
-	rm -rf $(REP_INSTALL)
+$(BIN): $(OBJ)
+	$(CC) $^ -o $@ $(LDFLAGS)	
+%.o: %.c
+	$(CC) -o $@ -c $< $(CFLAGS)
+endif
 
 # Nettoyage #
 
