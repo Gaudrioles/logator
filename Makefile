@@ -21,11 +21,13 @@ CFLAGS += -Wall -O2 -pedantic-errors -mwindows
 LFLAGS += -lmingw32
 OBJ += Resource.o
 
+Resource.o:
+	$(RC) $(RC_FILE) -o Resource.o
+
 %.o: %.c *.h
 	$(CC) -c $< $(CFLAGS) -o $@
 
 %.o: %.c
-	$(RC) $(RC_FILE) -o Resource.o
 	$(CC) -c $< $(CFLAGS) -o $@
 
 $(BIN): $(OBJ)
