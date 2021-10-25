@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "resource.h"
+
 #ifdef __unix__
 
 void printf_aide()
@@ -94,7 +96,7 @@ void printf_innosetup()
 
 void printf_bad_flags()
 {
-    printf("Mauvais argument\n Fonction help -> logator.exe -help\n");
+    printf("Mauvais argument\n Fonction help -> %s logator.exe -help\n", APP_VERSION);
 
     return;
 }

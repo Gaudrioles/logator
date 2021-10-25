@@ -18,7 +18,7 @@ all : $(BIN)
 
 ifeq ($(OS),Windows_NT)
 CFLAGS += -Wall -O2 -pedantic-errors -mwindows
-LFLAGS += -lmingw32
+LFLAGS += -lmsvcrt
 OBJ += Resource.o
 
 Resource.o:

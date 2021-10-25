@@ -103,14 +103,11 @@ int innosetup_status()
 
     fclose(fichier);
 
-    char detecteur[] = "\"\"";
-    char *chaine_remove = strtok(chaine, detecteur);
-
-    if(strcmp(chaine_remove, "TRUE") == 0)
+    if(strcmp(chaine, "\"TRUE\"") == 0)
     {
         return 1;
     }
-    else if(strcmp(chaine_remove, "FALSE") == 0)
+    else if(strcmp(chaine, "\"FALSE\"") == 0)
     {
         return 0;
     }

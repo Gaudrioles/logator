@@ -219,10 +219,23 @@ int update_fichier_changelog(double version, char *commentaire)
 
 int update_fichier_resource_h(double version)
 {
-	int x = innosetup_status();
-	char* appname = application_get_name();
-
 	FILE *fichier = NULL;
+	char *appname = NULL;
+	int x = 0;
+
+	x = innosetup_status();
+	
+	if(x == -1)
+	{
+		return -1;
+	}
+	
+	appname = application_get_name();
+	
+	if(appname == NULL)
+	{
+		return -1;
+	}
 
 	fichier = fopen(RESOURCE_H_FILE, "w");
 
@@ -242,13 +255,15 @@ int update_fichier_resource_h(double version)
 						"#define INNOSETUP \"TRUE\"\n\n"
 						"#endif // RESOURCE_H_INCLUDED\n", version, appname);
 		break;
-	default:
+	case 0 :
 		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
 						"#define RESOURCE_H_INCLUDED\n\n"
 						"#define APP_VERSION \"%.1f\"\n"
 						"#define APP_NAME \"%s\"\n"
 						"#define INNOSETUP \"FALSE\"\n\n"
 						"#endif // RESOURCE_H_INCLUDED\n", version, appname);
+		break;
+	default:
 		break;
 	}
 
@@ -645,7 +660,7 @@ int fonction_remove()
 
 	version = version - 0.2;
 
-	if(update_fichier_resource_h(version) != 0)
+	if(update_fichier_resource_h(version) == -1)
 	{
 		printf_new();
 	}

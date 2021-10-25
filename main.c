@@ -37,21 +37,22 @@ int main(int argc, char *argv[])
 	else if(strcmp(argv[1], "-new") == 0)
 	{
 		double version = get_version();
-		if(update_fichier_changelog(version, argv[2]) != 0)
+
+		if(update_fichier_changelog(version, argv[2]) == -1)
 		{
 			printf_new();
 			return -1;
 		}
-		else if(update_fichier_resource_h(version) != 0)
+
+		printf_update_fichier(CHANGELOG_FILE);
+		
+		if(update_fichier_resource_h(version) == -1)
 		{
 			printf_new();
 			return -1;
 		}
-		else
-		{
-			printf_update_fichier(CHANGELOG_FILE);
-			printf_update_fichier(RESOURCE_H_FILE);
-		}
+
+		printf_update_fichier(RESOURCE_H_FILE);
 
 		if(innosetup_status() == 1)
 		{

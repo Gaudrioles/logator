@@ -39,3 +39,5 @@ BUILD 2.5
 -*- Add -*- Bug fonction VerifExiste update_fichier_resource_h update_name_resource_h;
 BUILD 2.6
 -*- Add -*- suppression des avertissements fgets return value;
+BUILD 2.7
+-*- Add -*- Correction de bug;
