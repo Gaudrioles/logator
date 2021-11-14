@@ -94,7 +94,7 @@ int creation_fichier_resource_h()
 					"#define APP_VERSION \"1.0\"\n"
 					"#define APP_NAME \"\"\n"
 					"#define INNOSETUP \"FALSE\"\n\n"
-					"#endif // RESOURCE_H_INCLUDED");
+					"#endif /* !RESOURCE_H_INCLUDED */");
 
 	fclose(fichier);
 
@@ -253,7 +253,7 @@ int update_fichier_resource_h(double version)
 						"#define APP_VERSION \"%.1f\"\n"
 						"#define APP_NAME \"%s\"\n"
 						"#define INNOSETUP \"TRUE\"\n\n"
-						"#endif // RESOURCE_H_INCLUDED\n", version, appname);
+						"#endif /* !RESOURCE_H_INCLUDED */\n", version, appname);
 		break;
 	case 0 :
 		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
@@ -261,7 +261,7 @@ int update_fichier_resource_h(double version)
 						"#define APP_VERSION \"%.1f\"\n"
 						"#define APP_NAME \"%s\"\n"
 						"#define INNOSETUP \"FALSE\"\n\n"
-						"#endif // RESOURCE_H_INCLUDED\n", version, appname);
+						"#endif /* !RESOURCE_H_INCLUDED */\n", version, appname);
 		break;
 	default:
 		break;
@@ -295,7 +295,7 @@ int update_name_resource_h(char *name)
 						"#define APP_VERSION \"%.1f\"\n"
 						"#define APP_NAME \"%s\"\n"
 						"#define INNOSETUP \"TRUE\"\n\n"
-						"#endif // RESOURCE_H_INCLUDED\n", version, name);
+						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);
 		break;
 	default:
 		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
@@ -303,7 +303,7 @@ int update_name_resource_h(char *name)
 						"#define APP_VERSION \"%.1f\"\n"
 						"#define APP_NAME \"%s\"\n"
 						"#define INNOSETUP \"FALSE\"\n\n"
-						"#endif // RESOURCE_H_INCLUDED\n", version, name);
+						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);
 		break;
 	}
 
