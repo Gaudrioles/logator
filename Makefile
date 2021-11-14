@@ -17,8 +17,8 @@ LFLAGS =
 all : $(BIN)
 
 ifeq ($(OS),Windows_NT)
-CFLAGS += -Wall -O2 -pedantic-errors -mwindows
-LFLAGS += -lmsvcrt
+CFLAGS += -Wall -Wextra -Werror -pedantic-errors -O2
+LFLAGS += -lucrt
 OBJ += Resource.o
 
 Resource.o:
@@ -35,7 +35,7 @@ $(BIN): $(OBJ)
 
 endif
 ifeq ($(shell uname), Linux)
-CFLAGS += -Wall -O2 -pedantic-errors
+CFLAGS += -Wall -Wextra -Werror -pedantic-errors -O2
 
 %.o: %.c *.h
 	$(CC) -c $< $(CFLAGS) -o $@

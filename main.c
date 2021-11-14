@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-	if(argv[1] == NULL)
+	if(argc < 2)
 	{
 		printf_bad_flags();
 		return -1;

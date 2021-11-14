@@ -155,8 +155,9 @@ char *application_get_name()
     fclose(fichier);
 
     len = strlen(buffer) - 2;
+    int i = len;
 
-    for(compteur = 18; compteur < len; compteur++)
+    for(compteur = 18; compteur < i; compteur++)
     {
         chaine[compteur - 18] = buffer[compteur];
     }

@@ -12,3 +12,6 @@ x86/
 # MakeFile
 *.o
 *.exe
+
+# InnoSetup
+*.iss
