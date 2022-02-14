@@ -41,3 +41,5 @@ BUILD 2.6
 -*- Add -*- suppression des avertissements fgets return value;
 BUILD 2.7
 -*- Add -*- Correction de bug;
+BUILD 2.8
+-*- Add -*- Mise a jour des messages;
