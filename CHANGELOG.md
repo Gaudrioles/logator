@@ -43,3 +43,5 @@ BUILD 2.7
 -*- Add -*- Correction de bug;
 BUILD 2.8
 -*- Add -*- Mise a jour des messages;
+BUILD 2.9
+-*- Add -*- Ajout de la fonction lecture_fichier_changelog;
