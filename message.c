@@ -27,6 +27,9 @@ void printf_aide()
    fprintf(stdout, " *         -> Activation innosetup :                                      *\n");
    fprintf(stdout, " *                logator -innosetup \"TRUE\"                               *\n");
    fprintf(stdout, " *                                                                        *\n");
+   fprintf(stdout, " *         -> Lecture du fichier CHANGELOG :                              *\n");
+   fprintf(stdout, " *                logator -view                                           *\n");
+   fprintf(stdout, " *                                                                        *\n");
    fprintf(stdout, " *         -> Suppression entree CHANGELOG :                              *\n");
    fprintf(stdout, " *                logator -remove                                         *\n");
    fprintf(stdout, " *                                                                        *\n");
@@ -58,6 +61,9 @@ void printf_aide()
    fprintf(stdout, "\t*                                                                                           *\n");
    fprintf(stdout, "\t*         -> Activation innosetup :                                                         *\n");
    fprintf(stdout, "\t*                logator -innosetup \"TRUE\"                                                  *\n");
+   fprintf(stdout, "\t*                                                                                           *\n");
+   fprintf(stdout, "\t*         -> Lecture du fichier CHANGELOG :                                                 *\n");
+   fprintf(stdout, "\t*                logator -view                                                              *\n");
    fprintf(stdout, "\t*                                                                                           *\n");
    fprintf(stdout, "\t*         -> Suppression entree CHANGELOG :                                                 *\n");
    fprintf(stdout, "\t*                logator -remove                                                            *\n");

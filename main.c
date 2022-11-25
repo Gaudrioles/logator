@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 	{
 		fonction_remove();
 	}
-	else if(strcmp(argv[1], "-show") == 0)
+	else if(strcmp(argv[1], "-view") == 0 || strcmp(argv[1], "-v") == 0)
 	{
 		lecture_fichier_changelog();
 	}
