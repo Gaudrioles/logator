@@ -115,6 +115,10 @@ int main(int argc, char *argv[])
 	{
 		fonction_remove();
 	}
+	else if(strcmp(argv[1], "-show") == 0)
+	{
+		lecture_fichier_changelog();
+	}
 	else
 	{
 		printf_bad_flags();

@@ -34,12 +34,12 @@ char *get_date_annee(void)
 #elif defined(_MSC_VER)
 #include <Windows.h>
 
-char* get_date_annee(void)
+char *get_date_annee(void)
 {
 	char buffer[21];
 	SYSTEMTIME st = { 0 };
 	size_t Longueur = 0;
-	char* ChaineRetour = NULL;
+	char *ChaineRetour = NULL;
 
 	GetLocalTime(&st);
 
@@ -59,7 +59,7 @@ char* get_date_annee(void)
 
 
 
-int creation_fichier_changelog()
+int creation_fichier_changelog(void)
 {
 	FILE *fichier = NULL;
 
@@ -78,7 +78,7 @@ int creation_fichier_changelog()
 	return 0;
 }
 
-int creation_fichier_resource_h()
+int creation_fichier_resource_h(void)
 {
 	FILE *fichier = NULL;
 
@@ -159,7 +159,7 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 	return 0;
 }
 
-int creation_fichier_gitignore()
+int creation_fichier_gitignore(void)
 {
 	FILE *fichier = NULL;
 
@@ -314,8 +314,8 @@ int update_name_resource_h(char *name)
 
 int update_innosetup(double version)
 {
-	char* tampon = NULL;
-	char* buffer = NULL;
+	char *tampon = NULL;
+	char *buffer = NULL;
 
 	char chaine[1025] = "";
 	size_t len = 0;
@@ -348,8 +348,8 @@ int update_innosetup(double version)
 		return -1;
 	}
 	
-	FILE* fichier = NULL;
-	FILE* fichierTampon = NULL;
+	FILE *fichier = NULL;
+	FILE *fichierTampon = NULL;
 
 	int nombre_ligne = 0;
 	int compteur = 0;
@@ -407,7 +407,7 @@ int update_innosetup(double version)
 	return 0;
 }
 
-int activation_innosetup(char* Valeur)
+int activation_innosetup(char *Valeur)
 {
 	FILE *fichier = NULL;
 	FILE *fichierTampon = NULL;
@@ -520,7 +520,7 @@ char *get_last_changelog_entry(char *filename)
 	fclose(fichier);
 
 	size_t len = strlen(chaine) + 1;
-	char* result = (char*)malloc(len);
+	char *result = (char*)malloc(len);
 
 	if (result == NULL)
 	{
@@ -530,7 +530,7 @@ char *get_last_changelog_entry(char *filename)
 	return (char*)memcpy(result, chaine, len);
 }
 
-int remove_last_changelog_entry()
+int remove_last_changelog_entry(void)
 {
 	FILE *fichier = NULL;
 	FILE *fichierTampon = NULL;
@@ -587,7 +587,7 @@ int remove_last_changelog_entry()
 		else
 		{
 			size_t len = strlen(chaine);
-			char*  buffer = malloc(len * sizeof(*buffer));
+			char  *buffer = malloc(len * sizeof(*buffer));
 			if(buffer != NULL)
 			{
 				snprintf(buffer, len, "%s", chaine);
@@ -669,6 +669,50 @@ int fonction_remove()
 	{
 		update_innosetup(version);
 	}
+
+	return 0;
+}
+
+int lecture_fichier_changelog(void)
+{
+	FILE *fichier = NULL;
+	char chaine[100];
+	int caractereActuel = 0;
+	int nombreDeLigne = 0;
+	int compteur = 0;
+
+	fichier = fopen(CHANGELOG_FILE, "r");
+
+	if(fichier == NULL)
+	{
+		return -1;
+	}
+
+	do
+	{
+		caractereActuel = fgetc(fichier);
+		if(caractereActuel == '\n')
+		{
+			nombreDeLigne++;
+		}
+	
+	} while (caractereActuel != EOF);
+
+	rewind(fichier);
+
+	while(fgets(chaine, 99, fichier) != NULL)
+    {
+		compteur++;
+		if(compteur > 7)
+		{
+			fprintf(stdout, "%s", chaine);
+		}
+		
+	}
+
+	fprintf(stdout, "\n");
+
+	fclose(fichier);
 
 	return 0;
 }
