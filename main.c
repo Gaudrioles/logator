@@ -10,15 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-	if(VerifExiste("D:\\CodeBlocksProjet") == 1)
-	{
-		printf("ca existe\n");
-	}
-	else
-	{
-		printf("ca existe pas PD\n");
-	}
-
 	if(argc < 2)
 	{
 		printf_bad_flags();
@@ -97,7 +88,7 @@ int main(int argc, char *argv[])
 			printf_creation_fichier(GITIGNORE_FILE, 1);
 		}
 	}
-	else if(strcmp(argv[1], "-help") == 0)
+	else if(strcmp(argv[1], "-help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-H") == 0)
 	{
 		printf_aide();
 	}
@@ -128,6 +119,10 @@ int main(int argc, char *argv[])
 	else if(strcmp(argv[1], "-view") == 0 || strcmp(argv[1], "-v") == 0)
 	{
 		lecture_fichier_changelog();
+	}
+	else if(strcmp(argv[1], "-vscode") == 0)
+	{
+		creation_fichier_vscode();
 	}
 	else
 	{

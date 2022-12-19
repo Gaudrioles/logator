@@ -5,6 +5,7 @@ int creation_fichier_changelog(void);
 int creation_fichier_resource_h(void);
 int creation_fichier_resource_rc(char *FileDescription, char *ProductName);
 int creation_fichier_gitignore(void);
+int creation_fichier_vscode(void);
 int lecture_fichier_changelog(void);
 
 int update_fichier_changelog(double version, char *commentaire);

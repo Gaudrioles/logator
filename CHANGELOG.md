@@ -47,3 +47,5 @@ BUILD 2.9
 -*- Add -*- Ajout de la fonction lecture_fichier_changelog;
 BUILD 3.0
 -*- Add -*- mise a jour liblog & Ajout fonction VerifExiste/Verif Accord;
+BUILD 3.1
+-*- Add -*- Ajouter fonction -vscode;

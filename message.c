@@ -30,6 +30,9 @@ void printf_aide(void)
     fprintf(stdout, " *         -> Lecture du fichier CHANGELOG :                              *\n");
     fprintf(stdout, " *                logator -view                                           *\n");
     fprintf(stdout, " *                                                                        *\n");
+    fprintf(stdout, " *         -> Creation du fichier de configuration .vscode                *\n");
+    fprintf(stdout, " *                logator -vscode                                         *\n");
+    fprintf(stdout, " *                                                                        *\n");
     fprintf(stdout, " *         -> Suppression entree CHANGELOG :                              *\n");
     fprintf(stdout, " *                logator -remove                                         *\n");
     fprintf(stdout, " *                                                                        *\n");
@@ -65,11 +68,14 @@ void printf_aide(void)
     fprintf(stdout, "\t*         -> Lecture du fichier CHANGELOG :                                                 *\n");
     fprintf(stdout, "\t*                logator -view                                                              *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
+    fprintf(stdout, "\t*         -> Creation du fichier de configuration .vscode                                   *\n");
+    fprintf(stdout, "\t*                logator -vscode                                                            *\n");
+    fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Suppression entree CHANGELOG :                                                 *\n");
     fprintf(stdout, "\t*                logator -remove                                                            *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t=============================================================================================\n");
-    
+
     return;
 }
 

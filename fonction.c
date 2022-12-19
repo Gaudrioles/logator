@@ -744,3 +744,59 @@ int lecture_fichier_changelog(void)
 
 	return 0;
 }
+
+int creation_fichier_vscode(void)
+{
+	if(VerifExiste(VSCODE_FOLDER) == 0)
+	{
+		if(CreationRepertoire(VSCODE_FOLDER) == -1)
+		{
+			fprintf(stderr, "Creation %s impossible\n", VSCODE_FOLDER);
+			return -1;
+		}
+	}
+
+	if(VerifExiste(VSCODE_FILE) == 1)
+	{
+		fprintf(stdout, VSCODE_FILE);
+		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		{
+			return -1;
+		}
+	}
+
+	FILE *fichier = NULL;
+
+	fichier = fopen(VSCODE_FILE, "w");
+
+	if(!fichier)
+	{
+		fprintf(stderr, "Creation %s impossible\n", VSCODE_FILE);
+		return -1;
+	}
+
+	fprintf(fichier,"{\n");
+    fprintf(fichier,"\t\"configurations\": [\n");
+    fprintf(fichier,"\t\t{\n");
+    fprintf(fichier,"\t\t\t\"name\": \"Win32\",\n");
+    fprintf(fichier,"\t\t\t\"includePath\": [\n");
+    fprintf(fichier,"\t\t\t\t\"${workspaceFolder}/**\",\n");
+    fprintf(fichier,"\t\t\t\t\"C:\\\\msys64\\\\ucrt64\\\\include\",\n");
+    fprintf(fichier,"\t\t\t\t\"C:\\\\msys64\\\\ucrt64\\\\lib\\\\gcc\\\\x86_64-w64-mingw32\\\\12.2.0\\\\include\"\n");
+    fprintf(fichier,"\t\t\t],\n");
+    fprintf(fichier,"\t\t\t\"defines\": [\n");
+    fprintf(fichier,"\t\t\t\t\"_DEBUG\",\n");
+    fprintf(fichier,"\t\t\t\t\"UNICODE\",\n");
+    fprintf(fichier,"\t\t\t\t\"_UNICODE\"\n");
+    fprintf(fichier,"\t\t\t],\n");
+    fprintf(fichier,"\t\t\t\t\"intelliSenseMode\": \"windows-gcc-x64\",\n");
+    fprintf(fichier,"\t\t\t\t\"configurationProvider\": \"ms-vscode.makefile-tools\"\n");
+    fprintf(fichier,"\t}\n");
+	fprintf(fichier,"\t],\n");
+	fprintf(fichier,"\t\"version\": 4\n");
+	fprintf(fichier,"}\n");
+
+	fclose(fichier);
+
+	return 0;
+}
