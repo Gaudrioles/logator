@@ -2,40 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined(__GNUC__) || defined(__GNUG__)
-#include <unistd.h>
-
-int VerifExiste(char* Chemin)
-{
-    if (access(Chemin, F_OK) == 0)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-#elif defined(_MSC_VER)
-#include <windows.h>
-
-int VerifExiste(char* Chemin)
-{
-    LPCSTR szPath = Chemin;
-
-    DWORD dwAttrib = GetFileAttributesA(szPath);
-
-    if (dwAttrib != INVALID_FILE_ATTRIBUTES)
-    {
-        return 1;
-    }
-
-    return 0;
-}
-
-#endif
-
 #include "main.h"
 
 int nombre_de_ligne(char *fichier_nom)

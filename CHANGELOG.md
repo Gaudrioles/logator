@@ -45,3 +45,5 @@ BUILD 2.8
 -*- Add -*- Mise a jour des messages;
 BUILD 2.9
 -*- Add -*- Ajout de la fonction lecture_fichier_changelog;
+BUILD 3.0
+-*- Add -*- mise a jour liblog & Ajout fonction VerifExiste/Verif Accord;

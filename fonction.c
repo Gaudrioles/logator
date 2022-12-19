@@ -6,6 +6,7 @@
 #include "fonction.h"
 #include "message.h"
 #include "main.h"
+#include "log.h"
 
 #if defined(__GNUC__) || defined(__GNUG__)
 #include <time.h>
@@ -63,6 +64,15 @@ int creation_fichier_changelog(void)
 {
 	FILE *fichier = NULL;
 
+	fprintf(stdout, CHANGELOG_FILE);
+	if(VerifExiste(CHANGELOG_FILE) == 1)
+	{
+		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		{
+			return -1;
+		}
+	}
+
 	fichier = fopen(CHANGELOG_FILE, "w");
 
 	if(fichier == NULL)
@@ -81,6 +91,15 @@ int creation_fichier_changelog(void)
 int creation_fichier_resource_h(void)
 {
 	FILE *fichier = NULL;
+
+	fprintf(stdout, RESOURCE_H_FILE);
+	if(VerifExiste(RESOURCE_H_FILE) == 1)
+	{
+		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		{
+			return -1;
+		}
+	}
 
 	fichier = fopen(RESOURCE_H_FILE, "w");
 
@@ -162,6 +181,15 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 int creation_fichier_gitignore(void)
 {
 	FILE *fichier = NULL;
+
+	fprintf(stdout, GITIGNORE_FILE);
+	if(VerifExiste(GITIGNORE_FILE) == 1)
+	{
+		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		{
+			return -1;
+		}
+	}
 
 	fichier = fopen(GITIGNORE_FILE, "w");
 

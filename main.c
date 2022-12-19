@@ -6,9 +6,19 @@
 #include "fichier.h"
 #include "message.h"
 #include "main.h"
+#include "log.h"
 
 int main(int argc, char *argv[])
 {
+	if(VerifExiste("D:\\CodeBlocksProjet") == 1)
+	{
+		printf("ca existe\n");
+	}
+	else
+	{
+		printf("ca existe pas PD\n");
+	}
+
 	if(argc < 2)
 	{
 		printf_bad_flags();
