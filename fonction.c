@@ -64,9 +64,9 @@ int creation_fichier_changelog(void)
 {
 	FILE *fichier = NULL;
 
-	fprintf(stdout, CHANGELOG_FILE);
 	if(VerifExiste(CHANGELOG_FILE) == 1)
 	{
+		fprintf(stdout, "%s ", CHANGELOG_FILE);
 		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
 		{
 			return -1;
@@ -92,7 +92,7 @@ int creation_fichier_resource_h(void)
 {
 	FILE *fichier = NULL;
 
-	fprintf(stdout, RESOURCE_H_FILE);
+	fprintf(stdout, "%s ", RESOURCE_H_FILE);
 	if(VerifExiste(RESOURCE_H_FILE) == 1)
 	{
 		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
@@ -125,7 +125,16 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 	FILE *fichier = NULL;
 	char *tampon = NULL;
 
-	fichier = fopen("Resource.rc", "w");
+	if (VerifExiste(RESOURCE_RC_FILE) == 1)
+	{
+		fprintf(stdout, "%s ", RESOURCE_RC_FILE);
+		if (VerifAccord("exsite deja, voulez - vous le remplacer") == 0)
+		{
+			return -1;
+		}
+	}
+
+	fichier = fopen(RESOURCE_RC_FILE, "w");
 
 	if(fichier == NULL)
 	{

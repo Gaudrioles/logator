@@ -131,7 +131,7 @@ int VerifAccord(char *message)
 
     while(compteur < 3)
     {
-        fprintf(stdout, "%s ? [O]ui / [N]on \n", message);
+        fprintf(stdout, "%s ? [O]ui / [N]on : ", message);
         scanf("%1s", approbation);
         if(strcmp(approbation,"Y") == 0 || strcmp(approbation,"y") == 0 ||  strcmp(approbation,"O") == 0 || strcmp(approbation,"o") == 0)
         {
