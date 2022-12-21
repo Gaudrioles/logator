@@ -642,7 +642,7 @@ int remove_last_changelog_entry(void)
 	return 0;
 }
 
-int fonction_remove()
+int fonction_remove(void)
 {
 	char *chaine = NULL;
 	char tampon = 0;

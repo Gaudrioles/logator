@@ -31,7 +31,7 @@ int nombre_de_ligne(char *fichier_nom)
     return nombre_ligne;
 }
 
-int innosetup_status()
+int innosetup_status(void)
 {
     FILE *fichier = NULL;
 
@@ -81,7 +81,7 @@ int innosetup_status()
     return 0;
 }
 
-char *application_get_name()
+char *application_get_name(void)
 {
     FILE *fichier = NULL;
 
@@ -121,9 +121,8 @@ char *application_get_name()
     fclose(fichier);
 
     len = strlen(buffer) - 2;
-    int i = len;
 
-    for(compteur = 18; compteur < i; compteur++)
+    for(compteur = 18; compteur < len; compteur++)
     {
         chaine[compteur - 18] = buffer[compteur];
     }
@@ -139,7 +138,7 @@ char *application_get_name()
     return (char*) memcpy (result, chaine, len);
 }
 
-double get_version()
+double get_version(void)
 {
     FILE *fichier = NULL;
 
