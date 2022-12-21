@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <string.h>
+#include <conio.h>
 
 #include "log.h"
 
@@ -123,27 +123,31 @@ int CreationFichierLog(char* log_texte)
     }
 }
 
-int VerifAccord(char *message)
+int VerifAccord(char* message)
 {
-    char approbation[2];
-    int  compteur = 0;
+    int ch = 0;
+    int compteur = 0;
 
+    fprintf(stdout, "%s ?", message);
 
-    while(compteur < 3)
+    while (compteur < 3)
     {
-        fprintf(stdout, "%s ? [O]ui / [N]on : ", message);
-        scanf("%1s", approbation);
-        if(strcmp(approbation,"Y") == 0 || strcmp(approbation,"y") == 0 ||  strcmp(approbation,"O") == 0 || strcmp(approbation,"o") == 0)
+        fprintf(stdout, " [O]ui / [N]on : ");
+        ch = getch();
+        if (ch == 'Y' || ch == 'y' || ch == 'O' || ch == 'o')
         {
+            fprintf(stdout, "\n");
             return 1;
         }
-        else if(strcmp(approbation,"N") == 0 || strcmp(approbation,"n") == 0)
+        else if (ch == 'N' || ch == 'n')
         {
+            fprintf(stdout, "\n");
             return 0;
-        }
+	    }
 
         compteur++;
+        fprintf(stdout, "\n");
     }
 
-    return -1;    
+	return -1;
 }

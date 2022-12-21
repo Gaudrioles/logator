@@ -23,17 +23,20 @@ int main(int argc, char *argv[])
 			printf_creation_fichier(CHANGELOG_FILE, 0);
 			return -1;
 		}
-		else if(creation_fichier_resource_h() != 0)
+		else
+		{
+			printf_creation_fichier(CHANGELOG_FILE, 1);
+		}
+		
+		if(creation_fichier_resource_h() != 0)
 		{
 			printf_creation_fichier(RESOURCE_H_FILE, 0);
 			return -1;
 		}
 		else
 		{
-			printf_creation_fichier(CHANGELOG_FILE, 1);
 			printf_creation_fichier(RESOURCE_H_FILE, 1);
 		}
-
 	}
 	else if(strcmp(argv[1], "-new") == 0)
 	{

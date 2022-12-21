@@ -118,11 +118,11 @@ void printf_creation_fichier(char *fichier, int oui)
 {
     switch (oui)
     {
-    case 1:
-        fprintf(stdout, "Creation du fichier %s\n", fichier);
-        break;
     case 0:
         fprintf(stdout, "Creation impossible %s\n", fichier);
+        break;
+    case 1:
+        fprintf(stdout, "Creation du fichier %s\n", fichier);
         break;
     case -1:
         fprintf(stdout, "Modification du fichier %s impossible\n", fichier);

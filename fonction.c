@@ -63,11 +63,12 @@ char *get_date_annee(void)
 int creation_fichier_changelog(void)
 {
 	FILE *fichier = NULL;
+	
 
 	if(VerifExiste(CHANGELOG_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", CHANGELOG_FILE);
-		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -92,10 +93,10 @@ int creation_fichier_resource_h(void)
 {
 	FILE *fichier = NULL;
 
-	fprintf(stdout, "%s ", RESOURCE_H_FILE);
 	if(VerifExiste(RESOURCE_H_FILE) == 1)
 	{
-		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		fprintf(stdout, "%s ", RESOURCE_H_FILE);
+		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -128,7 +129,7 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 	if (VerifExiste(RESOURCE_RC_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", RESOURCE_RC_FILE);
-		if (VerifAccord("exsite deja, voulez - vous le remplacer") == 0)
+		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -191,10 +192,10 @@ int creation_fichier_gitignore(void)
 {
 	FILE *fichier = NULL;
 
-	fprintf(stdout, GITIGNORE_FILE);
 	if(VerifExiste(GITIGNORE_FILE) == 1)
 	{
-		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		fprintf(stdout, "%s ", GITIGNORE_FILE);
+		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -767,8 +768,8 @@ int creation_fichier_vscode(void)
 
 	if(VerifExiste(VSCODE_FILE) == 1)
 	{
-		fprintf(stdout, VSCODE_FILE);
-		if(VerifAccord(" existe, voulez-vous le remplacer") == 0)
+		fprintf(stdout, "%s ", VSCODE_FILE);
+		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}

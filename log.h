@@ -9,7 +9,7 @@ char* GetTime(void);
 
 int VerifExiste(char* emplacement);
 int CreationFichierLog(char* log_texte);
-int VerifAccord(char *message);
+int VerifAccord(char* message);
 int CreationRepertoire(char* repertoire);
 
 #endif /* !LOG_H_INCLUDED */
