@@ -17,7 +17,7 @@ LFLAGS =
 all : $(BIN)
 
 ifeq ($(OS),Windows_NT)
-CFLAGS += -Wall -Wextra -Werror -pedantic-errors -O2
+CFLAGS += -Wall -Wextra -Werror -pedantic-errors -O2 -std=c18
 LFLAGS += -lucrt
 OBJ += Resource.o
 

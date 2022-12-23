@@ -719,10 +719,17 @@ int lecture_fichier_changelog(void)
 	int nombreDeLigne = 0;
 	int compteur = 0;
 
+	if(VerifExiste(CHANGELOG_FILE) == 1)
+	{
+		fprintf(stderr, "Le fichier %s existe pas\n", CHANGELOG_FILE);
+		return -1;
+	}
+
 	fichier = fopen(CHANGELOG_FILE, "r");
 
 	if(fichier == NULL)
 	{
+		fprintf(stderr, "Ouverture du fichier %s impossible\n", CHANGELOG_FILE);
 		return -1;
 	}
 
