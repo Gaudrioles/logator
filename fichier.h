@@ -3,6 +3,7 @@
 
 int nombre_de_ligne(char *fichier_nom);
 int innosetup_status(void);
+int TailleFichier(const char* FichierNom);
 
 char *application_get_name(void);
 

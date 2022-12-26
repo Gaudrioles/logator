@@ -49,3 +49,5 @@ BUILD 3.0
 -*- Add -*- mise a jour liblog & Ajout fonction VerifExiste/Verif Accord;
 BUILD 3.1
 -*- Add -*- Ajouter fonction -vscode;
+BUILD 3.2
+-*- Add -*- Reecriture des fonctions phase 1;

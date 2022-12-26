@@ -352,95 +352,75 @@ int update_name_resource_h(char *name)
 
 int update_innosetup(double version)
 {
-	char *tampon = NULL;
-	char *buffer = NULL;
+	FILE *fichier = NULL;
+	FILE *fichierTampon = NULL;
 
-	char chaine[1025] = "";
-	size_t len = 0;
+	char* buffer = NULL;
+	char FichierNom[SIZE_BUFFER];
+	char chaine[SIZE_BUFFER];
 
-	tampon = application_get_name();
+	int compteur = 0;
 
-	if (tampon == NULL)
-	{
-		return -1;
-	}
 
-	len = strlen(tampon) + strlen(".iss") + 1;
-
-	buffer = malloc(len * sizeof(*buffer));
+	buffer = application_get_name();
 
 	if (buffer == NULL)
 	{
 		return -1;
 	}
 
-	sprintf(buffer, "%s.iss", tampon);
-
-	free(tampon);
-
-	if (VerifExiste(buffer) != 1)
+	if((strlen(buffer) + strlen(".iss") + 1) >= SIZE_BUFFER)
 	{
-		printf("Fichier %s introuvable\n", buffer);
-
+		fprintf(stderr, "SIZE_BUFFER trop petit \n");
 		free(buffer);
 		return -1;
 	}
-	
-	FILE *fichier = NULL;
-	FILE *fichierTampon = NULL;
 
-	int nombre_ligne = 0;
-	int compteur = 0;
-
-	nombre_ligne = nombre_de_ligne(buffer);
-
-	if (nombre_ligne != -1)
-	{
-		fichier = fopen(buffer, "r");
-		fichierTampon = fopen("update_innosetup.old", "w");
-
-		if (fichier == NULL || fichierTampon == NULL)
-		{
-			return -1;
-		}
-
-		for (compteur = 0; compteur < nombre_ligne; compteur++)
-		{
-			if(fgets(chaine, 1024, fichier) == NULL)
-			{
-			fclose(fichier);
-			fclose(fichierTampon);
-			return -1;
-		}
-
-
-			switch (compteur)
-			{
-			case 4:
-				fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
-				break;
-			default:
-				fprintf(fichierTampon, "%s", chaine);
-				break;
-			}
-		}
-
-		fclose(fichier);
-		fclose(fichierTampon);
-	}
-
-	if (remove(buffer) != 0)
-	{
-		return -1;
-	}
-	if (rename("update_innosetup.old", buffer) != 0)
-	{
-		return -1;
-	}
-
-	printf_update_fichier(buffer);
+	sprintf(FichierNom, "%s.iss", buffer);
 
 	free(buffer);
+
+	if (VerifExiste(FichierNom) != 1)
+	{
+		printf("Fichier %s introuvable\n", FichierNom);
+		return -1;
+	}
+
+	fichier = fopen(FichierNom, "r");
+	fichierTampon = fopen("update_innosetup.old", "w+");
+
+	if (fichier == NULL || fichierTampon == NULL)
+	{
+		return -1;
+	}
+
+	while(fgets(chaine, SIZE_READ, fichier) != NULL)
+	{
+		if(compteur == 3)
+		{
+			fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
+		}
+		else
+		{
+			fprintf(fichierTampon, "%s", chaine);
+		}
+
+		compteur++;
+	}
+
+	fclose(fichier);
+	fclose(fichierTampon);
+
+	if (remove(FichierNom) != 0)
+	{
+		return -1;
+	}
+	if (rename("update_innosetup.old", FichierNom) != 0)
+	{
+		return -1;
+	}
+
+	printf_update_fichier(FichierNom);
 
 	return 0;
 }
@@ -448,124 +428,94 @@ int update_innosetup(double version)
 int activation_innosetup(char *Valeur)
 {
 	FILE *fichier = NULL;
-	FILE *fichierTampon = NULL;
-
+	char* name = NULL;
+	int x = -1;
 	if(VerifExiste(RESOURCE_H_FILE) != 1)
 	{
 		return -1;
 	}
-
-	int nombre_ligne = 0;
-	int compteur = 0;
-	char chaine[1025] = "";
 
 	if(Valeur == NULL)
 	{
 		printf_innosetup();
 		return -1;
 	}
-	else if(strcmp(Valeur, "TRUE") == 0 || strcmp(Valeur, "FALSE") == 0)
+	else if(strcmp(Valeur, "TRUE") == 0)
 	{
-		nombre_ligne = nombre_de_ligne(RESOURCE_H_FILE);
+		x = 1;
+	}
+	else if(strcmp(Valeur, "FALSE") == 0)
+	{
+		x = 0;
+	}
 
-		if(nombre_ligne != -1)
-		{
-			fichier = fopen(RESOURCE_H_FILE, "r");
-			fichierTampon = fopen("activation_innosetup.old", "w");
+	double version = get_version() - 0.1;
+	name = application_get_name();
+	if(name == NULL)
+	{
+		return -1;
+	}
 
-			if(fichier == NULL || fichierTampon == NULL)
-			{
-				return -1;
-			}
+	fichier = fopen(RESOURCE_H_FILE, "w+");
 
-			for(compteur = 0; compteur < nombre_ligne +1 ; compteur++)
-			{
-				if(fgets(chaine, 1024, fichier) == NULL)
-				{
-					fclose(fichier);
-					fclose(fichierTampon);
-					return -1;
-				}
+	if(fichier == NULL)
+	{
+		return -1;
+	}
 
-				if(compteur == 5)
-				{
-					fprintf(fichierTampon, "#define INNOSETUP \"%s\"\n", Valeur);
-				}
-				else
-				{
-					fprintf(fichierTampon, "%s", chaine);
-				}
-			}
-
-			fclose(fichier);
-			fclose(fichierTampon);
-
-			if(remove(RESOURCE_H_FILE) != 0)
-			{
-				return -1;
-			}
-			if(rename("activation_innosetup.old", RESOURCE_H_FILE) != 0)
-			{
-				return -1;
-			}
-		}
+	if(x == 1 )
+	{
+		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
+						"#define RESOURCE_H_INCLUDED\n\n"
+						"#define APP_VERSION \"%.1f\"\n"
+						"#define APP_NAME \"%s\"\n"
+						"#define INNOSETUP \"TRUE\"\n\n"
+						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);	
 	}
 	else
 	{
-			printf_innosetup();
-			return -1;
+		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
+						"#define RESOURCE_H_INCLUDED\n\n"
+						"#define APP_VERSION \"%.1f\"\n"
+						"#define APP_NAME \"%s\"\n"
+						"#define INNOSETUP \"FALSE\"\n\n"
+						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);
+
 	}
+
+	fclose(fichier);
+	free(name);
 
 	return 0;
 }
 
-char *get_last_changelog_entry(char *filename)
+char *get_last_changelog_entry(void)
 {
 	FILE *fichier = NULL;
-	char chaine[1025] = { 0 };
-	char tampon[1025] = { 0 };
+	char chaine[SIZE_BUFFER] = { 0 };
 	int compteur = 0;
 	int nombre_ligne= nombre_de_ligne(CHANGELOG_FILE);
 
-	fichier = fopen(filename, "r");
+	fichier = fopen(CHANGELOG_FILE, "r");
 
 	if(fichier == NULL)
 	{
 		return NULL;
 	}
 
-	for(compteur = 0; compteur < nombre_ligne +1; compteur++)
+	while(fgets(chaine, SIZE_READ, fichier) != NULL)
 	{
 		if(compteur == nombre_ligne)
 		{
-			if(fgets(chaine, 1024, fichier) == NULL)
-			{
-				fclose(fichier);
-				return NULL;
-			}
-
+			break;
 		}
-		else
-		{
-			if(fgets(tampon, 1024, fichier) == NULL)
-			{
-				fclose(fichier);
-				return NULL;
-			}
-		}
+		
+		compteur++;
 	}
 
 	fclose(fichier);
 
-	size_t len = strlen(chaine) + 1;
-	char *result = (char*)malloc(len);
-
-	if (result == NULL)
-	{
-		return NULL;
-	}
-
-	return (char*)memcpy(result, chaine, len);
+	return strdup(chaine);
 }
 
 int remove_last_changelog_entry(void)
@@ -666,7 +616,7 @@ int fonction_remove(void)
 
 	while(1)
 	{
-		chaine = get_last_changelog_entry(CHANGELOG_FILE);
+		chaine = get_last_changelog_entry();
 		printf("Suppression de -> %s\nConfirmation [O]ui [N]on ? :", chaine);
 		free(chaine);
 

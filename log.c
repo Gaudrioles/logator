@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <conio.h>
+#include <string.h>
 
 #include "log.h"
 
@@ -24,6 +24,7 @@
 
 #elif __linux__
 #include <unistd.h>
+#include <sys/stat.h>
     int CreationRepertoire(char* repertoire)
     {
         if(mkdir(repertoire, 0755) != -1)
@@ -123,31 +124,111 @@ int CreationFichierLog(char* log_texte)
     }
 }
 
-int VerifAccord(char* message)
+int DemandeAccord(char* FichierNom)
 {
-    int ch = 0;
+    printf("Le fichier %s existe, voulez-vous le remplacer ? [O]ui / [N]on : ", FichierNom);
+    
+    int caractereActuel = getchar();
+
+    if(caractereActuel == 'Y' || caractereActuel == 'y'|| caractereActuel == 'O'|| caractereActuel == 'o')
+    {
+        rewind(stdin);
+        return 1;
+    }
+    else if(caractereActuel == 'N'|| caractereActuel == 'n')
+    {
+        rewind(stdin);
+        return 0;
+    }
+    else
+    {
+        rewind(stdin);
+        printf("\n");
+        return -1;
+    }
+}
+
+int VerifAccord(char* FichierNom)
+{
     int compteur = 0;
-
-    fprintf(stdout, "%s ?", message);
-
+    int i;
     while (compteur < 3)
     {
-        fprintf(stdout, " [O]ui / [N]on : ");
-        ch = getch();
-        if (ch == 'Y' || ch == 'y' || ch == 'O' || ch == 'o')
+        i = DemandeAccord(FichierNom);
+        switch (i)
         {
-            fprintf(stdout, "\n");
-            return 1;
+        case -1:
+            break;
+        default:
+            compteur = 3;
+            break;
         }
-        else if (ch == 'N' || ch == 'n')
-        {
-            fprintf(stdout, "\n");
-            return 0;
-	    }
-
         compteur++;
-        fprintf(stdout, "\n");
     }
 
-	return -1;
+	return i;
+}
+
+size_t TailleTampon(const char* FichierNom)
+{
+    FILE* fichier = NULL;
+    size_t compteur = 0;
+
+    fichier = fopen(FichierNom, "r");
+
+    if (fichier == NULL)
+    {
+        fprintf(stderr, "Lecture du fichier impossible %s\n", FichierNom);
+        return 0;
+    }
+
+    while (fgetc(fichier) != EOF)
+    {
+        compteur++;
+    }
+
+    fclose(fichier);
+
+    return compteur;
+}
+
+char* FichierToChar(const char* FichierNom)
+{
+    FILE* fichier = NULL;
+    size_t taille = TailleTampon(FichierNom);
+    int compteur = 0;
+    int caractereActuel = 0;
+
+    if (taille == 0)
+    {
+        return NULL;
+    }
+
+    fichier =  fopen(FichierNom, "r");
+
+    if (fichier == NULL)
+    {
+        fprintf(stderr, "Lecture du fichier impossible %s\n", FichierNom);
+        return NULL;
+    }
+
+    char* chaine = malloc(sizeof(char) * (taille + 1));
+    if (chaine == NULL)
+    {
+        fprintf(stderr, "Allocation memoire impossible FichierToChar %s\n", FichierNom);
+        return NULL;
+    }
+
+    while((caractereActuel = fgetc(fichier)) != EOF)
+    {
+        chaine[compteur++] = caractereActuel;
+    }
+    chaine[compteur] = '\0';
+
+    fclose(fichier);
+
+
+    fclose(fichier);
+    
+    return chaine;
 }

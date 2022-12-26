@@ -8,4 +8,7 @@
 #define VSCODE_FOLDER       ".vscode"
 #define VSCODE_FILE         ".vscode/c_cpp_properties.json"
 
+#define SIZE_BUFFER         2048
+#define SIZE_READ           2047          
+
 #endif // MAIN_H_INCLUDED

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "main.h"
+#include "log.h"
 
 int nombre_de_ligne(char *fichier_nom)
 {
@@ -22,7 +23,7 @@ int nombre_de_ligne(char *fichier_nom)
         caractereActuel = fgetc(fichier);
         if(caractereActuel == '\n')
         {
-            nombre_ligne = nombre_ligne + 1;
+            nombre_ligne++;
         }
     } while (caractereActuel != EOF);
 
@@ -35,11 +36,16 @@ int innosetup_status(void)
 {
     FILE *fichier = NULL;
 
-    char chaine[1025] = { 0 };
-    char buffer[1025] = { 0 };
+    char chaine[SIZE_BUFFER] = { 0 };
+    char buffer[SIZE_BUFFER] = { 0 };
 
     int compteur = 0;
 
+    if(VerifExiste(RESOURCE_H_FILE) == 0)
+    {
+        fprintf(stderr, "Le fichier %s existe pas\n", RESOURCE_H_FILE);
+        return -1;
+    }
 
     fichier = fopen(RESOURCE_H_FILE, "r");
 
@@ -48,23 +54,19 @@ int innosetup_status(void)
         return -1;
     }
 
-    for(compteur =0;compteur < 6;compteur++)
+    while(fgets(buffer, SIZE_READ, fichier) != NULL)
     {
-        switch(compteur)
+        if(compteur == 4)
         {
-            case 5:
-                if (fscanf(fichier, "#define INNOSETUP %s", chaine) == EOF)
-                {
-                    printf("Erreur fonction setup_status()\n");
-                }
-                break;
-            default:
-                if(fgets(buffer, 1024, fichier) == NULL)
-                {
-                    return -1;
-                }
-                break;
+            if (fscanf(fichier, "#define INNOSETUP %s", chaine) == EOF)
+            {
+                fprintf(stderr, "Erreur fonction setup_status()\n");
+                fclose(fichier);
+                return -1;
+            }
         }
+
+        compteur++;
     }
 
     fclose(fichier);
@@ -83,72 +85,86 @@ int innosetup_status(void)
 
 char *application_get_name(void)
 {
-    FILE *fichier = NULL;
+    FILE* fichier = NULL;
+    char buffer[SIZE_BUFFER];
+    char name[SIZE_BUFFER];
 
-    char chaine[1025] = { 0 };
-    char buffer[1025] = { 0 };
-
-    size_t len = 0;
+    int len = 0;
 
     int compteur = 0;
+    int i = 0;
+    int j = 0;
+    int k = 0;
 
-    fichier = fopen("resource.h", "r");
-
-    if(fichier == NULL)
+    if(VerifExiste(RESOURCE_H_FILE) == 0)
     {
+        fprintf(stderr, "Le fichier %s existe pas\n", RESOURCE_H_FILE);
         return NULL;
     }
 
-    for(compteur = 0; compteur < 5 ;compteur++)
+    fichier = fopen(RESOURCE_H_FILE, "r");
+    if(fichier == NULL)
     {
-        switch(compteur)
-        {
-            case 4:
-                if(fgets(buffer, 1024, fichier) == NULL)
-                {
-                    return NULL;
-                }
-                break;
-            default:
-                if(fgets(buffer, 1024, fichier) == NULL)
-                {
-                    return NULL;
-                }
-                break;
-        }
+        fprintf(stderr, "Lecture impossible %s\n", RESOURCE_H_FILE);
     }
+
+    while(fgets(buffer, SIZE_READ, fichier) != NULL)
+    {
+        if(compteur == 4)
+        {
+            len = strlen(buffer);
+            for( i =  0; i < len; i++)
+            {
+                if(buffer[i] == '"')
+                {
+                    switch (j)
+                    {
+                    case 0:
+                        j = 1;
+                        i++;
+                        break;
+                    case 1:
+                        j = 0;
+                        break;
+                    }
+                }
+                
+
+                if(j == 1)
+                {
+                    name[k] = buffer[i];
+                    k++;
+                }
+            }
+
+            
+        }
+        compteur++;
+    }
+
+    name[k] = '\0';
 
     fclose(fichier);
 
-    len = strlen(buffer) - 2;
-    int i = len;
-
-    for(compteur = 18; compteur < i; compteur++)
-    {
-        chaine[compteur - 18] = buffer[compteur];
-    }
-
-    len = strlen (chaine) + 1;
-    char *result = (char*) malloc (len);
-
-    if (result == NULL)
-    {
-        return NULL;
-    }
-
-    return (char*) memcpy (result, chaine, len);
+    return strdup(name);
 }
 
 double get_version(void)
 {
     FILE *fichier = NULL;
 
-    char chaine[1025] = { 0 };
-    char buffer[1025] = { 0 };
+    char chaine[SIZE_BUFFER] = { 0 };
+    char buffer[SIZE_BUFFER] = { 0 };
 
     double version = 0;
 
     int compteur = 0;
+
+    if(VerifExiste(RESOURCE_H_FILE) == 0)
+    {
+        fprintf(stderr, "Le fichier %s existe pas\n", RESOURCE_H_FILE);
+        return 0;
+    }
 
     fichier = fopen(RESOURCE_H_FILE, "r");
 
@@ -157,23 +173,19 @@ double get_version(void)
         return 0;
     }
 
-    for(compteur =0;compteur < 6;compteur++)
+    while(fgets(chaine, SIZE_READ, fichier) != NULL)
     {
-        switch(compteur)
+        if(compteur == 2)
         {
-            case 3:
-                if (fscanf(fichier, "#define APP_VERSION \"%s\"", buffer) == EOF)
-                {
-                    printf("Erreur fonction get_version()\n");
-                }
-                break;
-            default:
-                if(fgets(chaine, 1024, fichier) == NULL)
-                {
-                    return 0;
-                }
-                break;
+            if(fscanf(fichier, "#define APP_VERSION \"%s\"", buffer) == EOF)
+            {
+                fprintf(stderr, "Erreur fonction get_version()\n");
+                fclose(fichier);
+                return 0;
+            }
         }
+
+        compteur++;
     }
 
     version = atof(buffer);

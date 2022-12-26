@@ -12,4 +12,7 @@ int CreationFichierLog(char* log_texte);
 int VerifAccord(char* message);
 int CreationRepertoire(char* repertoire);
 
+size_t TailleTampon(const char* FichierNom);
+char* FichierToChar(const char* FichierNom);
+
 #endif /* !LOG_H_INCLUDED */
