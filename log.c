@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "log.h"
+
+#define LIBLOGBUFFER 1025
 
 #ifdef _WIN32
 #include <direct.h>
@@ -126,47 +129,78 @@ int CreationFichierLog(char* log_texte)
 
 int DemandeAccord(char* FichierNom)
 {
-    printf("Le fichier %s existe, voulez-vous le remplacer ? [O]ui / [N]on : ", FichierNom);
-    
-    int caractereActuel = getchar();
+    int ouinon = -1;
+    char chaine[LIBLOGBUFFER];
+    int len = 0;
 
-    if(caractereActuel == 'Y' || caractereActuel == 'y'|| caractereActuel == 'O'|| caractereActuel == 'o')
+    do
     {
-        rewind(stdin);
-        return 1;
-    }
-    else if(caractereActuel == 'N'|| caractereActuel == 'n')
-    {
-        rewind(stdin);
-        return 0;
-    }
-    else
-    {
-        rewind(stdin);
-        printf("\n");
-        return -1;
-    }
+        printf("Le fichier %s existe, voulez-vous le remplacer ? [O]ui / [N]on : ", FichierNom);
+
+        if(scanf("%s", chaine) != 0)
+        {
+            if(strlen(chaine) >= LIBLOGBUFFER)
+            {
+                fprintf(stderr, "Depassement de tampon liblogbuffer %d\n", LIBLOGBUFFER);
+                return -1;
+            }
+        }
+
+        len = strlen(chaine);
+
+        for(int i =0; i < len; i++)
+        {
+            chaine[i] = tolower(chaine[i]);
+        }
+
+        if(strcmp(chaine, "yes") == 0) strcpy(chaine, "o");
+        if(strcmp(chaine, "no") == 0) strcpy(chaine, "n");
+        if(strcmp(chaine, "oui") == 0) strcpy(chaine, "o");
+        if(strcmp(chaine, "non") == 0) strcpy(chaine, "n");
+        if(strcmp(chaine, "o") == 0) ouinon = 1;
+        if(strcmp(chaine, "n") == 0) ouinon = 0;
+
+    }while(ouinon != 0 && ouinon != 1);
+
+    return ouinon;
 }
 
-int VerifAccord(char* FichierNom)
+int DemandeAccord2(void)
 {
-    int compteur = 0;
-    int i;
-    while (compteur < 3)
-    {
-        i = DemandeAccord(FichierNom);
-        switch (i)
-        {
-        case -1:
-            break;
-        default:
-            compteur = 3;
-            break;
-        }
-        compteur++;
-    }
+    int ouinon = -1;
+    char chaine[LIBLOGBUFFER];
+    int len = 0;
 
-	return i;
+    do
+    {
+        printf("Merci de confirmer, [O]ui / [N]on : ");
+
+        if(scanf("%s", chaine) != 0)
+        {
+            if(strlen(chaine) >= LIBLOGBUFFER)
+            {
+                fprintf(stderr, "Depassement de tampon liblogbuffer %d\n", LIBLOGBUFFER);
+                return -1;
+            }
+        }
+
+        len = strlen(chaine);
+
+        for(int i =0; i < len; i++)
+        {
+            chaine[i] = tolower(chaine[i]);
+        }
+
+        if(strcmp(chaine, "yes") == 0) strcpy(chaine, "o");
+        if(strcmp(chaine, "no") == 0) strcpy(chaine, "n");
+        if(strcmp(chaine, "oui") == 0) strcpy(chaine, "o");
+        if(strcmp(chaine, "non") == 0) strcpy(chaine, "n");
+        if(strcmp(chaine, "o") == 0) ouinon = 1;
+        if(strcmp(chaine, "n") == 0) ouinon = 0;
+
+    }while(ouinon != 0 && ouinon != 1);
+
+    return ouinon;
 }
 
 size_t TailleTampon(const char* FichierNom)
@@ -224,9 +258,6 @@ char* FichierToChar(const char* FichierNom)
         chaine[compteur++] = caractereActuel;
     }
     chaine[compteur] = '\0';
-
-    fclose(fichier);
-
 
     fclose(fichier);
     

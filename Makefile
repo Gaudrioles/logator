@@ -9,7 +9,7 @@ OBJ= $(SRC:.c=.o)
 RC_FILE = Resource.rc
 
 # Flags pour le Compilateur et l'editeur de liens #
-CFLAGS =
+CFLAGS = -Wall -Werror -pedantic-errors -O3 -march=znver1
 LFLAGS =
  
 # Construction du programme #
@@ -17,7 +17,6 @@ LFLAGS =
 all : $(BIN)
 
 ifeq ($(OS),Windows_NT)
-CFLAGS += -Wall -Wextra -Werror -pedantic-errors -O2 -std=c18
 LFLAGS += -lucrt
 OBJ += Resource.o
 
@@ -35,7 +34,6 @@ $(BIN): $(OBJ)
 
 endif
 ifeq ($(shell uname), Linux)
-CFLAGS += -Wall -Wextra -Werror -pedantic-errors -O2
 
 %.o: %.c *.h
 	$(CC) -c $< $(CFLAGS) -o $@

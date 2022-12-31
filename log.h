@@ -9,10 +9,8 @@ char* GetTime(void);
 
 int VerifExiste(char* emplacement);
 int CreationFichierLog(char* log_texte);
-int VerifAccord(char* message);
+int DemandeAccord(char* FichierNom);
+int DemandeAccord2(void);
 int CreationRepertoire(char* repertoire);
-
-size_t TailleTampon(const char* FichierNom);
-char* FichierToChar(const char* FichierNom);
 
 #endif /* !LOG_H_INCLUDED */

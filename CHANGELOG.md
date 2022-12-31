@@ -51,3 +51,5 @@ BUILD 3.1
 -*- Add -*- Ajouter fonction -vscode;
 BUILD 3.2
 -*- Add -*- Reecriture des fonctions phase 1;
+BUILD 3.3
+-*- Add -*- Reecriture des fonctions phase 2;

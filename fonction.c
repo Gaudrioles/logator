@@ -68,7 +68,7 @@ int creation_fichier_changelog(void)
 	if(VerifExiste(CHANGELOG_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", CHANGELOG_FILE);
-		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
+		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -96,7 +96,7 @@ int creation_fichier_resource_h(void)
 	if(VerifExiste(RESOURCE_H_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", RESOURCE_H_FILE);
-		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
+		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -129,7 +129,7 @@ int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
 	if (VerifExiste(RESOURCE_RC_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", RESOURCE_RC_FILE);
-		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
+		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -195,7 +195,7 @@ int creation_fichier_gitignore(void)
 	if(VerifExiste(GITIGNORE_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", GITIGNORE_FILE);
-		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
+		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
@@ -526,7 +526,8 @@ int remove_last_changelog_entry(void)
 	int ligne = 0;
 	int compteur = 0;
 
-	char *chaine = NULL;
+	char chaine[SIZE_BUFFER];
+	char buffer[SIZE_BUFFER];
 
 	if(VerifExiste(CHANGELOG_FILE) != 1)
 	{
@@ -539,8 +540,6 @@ int remove_last_changelog_entry(void)
 	{
 		return -1;
 	}
-
-	ligne = ligne - 1;
 	
 	fichier = fopen(CHANGELOG_FILE, "r");
 	fichierTampon = fopen("changelog.md.old", "w");
@@ -550,41 +549,30 @@ int remove_last_changelog_entry(void)
 		return -1;
 	}
 
-	for (compteur = 0; compteur < ligne; compteur++)
+	while(fgets(chaine, SIZE_READ, fichier) != NULL)
 	{
-		chaine = malloc(1025 * sizeof(*chaine));
-		
-		if (chaine == NULL)
-		{
-			fclose(fichier);
-			fclose(fichierTampon);
-			return -1;
-		}
-
-		if(fgets(chaine, 1024, fichier) == NULL)
-		{
-			fclose(fichier);
-			fclose(fichierTampon);
-			return -1;
-		}
-
-		if(compteur != ligne -1)
+		if(compteur <= (ligne - 3))
 		{
 			fprintf(fichierTampon, "%s", chaine);
 		}
-		else
+		if(compteur == (ligne - 2))
 		{
-			size_t len = strlen(chaine);
-			char  *buffer = malloc(len * sizeof(*buffer));
-			if(buffer != NULL)
+			int len = strlen(chaine);
+			for(int i = 0; i < len ; i++)
 			{
-				snprintf(buffer, len, "%s", chaine);
-				fprintf(fichierTampon, "%s", buffer);
-				free(buffer);
+				if(chaine[i] != '\n')
+				{
+					buffer[i] = chaine[i];
+				}
+				else
+				{
+					buffer[i] = '\0';
+				}
 			}
+			fprintf(fichierTampon, "%s", buffer);
 		}
-		
-		free(chaine);
+
+		compteur++;
 	}
 	
 	fclose(fichier);
@@ -604,9 +592,7 @@ int remove_last_changelog_entry(void)
 
 int fonction_remove(void)
 {
-	char *chaine = NULL;
-	char tampon = 0;
-
+	char* chaine = NULL;
 	double version =  get_version();
 
 	if(VerifExiste(CHANGELOG_FILE) != 1)
@@ -614,36 +600,18 @@ int fonction_remove(void)
 		return -1;
 	}
 
-	while(1)
+	chaine = get_last_changelog_entry();
+	if(chaine == NULL)
 	{
-		chaine = get_last_changelog_entry();
-		printf("Suppression de -> %s\nConfirmation [O]ui [N]on ? :", chaine);
-		free(chaine);
+		return -1;
+	}
 
-		if(scanf("%c", &tampon) == 0)
-		{
-			continue;
-		}
-
-		if(tampon == 'O' || tampon == 'o')
-		{
-			if(remove_last_changelog_entry() == 0)
-			{
-				printf("Suppression avec succes\n");
-				break;
-			}
-			else
-			{
-				printf("Suppression impossible\n");
-			}
-
-
-		}
-		else if(tampon == 'N' || tampon == 'n')
-		{
-			printf("Annulation de la suppression\n");
-			break;
-		}
+	printf("Suppression %s ", chaine);
+	free(chaine);
+	if(DemandeAccord2() != 1)
+	{		
+		fprintf(stdout, "Suppression impossible\n");
+		return -1;
 	}
 
 	version = version - 0.2;
@@ -657,6 +625,8 @@ int fonction_remove(void)
 	{
 		update_innosetup(version);
 	}
+
+	fprintf(stdout, "Suppression avec succes\n");
 
 	return 0;
 }
@@ -726,7 +696,7 @@ int creation_fichier_vscode(void)
 	if(VerifExiste(VSCODE_FILE) == 1)
 	{
 		fprintf(stdout, "%s ", VSCODE_FILE);
-		if (VerifAccord("exsite, voulez - vous le remplacer") != 1)
+		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
 		{
 			return -1;
 		}
