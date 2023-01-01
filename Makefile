@@ -22,6 +22,7 @@ OBJ += Resource.o
 
 Resource.o:
 	$(RC) $(RC_FILE) -o Resource.o
+endif
 
 %.o: %.c *.h
 	$(CC) -c $< $(CFLAGS) -o $@
@@ -31,20 +32,6 @@ Resource.o:
 
 $(BIN): $(OBJ)
 	$(CC) -s $^ $(LFLAGS) -o $@
-
-endif
-ifeq ($(shell uname), Linux)
-
-%.o: %.c *.h
-	$(CC) -c $< $(CFLAGS) -o $@
-
-%.o: %.c
-	$(CC) -c $< $(CFLAGS) -o $@
-
-$(BIN): $(OBJ)
-	$(CC) -s $^ $(LFLAGS) -o $@
-
-endif
 
 # Nettoyage #
 clean:
