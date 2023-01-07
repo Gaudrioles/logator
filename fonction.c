@@ -377,7 +377,6 @@ int update_innosetup(double version)
 	}
 
 	sprintf(FichierNom, "%s.iss", buffer);
-
 	free(buffer);
 
 	if (VerifExiste(FichierNom) != 1)
@@ -396,7 +395,7 @@ int update_innosetup(double version)
 
 	while(fgets(chaine, SIZE_READ, fichier) != NULL)
 	{
-		if(compteur == 3)
+		if(compteur == 4)
 		{
 			fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
 		}
@@ -595,8 +594,14 @@ int fonction_remove(void)
 	char* chaine = NULL;
 	double version =  get_version();
 
-	if(VerifExiste(CHANGELOG_FILE) != 1)
+	if(version == 1.0)
 	{
+		fprintf(stdout, "Suppression impossible il y a aucune entree\n");
+		return -1;
+	}
+	else if(version == -1)
+	{
+		fprintf(stdout, "Lecture impossible du fichier %s\n", RESOURCE_H_FILE);
 		return -1;
 	}
 
@@ -606,7 +611,7 @@ int fonction_remove(void)
 		return -1;
 	}
 
-	printf("Suppression %s ", chaine);
+	printf("Suppression %s\n", chaine);
 	free(chaine);
 	if(DemandeAccord2() != 1)
 	{		
@@ -614,11 +619,16 @@ int fonction_remove(void)
 		return -1;
 	}
 
+	if(remove_last_changelog_entry() != 0)
+	{
+		printf_creation_fichier(CHANGELOG_FILE, -1);
+	}
+
 	version = version - 0.2;
 
 	if(update_fichier_resource_h(version) == -1)
 	{
-		printf_new();
+		printf_creation_fichier(RESOURCE_H_FILE, -1);
 	}
 
 	if(innosetup_status() == 1)
@@ -639,7 +649,7 @@ int lecture_fichier_changelog(void)
 	int nombreDeLigne = 0;
 	int compteur = 0;
 
-	if(VerifExiste(CHANGELOG_FILE) == 1)
+	if(VerifExiste(CHANGELOG_FILE) != 1)
 	{
 		fprintf(stderr, "Le fichier %s existe pas\n", CHANGELOG_FILE);
 		return -1;

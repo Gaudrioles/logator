@@ -41,7 +41,7 @@ int innosetup_status(void)
 
     int compteur = 0;
 
-    if(VerifExiste(RESOURCE_H_FILE) == 0)
+    if(VerifExiste(RESOURCE_H_FILE) != 1)
     {
         fprintf(stderr, "Le fichier %s existe pas\n", RESOURCE_H_FILE);
         return -1;
@@ -96,7 +96,7 @@ char *application_get_name(void)
     int j = 0;
     int k = 0;
 
-    if(VerifExiste(RESOURCE_H_FILE) == 0)
+    if(VerifExiste(RESOURCE_H_FILE) != 1)
     {
         fprintf(stderr, "Le fichier %s existe pas\n", RESOURCE_H_FILE);
         return NULL;
@@ -160,17 +160,17 @@ double get_version(void)
 
     int compteur = 0;
 
-    if(VerifExiste(RESOURCE_H_FILE) == 0)
+    if(VerifExiste(RESOURCE_H_FILE) != 1)
     {
         fprintf(stderr, "Le fichier %s existe pas\n", RESOURCE_H_FILE);
-        return 0;
+        return -1;
     }
 
     fichier = fopen(RESOURCE_H_FILE, "r");
 
     if(fichier == NULL)
     {
-        return 0;
+        return -1;
     }
 
     while(fgets(chaine, SIZE_READ, fichier) != NULL)
@@ -181,7 +181,7 @@ double get_version(void)
             {
                 fprintf(stderr, "Erreur fonction get_version()\n");
                 fclose(fichier);
-                return 0;
+                return -1;
             }
         }
 
