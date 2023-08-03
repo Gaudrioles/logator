@@ -123,10 +123,6 @@ int main(int argc, char *argv[])
 	{
 		lecture_fichier_changelog();
 	}
-	else if(strcmp(argv[1], "-vscode") == 0)
-	{
-		creation_fichier_vscode();
-	}
 	else
 	{
 		printf_bad_flags();

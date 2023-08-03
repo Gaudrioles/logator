@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <Windows.h>
 
 #include "fichier.h"
 #include "fonction.h"
@@ -8,32 +9,6 @@
 #include "main.h"
 #include "log.h"
 
-#if defined(__GNUC__) || defined(__GNUG__)
-#include <time.h>
-
-char *get_date_annee(void)
-{
-	time_t temps;
-	struct tm *tm_info;
-	char year[5];
-
-	time(&temps);
-	tm_info = localtime(&temps);
-	strftime(year, 5, "%Y", tm_info);
-
-	size_t len = strlen (year) + 1;
-	void *new = malloc (len);
-
-	if (new == NULL)
-	{
-		return NULL;
-	}
-
-	return (char *) memcpy (new, year, len);
-}
-
-#elif defined(_MSC_VER)
-#include <Windows.h>
 
 char *get_date_annee(void)
 {
@@ -55,10 +30,6 @@ char *get_date_annee(void)
 
 	return (char*)memcpy(ChaineRetour, buffer, Longueur);
 }
-
-#endif
-
-
 
 int creation_fichier_changelog(void)
 {
@@ -220,7 +191,9 @@ int creation_fichier_gitignore(void)
 					"x86/\n\n"
 					"# MakeFile\n"
 					"*.o\n"
-					"*.exe\n");
+					"*.exe\n\n"
+					" CMAKE\n"
+					"build/\n");
 	fclose(fichier);
 
 	return 0;
@@ -514,7 +487,7 @@ char *get_last_changelog_entry(void)
 
 	fclose(fichier);
 
-	return strdup(chaine);
+	return _strdup(chaine);
 }
 
 int remove_last_changelog_entry(void)
@@ -556,8 +529,8 @@ int remove_last_changelog_entry(void)
 		}
 		if(compteur == (ligne - 2))
 		{
-			int len = strlen(chaine);
-			for(int i = 0; i < len ; i++)
+			size_t len = strlen(chaine);
+			for(int i = 0; i < (int)len ; i++)
 			{
 				if(chaine[i] != '\n')
 				{
@@ -686,62 +659,6 @@ int lecture_fichier_changelog(void)
 	}
 
 	fprintf(stdout, "\n");
-
-	fclose(fichier);
-
-	return 0;
-}
-
-int creation_fichier_vscode(void)
-{
-	if(VerifExiste(VSCODE_FOLDER) == 0)
-	{
-		if(CreationRepertoire(VSCODE_FOLDER) == -1)
-		{
-			fprintf(stderr, "Creation %s impossible\n", VSCODE_FOLDER);
-			return -1;
-		}
-	}
-
-	if(VerifExiste(VSCODE_FILE) == 1)
-	{
-		fprintf(stdout, "%s ", VSCODE_FILE);
-		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
-		{
-			return -1;
-		}
-	}
-
-	FILE *fichier = NULL;
-
-	fichier = fopen(VSCODE_FILE, "w");
-
-	if(!fichier)
-	{
-		fprintf(stderr, "Creation %s impossible\n", VSCODE_FILE);
-		return -1;
-	}
-
-	fprintf(fichier,"{\n");
-    fprintf(fichier,"\t\"configurations\": [\n");
-    fprintf(fichier,"\t\t{\n");
-    fprintf(fichier,"\t\t\t\"name\": \"Win32\",\n");
-    fprintf(fichier,"\t\t\t\"includePath\": [\n");
-    fprintf(fichier,"\t\t\t\t\"${workspaceFolder}/**\",\n");
-    fprintf(fichier,"\t\t\t\t\"C:\\\\msys64\\\\ucrt64\\\\include\",\n");
-    fprintf(fichier,"\t\t\t\t\"C:\\\\msys64\\\\ucrt64\\\\lib\\\\gcc\\\\x86_64-w64-mingw32\\\\12.2.0\\\\include\"\n");
-    fprintf(fichier,"\t\t\t],\n");
-    fprintf(fichier,"\t\t\t\"defines\": [\n");
-    fprintf(fichier,"\t\t\t\t\"_DEBUG\",\n");
-    fprintf(fichier,"\t\t\t\t\"UNICODE\",\n");
-    fprintf(fichier,"\t\t\t\t\"_UNICODE\"\n");
-    fprintf(fichier,"\t\t\t],\n");
-    fprintf(fichier,"\t\t\t\t\"intelliSenseMode\": \"windows-gcc-x64\",\n");
-    fprintf(fichier,"\t\t\t\t\"configurationProvider\": \"ms-vscode.makefile-tools\"\n");
-    fprintf(fichier,"\t}\n");
-	fprintf(fichier,"\t],\n");
-	fprintf(fichier,"\t\"version\": 4\n");
-	fprintf(fichier,"}\n");
 
 	fclose(fichier);
 

@@ -22,9 +22,6 @@
         *         -> Lecture du fichier CHANGELOG :                              *
         *                logator -view                                           *
         *                                                                        *
-        *         -> Creation du fichier de configuration .vscode                *
-        *                logator -vscode                                         *
-        *                                                                        *
         *         -> Suppression entree CHANGELOG :                              *
         *                logator -remove                                         *
         *                                                                        *

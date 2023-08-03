@@ -3,46 +3,6 @@
 
 #include "resource.h"
 
-#ifdef __unix__
-
-void printf_aide(void)
-{
-    fprintf(stdout, "\n\n ==========================================================================\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Liste des commandes                                         *\n");
-    fprintf(stdout, " *                logator -help                                           *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Creation fichier CHANGELOG.md et resource.h :               *\n");
-    fprintf(stdout, " *                logator -creation                                       *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Ajout de nouvelle version :                                 *\n");
-    fprintf(stdout, " *                logator -new \"commentaire\"                              *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Creation fichier Resource.rc                                *\n");
-    fprintf(stdout, " *                logator -resource \"FileDescription\"  \"ProductName\"      *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Creation fichier .gitignore :                               *\n");
-    fprintf(stdout, " *                logator -gitignore                                      *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Activation innosetup :                                      *\n");
-    fprintf(stdout, " *                logator -innosetup \"TRUE\"                               *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Lecture du fichier CHANGELOG :                              *\n");
-    fprintf(stdout, " *                logator -view                                           *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Creation du fichier de configuration .vscode                *\n");
-    fprintf(stdout, " *                logator -vscode                                         *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " *         -> Suppression entree CHANGELOG :                              *\n");
-    fprintf(stdout, " *                logator -remove                                         *\n");
-    fprintf(stdout, " *                                                                        *\n");
-    fprintf(stdout, " ==========================================================================\n");
-
-    return;
-}
-
-#elif defined(_WIN32) || defined(WIN32)
-
 void printf_aide(void)
 {
     fprintf(stdout, "\n\n\t=============================================================================================\n");
@@ -68,9 +28,6 @@ void printf_aide(void)
     fprintf(stdout, "\t*         -> Lecture du fichier CHANGELOG :                                                 *\n");
     fprintf(stdout, "\t*                logator -view                                                              *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
-    fprintf(stdout, "\t*         -> Creation du fichier de configuration .vscode                                   *\n");
-    fprintf(stdout, "\t*                logator -vscode                                                            *\n");
-    fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Suppression entree CHANGELOG :                                                 *\n");
     fprintf(stdout, "\t*                logator -remove                                                            *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
@@ -78,8 +35,6 @@ void printf_aide(void)
 
     return;
 }
-
-#endif
 
 
 

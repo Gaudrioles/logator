@@ -89,7 +89,7 @@ char *application_get_name(void)
     char buffer[SIZE_BUFFER];
     char name[SIZE_BUFFER];
 
-    int len = 0;
+    size_t len = 0;
 
     int compteur = 0;
     int i = 0;
@@ -113,7 +113,7 @@ char *application_get_name(void)
         if(compteur == 4)
         {
             len = strlen(buffer);
-            for( i =  0; i < len; i++)
+            for( i =  0; i < (int)len; i++)
             {
                 if(buffer[i] == '"')
                 {
@@ -146,7 +146,7 @@ char *application_get_name(void)
 
     fclose(fichier);
 
-    return strdup(name);
+    return _strdup(name);
 }
 
 double get_version(void)

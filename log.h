@@ -1,7 +1,7 @@
 #ifndef LOG_H_INCLUDED
 #define LOG_H_INCLUDED
 
-#define LOG_VERSION "2.0"
+#define LOG_VERSION "1.4"
 #define log_folder "logs"
 #define log_file "logs/Erreur.log"
 
