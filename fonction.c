@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <Windows.h>
 
 #include "fichier.h"
 #include "fonction.h"
@@ -9,6 +8,34 @@
 #include "main.h"
 #include "log.h"
 
+#if defined(__GNUC__) || defined(__GNUG__)
+#include <time.h>
+
+#define _strdup strdup
+
+char *get_date_annee(void)
+{
+	time_t temps;
+	struct tm *tm_info;
+	char year[5];
+
+	time(&temps);
+	tm_info = localtime(&temps);
+	strftime(year, 5, "%Y", tm_info);
+
+	size_t len = strlen (year) + 1;
+	void *new = malloc (len);
+
+	if (new == NULL)
+	{
+		return NULL;
+	}
+
+	return (char *) memcpy (new, year, len);
+}
+
+#elif defined(_MSC_VER)
+#include <Windows.h>
 
 char *get_date_annee(void)
 {
@@ -30,6 +57,8 @@ char *get_date_annee(void)
 
 	return (char*)memcpy(ChaineRetour, buffer, Longueur);
 }
+
+#endif
 
 int creation_fichier_changelog(void)
 {

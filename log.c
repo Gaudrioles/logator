@@ -4,24 +4,38 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
-#include <direct.h>
-#include <io.h>
 
 #include "log.h"
 
-#define LIBLOGBUFFER 1025
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
 #define F_OK 0
 #define access _access
 
-int CreationRepertoire(char* repertoire)
-{
-    if (_mkdir(repertoire) != -1)
+    int CreationRepertoire(char* repertoire)
     {
-        return 0;
+        if(_mkdir(repertoire) != -1)
+        {
+            return 0;
+        }
+        
+        return -1;
     }
 
-    return -1;
-}
+#elif __linux__
+#include <unistd.h>
+#include <sys/stat.h>
+    int CreationRepertoire(char* repertoire)
+    {
+        if(mkdir(repertoire, 0755) != -1)
+        {
+            return 0;
+        }
+
+        return -1;
+    }
+#endif
 
 char* GetTime(void)
 {

@@ -4,6 +4,7 @@
 #define LOG_VERSION "1.4"
 #define log_folder "logs"
 #define log_file "logs/Erreur.log"
+#define LIBLOGBUFFER 1025
 
 char* GetTime(void);
 

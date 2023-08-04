@@ -5,6 +5,10 @@
 #include "main.h"
 #include "log.h"
 
+#if defined(__GNUC__) || defined(__GNUG__)
+#define _strdup strdup
+#endif
+
 int nombre_de_ligne(char *fichier_nom)
 {
     FILE *fichier = NULL;
