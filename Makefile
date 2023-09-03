@@ -8,7 +8,7 @@ OBJ= $(SRC:.c=.o)
 
 # Flags pour le Compilateur et l'editeur de liens #
 CFLAGS = -Wall -Werror -pedantic-errors -O3 -march=znver1
-LFLAGS =
+LFLAGS = -lucrt
  
 # Construction du programme #
 
