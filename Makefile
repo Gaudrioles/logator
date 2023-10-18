@@ -7,8 +7,14 @@ SRC= $(wildcard *.c)
 OBJ= $(SRC:.c=.o)
 
 # Flags pour le Compilateur et l'editeur de liens #
+ifeq ($(OS),Windows_NT)
 CFLAGS = -Wall -Werror -pedantic-errors -O3 -march=znver1
 LFLAGS = -lucrt
+endif
+ifeq ($(shell uname), Linux)
+CFLAGS = -Wall -Werror -pedantic-errors -O3 -march=znver1
+LFLAGS = 
+endif
  
 # Construction du programme #
 
