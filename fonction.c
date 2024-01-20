@@ -221,7 +221,7 @@ int creation_fichier_gitignore(void)
 					"# MakeFile\n"
 					"*.o\n"
 					"*.exe\n\n"
-					" CMAKE\n"
+					"# CMAKE\n"
 					"build/\n");
 	fclose(fichier);
 

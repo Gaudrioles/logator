@@ -1,12 +1,11 @@
 #ifndef FICHIER_H_INCLUDED
 #define FICHIER_H_INCLUDED
 
-int nombre_de_ligne(char *fichier_nom);
+int nombre_de_ligne(char* fichierNom);
 int innosetup_status(void);
-int TailleFichier(const char* FichierNom);
 
-char *application_get_name(void);
+char* application_get_name(void);
 
-double get_version(void);
+float get_version(void);
 
 #endif // FICHIER_H_INCLUDED

@@ -9,13 +9,13 @@
 #define _strdup strdup
 #endif
 
-int nombre_de_ligne(char *fichier_nom)
+int nombre_de_ligne(char* fichierNom)
 {
-    FILE *fichier = NULL;
+    FILE* fichier = NULL;
     int nombre_ligne = 0;
     int caractereActuel = 0;
 
-    fichier = fopen(fichier_nom, "r");
+    fichier = fopen(fichierNom, "r");
 
     if(fichier == NULL)
     {
@@ -38,7 +38,7 @@ int nombre_de_ligne(char *fichier_nom)
 
 int innosetup_status(void)
 {
-    FILE *fichier = NULL;
+    FILE* fichier = NULL;
 
     char chaine[SIZE_BUFFER] = { 0 };
     char buffer[SIZE_BUFFER] = { 0 };
@@ -68,6 +68,8 @@ int innosetup_status(void)
                 fclose(fichier);
                 return -1;
             }
+
+            break;
         }
 
         compteur++;
@@ -87,7 +89,7 @@ int innosetup_status(void)
     return 0;
 }
 
-char *application_get_name(void)
+char* application_get_name(void)
 {
     FILE* fichier = NULL;
     char buffer[SIZE_BUFFER];
@@ -96,9 +98,6 @@ char *application_get_name(void)
     size_t len = 0;
 
     int compteur = 0;
-    int i = 0;
-    int j = 0;
-    int k = 0;
 
     if(VerifExiste(RESOURCE_H_FILE) != 1)
     {
@@ -114,54 +113,36 @@ char *application_get_name(void)
 
     while(fgets(buffer, SIZE_READ, fichier) != NULL)
     {
-        if(compteur == 4)
+        if(compteur == 3)
         {
-            len = strlen(buffer);
-            for( i =  0; i < (int)len; i++)
+            if(fscanf(fichier, "#define APP_NAME \"%s\"", name) == EOF)
             {
-                if(buffer[i] == '"')
-                {
-                    switch (j)
-                    {
-                    case 0:
-                        j = 1;
-                        i++;
-                        break;
-                    case 1:
-                        j = 0;
-                        break;
-                    }
-                }
-                
-
-                if(j == 1)
-                {
-                    name[k] = buffer[i];
-                    k++;
-                }
+                fprintf(stderr, "Erreur fonction getVersion()\n");
+                fclose(fichier);
+                return NULL;
             }
 
-            
+            break;
         }
+
         compteur++;
     }
 
-    name[k] = '\0';
+    len = strlen(name);
+
+    name[len -1] = '\0';
 
     fclose(fichier);
 
     return _strdup(name);
 }
 
-double get_version(void)
+float get_version(void)
 {
-    FILE *fichier = NULL;
-
-    char chaine[SIZE_BUFFER] = { 0 };
+    FILE* fichier = NULL;
     char buffer[SIZE_BUFFER] = { 0 };
 
-    double version = 0;
-
+    float version = 0.0f;
     int compteur = 0;
 
     if(VerifExiste(RESOURCE_H_FILE) != 1)
@@ -176,27 +157,28 @@ double get_version(void)
     {
         return -1;
     }
-
-    while(fgets(chaine, SIZE_READ, fichier) != NULL)
+    
+    while(fgets(buffer, SIZE_READ, fichier) != NULL)
     {
         if(compteur == 2)
         {
-            if(fscanf(fichier, "#define APP_VERSION \"%s\"", buffer) == EOF)
+            if(fscanf(fichier, "#define APP_VERSION \"%f\"", &version) == EOF)
             {
-                fprintf(stderr, "Erreur fonction get_version()\n");
+                fprintf(stderr, "Erreur fonction getVersion()\n");
                 fclose(fichier);
                 return -1;
             }
+
+            break;
         }
 
         compteur++;
     }
 
-    version = atof(buffer);
-
-    version = version + 0.1;
-
     fclose(fichier);
 
+    version = version + 0.1f;
+    
     return version;
 }
+
