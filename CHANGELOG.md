@@ -53,3 +53,5 @@ BUILD 3.2
 -*- Add -*- Reecriture des fonctions phase 1;
 BUILD 3.3
 -*- Add -*- Reecriture des fonctions phase 2;
+BUILD 3.4
+-*- Add -*- Mirgation vers Cmake;

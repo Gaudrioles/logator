@@ -13,5 +13,9 @@ int CreationFichierLog(char* log_texte);
 int DemandeAccord(char* FichierNom);
 int DemandeAccord2(void);
 int CreationRepertoire(char* repertoire);
+int VerifRW(char* chemin);
+
+
+void ListeRepertoire(const char* repertoire);
 
 #endif /* !LOG_H_INCLUDED */

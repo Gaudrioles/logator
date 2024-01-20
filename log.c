@@ -8,8 +8,11 @@
 #include "log.h"
 
 #ifdef _WIN32
+#include <windows.h>
+#include <tchar.h>
 #include <direct.h>
 #include <io.h>
+
 #define F_OK 0
 #define access _access
 
@@ -22,10 +25,45 @@
         
         return -1;
     }
+    void ListeRepertoire(const char* repertoire)
+    {
+        WIN32_FIND_DATA findFileData;
+        TCHAR searchPath[MAX_PATH + 1];
+        _stprintf(searchPath, _T("%s\\*"), repertoire);
+        HANDLE hFind = FindFirstFile(searchPath, &findFileData);
 
+
+        if (hFind == INVALID_HANDLE_VALUE)
+        {
+            _tprintf(_T("Error opening directory %s\n"), repertoire);
+            return;
+        }
+        
+        do
+        {
+            if (_tcscmp(findFileData.cFileName, _T(".")) != 0 && _tcscmp(findFileData.cFileName, _T("..")) != 0)
+            {
+                _tprintf(_T("%s\n"), findFileData.cFileName);
+                
+                if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                {
+                    TCHAR newPath[MAX_PATH + 1];
+                    _stprintf(newPath, _T("%s\\%s"), repertoire, findFileData.cFileName);
+                    ListeRepertoire(newPath);
+                }
+            }
+        } while (FindNextFile(hFind, &findFileData) != 0);
+        
+        FindClose(hFind);
+    }
+    
 #elif __linux__
 #include <unistd.h>
+#include <dirent.h>
 #include <sys/stat.h>
+
+#define MAX_PATH 260
+
     int CreationRepertoire(char* repertoire)
     {
         if(mkdir(repertoire, 0755) != -1)
@@ -35,6 +73,38 @@
 
         return -1;
     }
+
+    void ListeRepertoire(const char* repertoire) 
+    {
+        DIR *dir;
+        struct dirent *entry;
+
+        dir = opendir(repertoire);
+
+        if (!dir) 
+        {
+            perror("Ouverture impossible du repertoire");
+            return;
+        }
+
+        while ((entry = readdir(dir)) != NULL) 
+        {
+            if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+            {
+                printf("%s\n", entry->d_name);
+
+                if (entry->d_type == DT_DIR)
+                {
+                    char newPath[1024];
+                    snprintf(newPath, sizeof(newPath), "%s/%s", repertoire, entry->d_name);
+                    ListeRepertoire(newPath);
+                }
+            }
+        }
+        
+        closedir(dir);
+    }
+
 #endif
 
 char* GetTime(void)
@@ -260,4 +330,25 @@ char* FichierToChar(const char* FichierNom)
     fclose(fichier);
     
     return chaine;
+}
+
+int VerifRW(char* chemin)
+{
+    FILE* fichier = NULL;
+    char path[MAX_PATH];
+
+    snprintf(path, MAX_PATH, "%s/__BUFFER__FILE__", chemin);
+
+    fichier = fopen(path, "w");
+
+    if(fichier == NULL)
+    {
+        return -1;
+    }
+
+    fclose(fichier);
+
+    remove(path);
+
+    return 1;
 }

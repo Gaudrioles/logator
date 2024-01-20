@@ -13,3 +13,6 @@ x86/
 # MakeFile
 *.o
 *.exe
+
+# Cmake
+build/
