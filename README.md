@@ -5,19 +5,19 @@
         *                logator -help                                           *
         *                                                                        *
         *         -> Creation fichier CHANGELOG.md et resource.h :               *
-        *                logator -creation                                       *
+        *                logator -creation  AppName                              *
         *                                                                        *
         *         -> Ajout de nouvelle version :                                 *
-        *                logator -new "commentaire"                              *
+        *                logator -new  commentaire                               *
         *                                                                        *
         *         -> Creation fichier Resource.rc                                *
-        *                logator -resource "FileDescription"  "ProductName"      *
+        *                logator -resource  FileDescription                      *
         *                                                                        *
         *         -> Creation fichier .gitignore :                               *
         *                logator -gitignore                                      *
         *                                                                        *
         *         -> Activation innosetup :                                      *
-        *                logator -innosetup "TRUE"                               *
+        *                logator -innosetup true || false                        *
         *                                                                        *
         *         -> Lecture du fichier CHANGELOG :                              *
         *                logator -view                                           *
