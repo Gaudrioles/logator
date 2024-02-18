@@ -32,7 +32,6 @@ int DemandeAccordFichier(const char* FichierNom, int valeur)
 {
     int ouinon = -1;
     char chaine[3];
-    size_t len = 0;
 
     do
     {
