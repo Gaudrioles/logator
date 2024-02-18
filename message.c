@@ -11,19 +11,19 @@ void printf_aide(void)
     fprintf(stdout, "\t*                logator -help                                                              *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Creation fichier CHANGELOG.md et resource.h :                                  *\n");
-    fprintf(stdout, "\t*                logator -creation                                                          *\n");
+    fprintf(stdout, "\t*                logator -creation \"AppName\"                                                *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Ajout de nouvelle version :                                                    *\n");
     fprintf(stdout, "\t*                logator -new \"commentaire\"                                                 *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Creation fichier Resource.rc                                                   *\n");
-    fprintf(stdout, "\t*                logator -resource \"FileDescription\"  \"ProductName\"                         *\n");
+    fprintf(stdout, "\t*                logator -resource \"FileDescription\"                                        *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Creation fichier .gitignore :                                                  *\n");
     fprintf(stdout, "\t*                logator -gitignore                                                         *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Activation innosetup :                                                         *\n");
-    fprintf(stdout, "\t*                logator -innosetup \"TRUE\"                                                  *\n");
+    fprintf(stdout, "\t*                logator -innosetup \"true\" || \"false\"                                       *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Lecture du fichier CHANGELOG :                                                 *\n");
     fprintf(stdout, "\t*                logator -view                                                              *\n");
@@ -36,11 +36,15 @@ void printf_aide(void)
     return;
 }
 
-
+void printf_err_msg(void)
+{
+    fprintf(stdout, "-- !! -- Erreur -- !! --\n");
+    return;
+}
 
 void printf_new(void)
 {
-    fprintf(stdout, "-- !! -- Erreur -- !! --\n");
+    printf_err_msg();
     fprintf(stdout, "logator -new \"commentaire\"\n");
 
     return;
@@ -55,15 +59,15 @@ void printf_update_fichier(char *fichier)
 
 void printf_innosetup(void)
 {
-    fprintf(stdout, "-- !! -- Erreur -- !! --\n");
-    fprintf(stdout, "logator -innosetup \"TRUE\"\n");
+    printf_err_msg();
+    fprintf(stdout, "logator -innosetup \"true\" || \"false\"\n");
 
     return;
 }
 
 void printf_bad_flags(void)
 {
-     fprintf(stdout, "\nLogator %s (x64) : Copyright (c) 2021 Bubi GAUDRIOLES : 14-02-2022\n\n", APP_VERSION);
+     fprintf(stdout, "\nLogator %s (x64) : Copyright (c) 2024 Bubi GAUDRIOLES : 18-02-2024\n\n", APP_VERSION);
      fprintf(stdout, "Usage: logator -help [Liste des commandes]\n");
 
     return;
@@ -92,8 +96,27 @@ void printf_creation_fichier(char *fichier, int oui)
 
 void printf_resource(void)
 {
-    fprintf(stdout, "-- !! -- Erreur -- !! --\n");
-    fprintf(stdout, "logator -resource \"FileDescription\"  \"ProductName\"\n");
+    printf_err_msg();
+    fprintf(stdout, "logator -resource \"FileDescription\"\n");
 
+    return;
+}
+
+void printf_fonction_creation(void)
+{
+    printf_err_msg();
+    fprintf(stdout, "logator -creation \"AppName\"\n");
+    return;
+}
+
+void printf_msg_empty(void)
+{
+    fprintf(stdout, "Version initiale Suppression impossible\n");
+    return;
+}
+
+void printf_msg_changelog(const char* file)
+{
+    fprintf(stdout, "Ouverture du fichier %s impossible\n", file);
     return;
 }

@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "fonction.h"
 #include "fichier.h"
 #include "message.h"
 #include "main.h"
-#include "log.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,31 +18,46 @@ int main(int argc, char *argv[])
 
 	if(strcmp(argv[1], "-creation") == 0)
 	{
-		if(creation_fichier_changelog() != 0)
+		if(argc < 3)
+		{
+			printf_fonction_creation();
+			return -1;			
+		}
+
+		if(creation_fichier_changelog(CHANGELOG_FILE) != true)
 		{
 			printf_creation_fichier(CHANGELOG_FILE, 0);
 			return -1;
 		}
-		else
-		{
-			printf_creation_fichier(CHANGELOG_FILE, 1);
-		}
 		
-		if(creation_fichier_resource_h() != 0)
+		printf_creation_fichier(CHANGELOG_FILE, 1);
+		ST_logator st;
+		st.AppVersion = 1.0f;
+		strcpy(st.AppName, argv[2]);
+		st.AppInno = false;
+		
+		if(creation_fichier_resource_h(RESOURCE_H_FILE, &st) != true)
 		{
 			printf_creation_fichier(RESOURCE_H_FILE, 0);
 			return -1;
 		}
-		else
-		{
-			printf_creation_fichier(RESOURCE_H_FILE, 1);
-		}
+		
+		printf_creation_fichier(RESOURCE_H_FILE, 1);
 	}
 	else if(strcmp(argv[1], "-new") == 0)
 	{
-		double version = get_version();
+		if(argc < 3)
+		{
+			printf_new();
+			return -1;			
+		}
 
-		if(update_fichier_changelog(version, argv[2]) == -1)
+		ST_logator st;
+		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+
+		st.AppVersion = st.AppVersion + 0.1f;
+
+		if(add_new_changelog(CHANGELOG_FILE, st.AppVersion, argv[2]) != true)
 		{
 			printf_new();
 			return -1;
@@ -50,7 +65,7 @@ int main(int argc, char *argv[])
 
 		printf_update_fichier(CHANGELOG_FILE);
 		
-		if(update_fichier_resource_h(version) == -1)
+		if(write_fichier_resource_h(RESOURCE_H_FILE, &st) != true)
 		{
 			printf_new();
 			return -1;
@@ -58,20 +73,24 @@ int main(int argc, char *argv[])
 
 		printf_update_fichier(RESOURCE_H_FILE);
 
-		if(innosetup_status() == 1)
+		if(st.AppInno == true)
 		{
-			update_innosetup(version);
+			update_innosetup(&st);
 		}
 
 	}
 	else if(strcmp(argv[1], "-resource") == 0)
 	{
-		if(argv[2] == NULL || argv[3] == NULL)
+		if(argc < 3)
 		{
 			printf_resource();
-			return -1;
+			return -1;			
 		}
-		if(creation_fichier_resource_rc(argv[2], argv[3]) != 0)
+
+		ST_logator st;
+		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+		
+		if(creation_fichier_resource_rc(RESOURCE_RC_FILE, argv[2], &st) != true)
 		{
 			printf_creation_fichier(RESOURCE_RC_FILE, 0);
 		}
@@ -82,7 +101,7 @@ int main(int argc, char *argv[])
 	}
 	else if(strcmp(argv[1], "-gitignore") == 0)
 	{
-		if(creation_fichier_gitignore() != 0)
+		if(creation_fichier_gitignore() != true)
 		{
 			printf_creation_fichier(GITIGNORE_FILE, 0);
 		}
@@ -97,31 +116,66 @@ int main(int argc, char *argv[])
 	}
 	else if(strcmp(argv[1], "-innosetup") == 0)
 	{
-		if(argv[2] == NULL)
+		if(argc < 3)
+		{
+			printf_innosetup();
+			return -1;			
+		}
+
+		ST_logator st;
+		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+
+		if((strcmp(argv[2], "TRUE") == 0) || (strcmp(argv[2], "true") == 0))
+		{
+			st.AppInno = true;
+		}
+		else if((strcmp(argv[2], "FALSE") == 0) || (strcmp(argv[2], "false") == 0))
+		{
+			st.AppInno = false;
+		}
+		else
 		{
 			printf_innosetup();
 			return -1;
 		}
-		else
+
+		if(activation_innosetup(RESOURCE_H_FILE, &st) != true)
 		{
-			if(activation_innosetup(argv[2]) != 0)
-			{
-				printf_creation_fichier("Innosetup_file", -1);
-				return -1;
-			}
-			else
-			{
-				printf_update_fichier("Innosetup_file");
-			}
+			printf_creation_fichier("Innosetup_file", -1);
+			return -1;
 		}
+		
+		printf_update_fichier("Innosetup_file");
 	}
 	else if(strcmp(argv[1], "-remove") == 0)
 	{
-		fonction_remove();
+		ST_logator st;
+		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+		if(st.AppVersion == 1.0f)
+		{
+			printf_msg_empty();
+			return -1;
+		}
+
+		st.AppVersion = st.AppVersion - 0.1f;
+
+		if(remove_last_changelog_entry(CHANGELOG_FILE) != true)
+		{
+			return -1;
+		}		
+
+		if(write_fichier_resource_h(RESOURCE_H_FILE, &st) != true)
+		{
+			return -1;
+		}
 	}
 	else if(strcmp(argv[1], "-view") == 0 || strcmp(argv[1], "-v") == 0)
 	{
-		lecture_fichier_changelog();
+		if(Printf__changelog(CHANGELOG_FILE) != true)
+		{
+			printf_msg_changelog(CHANGELOG_FILE);
+			return -1;
+		}
 	}
 	else
 	{

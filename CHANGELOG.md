@@ -55,3 +55,5 @@ BUILD 3.3
 -*- Add -*- Reecriture des fonctions phase 2;
 BUILD 3.4
 -*- Add -*- Mirgation vers Cmake;
+BUILD 3.5
+-*- Add -*- Supression de libtool;

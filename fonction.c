@@ -1,19 +1,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "fichier.h"
 #include "fonction.h"
 #include "message.h"
 #include "main.h"
-#include "log.h"
 
 #if defined(__GNUC__) || defined(__GNUG__)
 #include <time.h>
 
 #define _strdup strdup
 
-char *get_date_annee(void)
+char* get_date_annee(void)
 {
 	time_t temps;
 	struct tm *tm_info;
@@ -37,7 +37,7 @@ char *get_date_annee(void)
 #elif defined(_MSC_VER)
 #include <Windows.h>
 
-char *get_date_annee(void)
+char* get_date_annee(void)
 {
 	char buffer[21];
 	SYSTEMTIME st = { 0 };
@@ -60,346 +60,56 @@ char *get_date_annee(void)
 
 #endif
 
-int creation_fichier_changelog(void)
+bool update_innosetup(ST_logator* st)
 {
-	FILE *fichier = NULL;
-	
-
-	if(VerifExiste(CHANGELOG_FILE) == 1)
+    if(!st)
 	{
-		fprintf(stdout, "%s ", CHANGELOG_FILE);
-		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
-		{
-			return -1;
-		}
+		return false;
 	}
+	FILE* fichier = NULL;
+	FILE* fichierTampon = NULL;
 
-	fichier = fopen(CHANGELOG_FILE, "w");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	fprintf(fichier, "---------------------------------------------\n-----             CHANGELOG             -----\n---------------------------------------------\n\n");
-	fprintf(fichier, "#  -*- Add -*-  ;\n\n\nBUILD 1.0\n-*- Add -*- premiere version realisee;");
-
-	fclose(fichier);
-
-	return 0;
-}
-
-int creation_fichier_resource_h(void)
-{
-	FILE *fichier = NULL;
-
-	if(VerifExiste(RESOURCE_H_FILE) == 1)
-	{
-		fprintf(stdout, "%s ", RESOURCE_H_FILE);
-		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
-		{
-			return -1;
-		}
-	}
-
-	fichier = fopen(RESOURCE_H_FILE, "w");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-					"#define RESOURCE_H_INCLUDED\n\n"
-					"#define APP_VERSION \"1.0\"\n"
-					"#define APP_NAME \"\"\n"
-					"#define INNOSETUP \"FALSE\"\n\n"
-					"#endif /* !RESOURCE_H_INCLUDED */");
-
-	fclose(fichier);
-
-	return 0;
-}
-
-int creation_fichier_resource_rc(char *FileDescription, char *ProductName)
-{
-	FILE *fichier = NULL;
-	char *tampon = NULL;
-
-	if (VerifExiste(RESOURCE_RC_FILE) == 1)
-	{
-		fprintf(stdout, "%s ", RESOURCE_RC_FILE);
-		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
-		{
-			return -1;
-		}
-	}
-
-	fichier = fopen(RESOURCE_RC_FILE, "w");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	tampon = get_date_annee();
-
-	fprintf(fichier, "#include \"resource.h\"\n"
-					"#include <windows.h>\n\n"
-					"#define VER_FILEVERSION             1,0,0,0\n"
-					"#define VER_FILEVERSION_STR         \"1.0.0.0\\0\"\n\n"
-					"IDI_ICON1               ICON                    \"icons/icon.ico\"\n\n"
-					"VS_VERSION_INFO VERSIONINFO\n"
-					" FILEVERSION 1,0,0,0\n"
-					" FILEFLAGSMASK 0x3fL\n"
-					"#ifdef _DEBUG\n"
-					" FILEFLAGS 0x1L\n"
-					"#else\n"
-					" FILEFLAGS 0x0L\n"
-					"#endif\n"
-					" FILEOS 0x40004L\n"
-					" FILETYPE 0x1L\n"
-					" FILESUBTYPE 0x0L\n"
-					"BEGIN\n"
-					"    BLOCK \"StringFileInfo\"\n"
-					"    BEGIN\n"
-					"        BLOCK \"040c04b0\"\n"
-					"        BEGIN\n"
-					"            VALUE \"CompanyName\", \"https://github.com/Gaudrioles\"\n"
-					"            VALUE \"FileDescription\", \"%s\"\n"
-					"            VALUE \"FileVersion\", VER_FILEVERSION_STR\n"
-					"            VALUE \"LegalCopyright\", \"Copyright (C) %s\"\n"
-					"            VALUE \"OriginalFilename\", \"%s.exe\"\n"
-					"            VALUE \"ProductName\", \"%s\"\n"
-					"            VALUE \"ProductVersion\", APP_VERSION \"\\0\"\n"
-					"        END\n"
-					"    END\n"
-					"    BLOCK \"VarFileInfo\"\n"
-					"    BEGIN\n"
-					"        VALUE \"Translation\", 0x40c, 1200\n"
-					"    END\n"
-					"END\n", FileDescription, tampon, ProductName, ProductName);
-	fclose(fichier);
-
-	free(tampon);
-
-	update_name_resource_h(ProductName);
-
-	return 0;
-}
-
-int creation_fichier_gitignore(void)
-{
-	FILE *fichier = NULL;
-
-	if(VerifExiste(GITIGNORE_FILE) == 1)
-	{
-		fprintf(stdout, "%s ", GITIGNORE_FILE);
-		if (DemandeAccord("exsite, voulez - vous le remplacer") != 1)
-		{
-			return -1;
-		}
-	}
-
-	fichier = fopen(GITIGNORE_FILE, "w");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	fprintf(fichier, "# CodeBlocks Files\n"
-					"*.depend\n"
-					"*.layout\n"
-					"bin/\n"
-					"obj/\n\n"
-					"# VSCode Files\n"
-					".vs/\n"
-					".vscode/\n"
-					"x64/\n"
-					"x86/\n\n"
-					"# MakeFile\n"
-					"*.o\n"
-					"*.exe\n\n"
-					"# CMAKE\n"
-					"build/\n");
-	fclose(fichier);
-
-	return 0;
-}
-
-int update_fichier_changelog(double version, char *commentaire)
-{
-	FILE *fichier = NULL;
-
-	if(commentaire == NULL)
-	{
-		printf_new();
-		return -1;
-	}
-
-	if(VerifExiste(CHANGELOG_FILE) != 1)
-	{
-		return -1;
-	}
-
-	fichier = fopen(CHANGELOG_FILE, "a");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	fprintf(fichier, "\nBUILD %.1f\n%s%s;", version, "-*- Add -*- ", commentaire);
-
-	fclose(fichier);
-
-	return 0;
-}
-
-int update_fichier_resource_h(double version)
-{
-	FILE *fichier = NULL;
-	char *appname = NULL;
-	int x = 0;
-
-	x = innosetup_status();
-	
-	if(x == -1)
-	{
-		return -1;
-	}
-	
-	appname = application_get_name();
-	
-	if(appname == NULL)
-	{
-		return -1;
-	}
-
-	fichier = fopen(RESOURCE_H_FILE, "w");
-
-	if(fichier == NULL)
-	{
-		free(appname);
-		return -1;
-	}
-
-	switch (x)
-	{
-	case 1 :
-		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-						"#define RESOURCE_H_INCLUDED\n\n"
-						"#define APP_VERSION \"%.1f\"\n"
-						"#define APP_NAME \"%s\"\n"
-						"#define INNOSETUP \"TRUE\"\n\n"
-						"#endif /* !RESOURCE_H_INCLUDED */\n", version, appname);
-		break;
-	case 0 :
-		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-						"#define RESOURCE_H_INCLUDED\n\n"
-						"#define APP_VERSION \"%.1f\"\n"
-						"#define APP_NAME \"%s\"\n"
-						"#define INNOSETUP \"FALSE\"\n\n"
-						"#endif /* !RESOURCE_H_INCLUDED */\n", version, appname);
-		break;
-	default:
-		break;
-	}
-
-	fclose(fichier);
-	free(appname);    
-
-	return 0;
-}
-
-int update_name_resource_h(char *name)
-{
-	int x = innosetup_status();
-	double version = get_version();
-
-	FILE *fichier = NULL;
-
-	fichier = fopen(RESOURCE_H_FILE, "w");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	switch (x)
-	{
-	case 1 :
-		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-						"#define RESOURCE_H_INCLUDED\n\n"
-						"#define APP_VERSION \"%.1f\"\n"
-						"#define APP_NAME \"%s\"\n"
-						"#define INNOSETUP \"TRUE\"\n\n"
-						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);
-		break;
-	default:
-		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-						"#define RESOURCE_H_INCLUDED\n\n"
-						"#define APP_VERSION \"%.1f\"\n"
-						"#define APP_NAME \"%s\"\n"
-						"#define INNOSETUP \"FALSE\"\n\n"
-						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);
-		break;
-	}
-
-	fclose(fichier);    
-
-	return 0;
-}
-
-int update_innosetup(double version)
-{
-	FILE *fichier = NULL;
-	FILE *fichierTampon = NULL;
-
-	char* buffer = NULL;
-	char FichierNom[SIZE_BUFFER];
+	char* FichierNom = NULL;
 	char chaine[SIZE_BUFFER];
 
 	int compteur = 0;
+	size_t len = 0;
 
-
-	buffer = application_get_name();
-
-	if (buffer == NULL)
+	if(!st)
 	{
-		return -1;
+		return false;
 	}
 
-	if((strlen(buffer) + strlen(".iss") + 1) >= SIZE_BUFFER)
+	len = strlen(st->AppName) + strlen(".iss") + 1;
+
+	FichierNom = malloc(len * sizeof(char));
+	if(!FichierNom)
 	{
-		fprintf(stderr, "SIZE_BUFFER trop petit \n");
-		free(buffer);
-		return -1;
-	}
+		return false;
+	}	
 
-	sprintf(FichierNom, "%s.iss", buffer);
-	free(buffer);
+	sprintf(FichierNom, "%s.iss", st->AppName);
 
-	if (VerifExiste(FichierNom) != 1)
+	if (VerifExiste(FichierNom) != true)
 	{
 		printf("Fichier %s introuvable\n", FichierNom);
-		return -1;
+		free(FichierNom);
+		return false;
 	}
 
 	fichier = fopen(FichierNom, "r");
-	fichierTampon = fopen("update_innosetup.old", "w+");
-
+	fichierTampon = fopen("update_innosetup.old", "w");
 	if (fichier == NULL || fichierTampon == NULL)
 	{
+		free(FichierNom);
 		return -1;
 	}
-
+	
 	while(fgets(chaine, SIZE_READ, fichier) != NULL)
 	{
 		if(compteur == 4)
 		{
-			fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", version);
+			fprintf(fichierTampon, "#define MyAppVersion \"%.1f\"\n", st->AppVersion);
 		}
 		else
 		{
@@ -414,282 +124,245 @@ int update_innosetup(double version)
 
 	if (remove(FichierNom) != 0)
 	{
-		return -1;
+		free(FichierNom);
+		return false;
 	}
+
 	if (rename("update_innosetup.old", FichierNom) != 0)
 	{
-		return -1;
+		free(FichierNom);
+		return false;
 	}
 
 	printf_update_fichier(FichierNom);
 
-	return 0;
+	free(FichierNom);
+
+	return true;
 }
 
-int activation_innosetup(char *Valeur)
+bool activation_innosetup(const char* path, ST_logator* st)
 {
-	FILE *fichier = NULL;
-	char* name = NULL;
-	int x = -1;
-	if(VerifExiste(RESOURCE_H_FILE) != 1)
+	if(!st)
 	{
-		return -1;
+		return false;
 	}
 
-	if(Valeur == NULL)
-	{
-		printf_innosetup();
-		return -1;
-	}
-	else if(strcmp(Valeur, "TRUE") == 0)
-	{
-		x = 1;
-	}
-	else if(strcmp(Valeur, "FALSE") == 0)
-	{
-		x = 0;
-	}
+	write_fichier_resource_h(path, st);
 
-	double version = get_version() - 0.1;
-	name = application_get_name();
-	if(name == NULL)
-	{
-		return -1;
-	}
-
-	fichier = fopen(RESOURCE_H_FILE, "w+");
-
-	if(fichier == NULL)
-	{
-		return -1;
-	}
-
-	if(x == 1 )
-	{
-		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-						"#define RESOURCE_H_INCLUDED\n\n"
-						"#define APP_VERSION \"%.1f\"\n"
-						"#define APP_NAME \"%s\"\n"
-						"#define INNOSETUP \"TRUE\"\n\n"
-						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);	
-	}
-	else
-	{
-		fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n"
-						"#define RESOURCE_H_INCLUDED\n\n"
-						"#define APP_VERSION \"%.1f\"\n"
-						"#define APP_NAME \"%s\"\n"
-						"#define INNOSETUP \"FALSE\"\n\n"
-						"#endif /* !RESOURCE_H_INCLUDED */\n", version, name);
-
-	}
-
-	fclose(fichier);
-	free(name);
-
-	return 0;
+	return true;
 }
 
-char *get_last_changelog_entry(void)
+bool add_new_changelog(const char* path, double AppVersion,const char* commentaire)
 {
-	FILE *fichier = NULL;
-	char chaine[SIZE_BUFFER] = { 0 };
-	int compteur = 0;
-	int nombre_ligne= nombre_de_ligne(CHANGELOG_FILE);
+	FILE* fichier = NULL;
 
-	fichier = fopen(CHANGELOG_FILE, "r");
+	if(VerifExiste(path) != true)
+	{
+		return false;
+	}
 
+	fichier = fopen(path, "a");
 	if(fichier == NULL)
 	{
-		return NULL;
+		return false;
 	}
 
-	while(fgets(chaine, SIZE_READ, fichier) != NULL)
-	{
-		if(compteur == nombre_ligne)
-		{
-			break;
-		}
-		
-		compteur++;
-	}
+	fprintf(fichier, "BUILD %.1f\n%s%s;\n", AppVersion, "-*- Add -*- ", commentaire);
 
 	fclose(fichier);
 
-	return _strdup(chaine);
+	return true;
 }
 
-int remove_last_changelog_entry(void)
+char* get_last_changelog(const char* path)
 {
-	FILE *fichier = NULL;
-	FILE *fichierTampon = NULL;
+    FILE* fichier = NULL;
+    char buffer[SIZE_BUFFER];
+    int caractereActuel = 0;
+    int nombre_ligne = 0;
+    int compteur = 0;
 
-	int ligne = 0;
-	int compteur = 0;
-
-	char chaine[SIZE_BUFFER];
-	char buffer[SIZE_BUFFER];
-
-	if(VerifExiste(CHANGELOG_FILE) != 1)
-	{
-		return -1;
-	}
-
-	ligne = nombre_de_ligne(CHANGELOG_FILE);
-
-	if (ligne == -1)
-	{
-		return -1;
-	}
-	
-	fichier = fopen(CHANGELOG_FILE, "r");
-	fichierTampon = fopen("changelog.md.old", "w");
-	
-	if(fichier == NULL || fichierTampon == NULL)
-	{
-		return -1;
-	}
-
-	while(fgets(chaine, SIZE_READ, fichier) != NULL)
-	{
-		if(compteur <= (ligne - 3))
-		{
-			fprintf(fichierTampon, "%s", chaine);
-		}
-		if(compteur == (ligne - 2))
-		{
-			size_t len = strlen(chaine);
-			for(int i = 0; i < (int)len ; i++)
-			{
-				if(chaine[i] != '\n')
-				{
-					buffer[i] = chaine[i];
-				}
-				else
-				{
-					buffer[i] = '\0';
-				}
-			}
-			fprintf(fichierTampon, "%s", buffer);
-		}
-
-		compteur++;
-	}
-	
-	fclose(fichier);
-	fclose(fichierTampon);
-	
-	if (remove(CHANGELOG_FILE) != 0)
-	{
-		return -1;
-	}
-	if (rename("changelog.md.old", CHANGELOG_FILE) != 0)
-	{
-		return -1;
-	}
-
-	return 0;
-}
-
-int fonction_remove(void)
-{
-	char* chaine = NULL;
-	double version =  get_version();
-
-	if(version == 1.0)
-	{
-		fprintf(stdout, "Suppression impossible il y a aucune entree\n");
-		return -1;
-	}
-	else if(version == -1)
-	{
-		fprintf(stdout, "Lecture impossible du fichier %s\n", RESOURCE_H_FILE);
-		return -1;
-	}
-
-	chaine = get_last_changelog_entry();
-	if(chaine == NULL)
-	{
-		return -1;
-	}
-
-	printf("Suppression %s\n", chaine);
-	free(chaine);
-	if(DemandeAccord2() != 1)
-	{		
-		fprintf(stdout, "Suppression impossible\n");
-		return -1;
-	}
-
-	if(remove_last_changelog_entry() != 0)
-	{
-		printf_creation_fichier(CHANGELOG_FILE, -1);
-	}
-
-	version = version - 0.2;
-
-	if(update_fichier_resource_h(version) == -1)
-	{
-		printf_creation_fichier(RESOURCE_H_FILE, -1);
-	}
-
-	if(innosetup_status() == 1)
-	{
-		update_innosetup(version);
-	}
-
-	fprintf(stdout, "Suppression avec succes\n");
-
-	return 0;
-}
-
-int lecture_fichier_changelog(void)
-{
-	FILE *fichier = NULL;
-	char chaine[100];
-	int caractereActuel = 0;
-	int nombreDeLigne = 0;
-	int compteur = 0;
-
-	if(VerifExiste(CHANGELOG_FILE) != 1)
-	{
-		fprintf(stderr, "Le fichier %s existe pas\n", CHANGELOG_FILE);
-		return -1;
-	}
-
-	fichier = fopen(CHANGELOG_FILE, "r");
-
-	if(fichier == NULL)
-	{
-		fprintf(stderr, "Ouverture du fichier %s impossible\n", CHANGELOG_FILE);
-		return -1;
-	}
-
-	do
-	{
-		caractereActuel = fgetc(fichier);
-		if(caractereActuel == '\n')
-		{
-			nombreDeLigne++;
-		}
-	
-	} while (caractereActuel != EOF);
-
-	rewind(fichier);
-
-	while(fgets(chaine, 99, fichier) != NULL)
+    /* Ouverture du fichier */
+    fichier = fopen(path, "r");
+    if(fichier == NULL)
     {
-		compteur++;
-		if(compteur > 7)
-		{
-			fprintf(stdout, "%s", chaine);
-		}
-		
+        return NULL;
+    }
+
+    /* Nombre de ligne */
+    do
+    {
+        caractereActuel = fgetc(fichier);
+        if(caractereActuel == '\n')
+        {
+            nombre_ligne++;
+        }
+
+    } while (caractereActuel != EOF);
+
+    /* Retour au debut */
+    rewind(fichier);
+    
+    /* Fichier vers buffer */
+    while(fgets(buffer, SIZE_BUFFER, fichier) != NULL)
+    {
+        if(compteur == nombre_ligne)
+        {
+            break;
+        }
+
+        compteur++;        
+    }
+    
+    buffer[strlen(buffer) - 1] = '\0';
+    fclose(fichier);    
+
+    return _strdup(buffer);
+}
+
+char* changelog_file_to_char_cut(const char* path)
+{
+    FILE* fichier = NULL;
+    
+    char* buffer = NULL;
+
+    int nombre_ligne = 0;
+    int caractereActuel = 0;
+    int compteur = 0;
+    int i = 0;
+
+    size_t len = 0;
+
+    /* Ouverture du fichier */
+    fichier = fopen(path, "r");
+    if(fichier == NULL)
+    {
+        return NULL;
+    }
+
+    /* Nombre de ligne */
+    do
+    {
+        caractereActuel = fgetc(fichier);
+        if(caractereActuel == '\n')
+        {
+            nombre_ligne++;
+        }
+
+    } while (caractereActuel != EOF);
+    
+    /* Retour au debut */
+    rewind(fichier);
+    nombre_ligne = nombre_ligne - 2;
+
+    /* Taille du buffer */
+    do
+    {
+        caractereActuel = fgetc(fichier);
+        if(caractereActuel == '\n')
+        {
+            compteur++;
+        }
+        if(compteur < nombre_ligne)
+        {
+            len++;
+        }
+
+    } while (caractereActuel != EOF);
+
+    len++;
+    compteur = 0;
+    rewind(fichier);
+
+    buffer = malloc(len * sizeof(char));
+    if(buffer == NULL)
+    {
+        fclose(fichier);
+        return NULL;
+    }
+
+    /* Fichier vers buffer */
+    do
+    {
+        caractereActuel = fgetc(fichier);
+        if(caractereActuel == '\n')
+        {
+            compteur++;
+        }
+        if(compteur < nombre_ligne)
+        {
+            buffer[i] = caractereActuel;
+            i++;
+        }
+
+    } while (caractereActuel != EOF);
+    
+    buffer[i] = '\0';
+    fclose(fichier);    
+
+    return buffer;
+}
+
+bool remove_last_changelog_entry(const char* path)
+{
+    FILE* fichier = NULL;
+    char* buffer = NULL;
+	
+    if(VerifExiste(path) != true)
+	{
+		return false;
 	}
 
-	fprintf(stdout, "\n");
+    buffer = get_last_changelog(path);
+    if(buffer == NULL)
+    {
+        return false;
+    }
 
-	fclose(fichier);
+    if(DemandeAccordFichier(buffer, 0) != 1)
+    {
+        free(buffer);
+        return true;
+    }
 
-	return 0;
+    free(buffer);
+
+    buffer = changelog_file_to_char_cut(path);
+    if(buffer == NULL)
+    {
+        return false;
+    }
+    
+    fichier = fopen(path, "w+");
+    if(!fichier)
+    {
+        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
+        free(buffer);
+        return false;
+    }
+
+    fprintf(fichier, "%s\n", buffer);
+
+    fclose(fichier);
+    free(buffer);
+
+    return true;
+}
+
+bool Printf__changelog(const char* path)
+{
+    char* buffer = NULL;
+
+    buffer = FichierToChar(path);
+    if(buffer == NULL)
+    {
+        return false;
+    }
+
+    printf("%s\n", buffer);
+
+    free(buffer);
+
+    return true;
 }
