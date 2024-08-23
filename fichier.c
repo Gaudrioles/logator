@@ -384,7 +384,7 @@ char* FichierToChar(const char* FichierNom)
 
     while((caractereActuel = fgetc(fichier)) != EOF)
     {
-        chaine[compteur++] = caractereActuel;
+        chaine[compteur++] = (char)caractereActuel;
     }
     chaine[compteur] = '\0';
 

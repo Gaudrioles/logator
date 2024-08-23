@@ -292,7 +292,7 @@ char* changelog_file_to_char_cut(const char* path)
         }
         if(compteur < nombre_ligne)
         {
-            buffer[i] = caractereActuel;
+            buffer[i] = (char)caractereActuel;
             i++;
         }
 
