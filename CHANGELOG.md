@@ -58,4 +58,4 @@ BUILD 3.4
 BUILD 3.5
 -*- Add -*- Supression de libtool;
 BUILD 3.6
--*- Add -*- Modification CMakeLists.txt;
+-*- Add -*- Update CMakeLists.txt;
