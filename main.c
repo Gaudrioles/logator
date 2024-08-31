@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 	}
 	else if(strcmp(argv[1], "-gitignore") == 0)
 	{
-		if(creation_fichier_gitignore() != true)
+		if(creation_fichier_gitignore(GITIGNORE_FILE) != true)
 		{
 			printf_creation_fichier(GITIGNORE_FILE, 0);
 		}

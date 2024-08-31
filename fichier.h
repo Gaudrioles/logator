@@ -3,16 +3,16 @@
 #include <stdbool.h>
 #include "main.h"
 
-int DemandeAccordFichier(const char* FichierNom, int valeur);
+int DemandeAccordFichier(const char *FichierNom, int valeur);
 
-bool chargement_fichier_resource_h(const char* path, ST_logator* st);
-bool write_fichier_resource_h(const char* path, ST_logator* st);
-bool VerifExiste(const char* path);
-bool creation_fichier_changelog(const char* path);
-bool creation_fichier_resource_h(const char* path, ST_logator* st);
-bool creation_fichier_resource_rc(const char* path, const char* Description, ST_logator* st);
-bool creation_fichier_gitignore(void);
+bool chargement_fichier_resource_h(const char *path, ST_logator *st);
+bool write_fichier_resource_h(const char *path, ST_logator *st);
+bool VerifExiste(const char *path);
+bool creation_fichier_changelog(const char *path);
+bool creation_fichier_resource_h(const char *path, ST_logator *st);
+bool creation_fichier_resource_rc(const char *path, const char *Description, ST_logator *st);
+bool creation_fichier_gitignore(const char *path);
 
-char* FichierToChar(const char* FichierNom);
+char *FichierToChar(const char *FichierNom);
 
 #endif // FICHIER_H_INCLUDED

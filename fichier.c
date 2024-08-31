@@ -19,7 +19,7 @@
 #endif
 
 
-bool VerifExiste(const char* path)
+bool VerifExiste(const char *path)
 {
     if (access(path, F_OK) == 0)
     {
@@ -28,7 +28,7 @@ bool VerifExiste(const char* path)
     return false;
 }
 
-int DemandeAccordFichier(const char* FichierNom, int valeur)
+int DemandeAccordFichier(const char *FichierNom, int valeur)
 {
     int ouinon = -1;
     char chaine[3];
@@ -74,13 +74,13 @@ int DemandeAccordFichier(const char* FichierNom, int valeur)
     return ouinon;
 }
 
-bool chargement_fichier_resource_h(const char* path, ST_logator* st)
+bool chargement_fichier_resource_h(const char *path, ST_logator *st)
 {
     if(!st)
 	{
 		return false;
 	}
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
     char buffer[SIZE_BUFFER];
     char zbuffer[SIZE_BUFFER];
     int compteur = 0;
@@ -126,13 +126,13 @@ bool chargement_fichier_resource_h(const char* path, ST_logator* st)
     return st;
 }
 
-bool creation_fichier_resource_h(const char* path, ST_logator* st)
+bool creation_fichier_resource_h(const char *path, ST_logator *st)
 {
     if(!st)
 	{
 		return false;
 	}
-	FILE* fichier = NULL;
+	FILE *fichier = NULL;
 
 	if(VerifExiste(path) == true)
 	{
@@ -162,7 +162,7 @@ bool creation_fichier_resource_h(const char* path, ST_logator* st)
     return true;
 }
 
-bool write_fichier_resource_h(const char* path, ST_logator* st)
+bool write_fichier_resource_h(const char *path, ST_logator *st)
 {
     if(!st)
 	{
@@ -172,7 +172,7 @@ bool write_fichier_resource_h(const char* path, ST_logator* st)
 	{
 		return false;
 	}
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
 
     fichier = fopen(path, "w");
     if(!fichier)
@@ -193,9 +193,9 @@ bool write_fichier_resource_h(const char* path, ST_logator* st)
     return true;
 }
 
-bool creation_fichier_changelog(const char* path)
+bool creation_fichier_changelog(const char *path)
 {
-	FILE* fichier = NULL;
+	FILE *fichier = NULL;
     
     if(VerifExiste(path) == true)
 	{
@@ -220,14 +220,14 @@ bool creation_fichier_changelog(const char* path)
 	return true;
 }
 
-bool creation_fichier_resource_rc(const char* path, const char* Description, ST_logator* st)
+bool creation_fichier_resource_rc(const char *path, const char *Description, ST_logator *st)
 {
     if(!st)
 	{
 		return false;
 	}
-	FILE* fichier = NULL;
-	char* tampon = NULL;
+	FILE *fichier = NULL;
+	char *tampon = NULL;
 
 	if (VerifExiste(path) == true)
 	{
@@ -293,9 +293,9 @@ bool creation_fichier_resource_rc(const char* path, const char* Description, ST_
 	return true;
 }
 
-bool creation_fichier_gitignore(const char* path)
+bool creation_fichier_gitignore(const char *path)
 {
-	FILE* fichier = NULL;
+	FILE *fichier = NULL;
 
 	if(VerifExiste(path) == true)
 	{
@@ -306,8 +306,8 @@ bool creation_fichier_gitignore(const char* path)
 		}
 	}
 
-	fichier = fopen(path, "w");
-	if(fichier == NULL)
+	fichier = fopen(path, "w+");
+	if(!fichier)
 	{
 		return -1;
 	}
@@ -332,9 +332,9 @@ bool creation_fichier_gitignore(const char* path)
 	return true;
 }
 
-size_t NombreDeCaractere(const char* FichierNom)
+size_t NombreDeCaractere(const char *FichierNom)
 {
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
     size_t compteur = 0;
 
     fichier = fopen(FichierNom, "r");
@@ -355,9 +355,9 @@ size_t NombreDeCaractere(const char* FichierNom)
     return compteur;
 }
 
-char* FichierToChar(const char* FichierNom)
+char *FichierToChar(const char *FichierNom)
 {
-    FILE* fichier = NULL;
+    FILE *fichier = NULL;
     size_t taille = NombreDeCaractere(FichierNom);
     int compteur = 0;
     int caractereActuel = 0;
@@ -375,7 +375,7 @@ char* FichierToChar(const char* FichierNom)
         return NULL;
     }
 
-    char* chaine = malloc(sizeof(char) * (taille + 1));
+    char *chaine = malloc(sizeof(char) * (taille + 1));
     if (chaine == NULL)
     {
         fprintf(stderr, "Allocation memoire impossible FichierToChar %s\n", FichierNom);
