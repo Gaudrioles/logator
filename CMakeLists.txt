@@ -20,3 +20,4 @@ ELSE()
 ENDIF()
 
 ADD_EXECUTABLE(${PROJECT_NAME} main.c fonction.c fichier.c message.c Resource.rc)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ucrt)
