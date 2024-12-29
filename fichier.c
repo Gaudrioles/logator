@@ -28,7 +28,7 @@ bool VerifExiste(const char *path)
     return false;
 }
 
-int DemandeAccordFichier(const char *FichierNom, int valeur)
+bool DemandeAccordFichier(const char *FichierNom, int valeur)
 {
     int ouinon = -1;
     char chaine[3];
@@ -71,7 +71,12 @@ int DemandeAccordFichier(const char *FichierNom, int valeur)
 
     }while(ouinon != 0 && ouinon != 1);
 
-    return ouinon;
+    if(ouinon == 0)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 bool chargement_fichier_resource_h(const char *path, ST_logator *st)
@@ -137,7 +142,7 @@ bool creation_fichier_resource_h(const char *path, ST_logator *st)
 	if(VerifExiste(path) == true)
 	{
 		fprintf(stdout, "%s ", path);
-		if(DemandeAccordFichier(path, 1) != 1)
+		if(!DemandeAccordFichier(path, 1))
 		{
 			return false;
 		}
@@ -200,7 +205,7 @@ bool creation_fichier_changelog(const char *path)
     if(VerifExiste(path) == true)
 	{
 		fprintf(stdout, "%s ", path);
-		if (DemandeAccordFichier(path, 1) != 1)
+		if (!DemandeAccordFichier(path, 1))
 		{
 			return false;
 		}
@@ -232,7 +237,7 @@ bool creation_fichier_resource_rc(const char *path, const char *Description, ST_
 	if (VerifExiste(path) == true)
 	{
 		fprintf(stdout, "%s ", path);
-		if (DemandeAccordFichier(path, 1) != 1)
+		if(!DemandeAccordFichier(path, 1))
 		{
 			return false;
 		}
@@ -300,7 +305,7 @@ bool creation_fichier_gitignore(const char *path)
 	if(VerifExiste(path) == true)
 	{
 		fprintf(stdout, "%s ", path);
-		if (DemandeAccordFichier(path, 1) != 1)
+		if(!DemandeAccordFichier(path, 1))
 		{
 			return false;
 		}

@@ -59,3 +59,5 @@ BUILD 3.5
 -*- Add -*- Supression de libtool;
 BUILD 3.6
 -*- Add -*- Update CMakeLists.txt;
+BUILD 3.7
+-*- Add -*- Ajout KEYWORD in main.h et Correction bug remove;

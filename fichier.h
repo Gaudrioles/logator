@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "main.h"
 
-int DemandeAccordFichier(const char *FichierNom, int valeur);
+bool DemandeAccordFichier(const char *FichierNom, int valeur);
 
 bool chargement_fichier_resource_h(const char *path, ST_logator *st);
 bool write_fichier_resource_h(const char *path, ST_logator *st);

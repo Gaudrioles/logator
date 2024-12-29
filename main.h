@@ -6,8 +6,16 @@
 #define RESOURCE_RC_FILE    "Resource.rc"
 #define GITIGNORE_FILE      ".gitignore"
 
+#define KEYWORD_HELP        "-help"
+#define KEYWORD_CREATE      "-creation"
+#define KEYWORD_NEW         "-new"
+#define KEYWORD_RESOURCE    "-resource"
+#define KEYWORD_GIT         "-gitignore"
+#define KEYWORD_INNO        "-innosetup"
+#define KEYWORD_VIEW        "-view"
+#define KEYWORD_REMOVE      "-remove"
+
 #define SIZE_BUFFER         2048
-#define SIZE_READ           2047
 
 typedef struct
 {

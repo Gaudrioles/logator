@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	if(strcmp(argv[1], "-creation") == 0)
+	if(strcmp(argv[1], KEYWORD_CREATE) == 0)
 	{
 		if(argc < 3)
 		{
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 		
 		printf_creation_fichier(RESOURCE_H_FILE, 1);
 	}
-	else if(strcmp(argv[1], "-new") == 0)
+	else if(strcmp(argv[1], KEYWORD_NEW) == 0)
 	{
 		if(argc < 3)
 		{
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 		ST_logator st;
 		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
 
-		st.AppVersion = st.AppVersion + 0.1f;
+		st.AppVersion += 0.1f;
 
 		if(add_new_changelog(CHANGELOG_FILE, st.AppVersion, argv[2]) != true)
 		{
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 		}
 
 	}
-	else if(strcmp(argv[1], "-resource") == 0)
+	else if(strcmp(argv[1], KEYWORD_RESOURCE) == 0)
 	{
 		if(argc < 3)
 		{
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 			printf_creation_fichier(RESOURCE_RC_FILE, 1);
 		}
 	}
-	else if(strcmp(argv[1], "-gitignore") == 0)
+	else if(strcmp(argv[1], KEYWORD_GIT) == 0)
 	{
 		if(creation_fichier_gitignore(GITIGNORE_FILE) != true)
 		{
@@ -110,11 +110,11 @@ int main(int argc, char *argv[])
 			printf_creation_fichier(GITIGNORE_FILE, 1);
 		}
 	}
-	else if(strcmp(argv[1], "-help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-H") == 0)
+	else if(strcmp(argv[1], KEYWORD_HELP) == 0)
 	{
 		printf_aide();
 	}
-	else if(strcmp(argv[1], "-innosetup") == 0)
+	else if(strcmp(argv[1], KEYWORD_INNO) == 0)
 	{
 		if(argc < 3)
 		{
@@ -147,29 +147,31 @@ int main(int argc, char *argv[])
 		
 		printf_update_fichier("Innosetup_file");
 	}
-	else if(strcmp(argv[1], "-remove") == 0)
+	else if(strcmp(argv[1], KEYWORD_REMOVE) == 0)
 	{
 		ST_logator st;
 		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
-		if(st.AppVersion == 1.0f)
+		if(st.AppVersion > 0.1f)
+		{
+			st.AppVersion -= 0.1f;
+		}
+		else
 		{
 			printf_msg_empty();
 			return -1;
 		}
 
-		st.AppVersion = st.AppVersion - 0.1f;
-
 		if(remove_last_changelog_entry(CHANGELOG_FILE) != true)
 		{
 			return -1;
-		}		
-
+		}
+		
 		if(write_fichier_resource_h(RESOURCE_H_FILE, &st) != true)
 		{
 			return -1;
 		}
 	}
-	else if(strcmp(argv[1], "-view") == 0 || strcmp(argv[1], "-v") == 0)
+	else if(strcmp(argv[1], KEYWORD_VIEW) == 0)
 	{
 		if(Printf__changelog(CHANGELOG_FILE) != true)
 		{

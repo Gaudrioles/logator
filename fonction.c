@@ -105,7 +105,7 @@ bool update_innosetup(ST_logator* st)
 		return -1;
 	}
 	
-	while(fgets(chaine, SIZE_READ, fichier) != NULL)
+	while(fgets(chaine, sizeof(chaine), fichier) != NULL)
 	{
 		if(compteur == 4)
 		{
@@ -320,10 +320,10 @@ bool remove_last_changelog_entry(const char* path)
         return false;
     }
 
-    if(DemandeAccordFichier(buffer, 0) != 1)
+    if(!DemandeAccordFichier(buffer, 0))
     {
         free(buffer);
-        return true;
+        return false;
     }
 
     free(buffer);
