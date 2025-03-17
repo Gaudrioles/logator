@@ -4,8 +4,8 @@
 #include "main.h"
 
 bool DemandeAccordFichier(const char *FichierNom, int valeur);
-
-bool chargement_fichier_resource_h(const char *path, ST_logator *st);
+bool loadResourceToStruct(const char *path, ST_logator *st);
+bool loadResourceToVariable(const char *path, char *AppName, double *AppVersion, bool *AppInno);
 bool write_fichier_resource_h(const char *path, ST_logator *st);
 bool VerifExiste(const char *path);
 bool creation_fichier_changelog(const char *path);

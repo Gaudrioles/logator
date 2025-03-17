@@ -9,6 +9,8 @@
 #define KEYWORD_HELP        "-help"
 #define KEYWORD_CREATE      "-creation"
 #define KEYWORD_NEW         "-new"
+#define KEYWORD_MAJOR       "-M"
+#define KEYWORD_MINOR       "-m"
 #define KEYWORD_RESOURCE    "-resource"
 #define KEYWORD_GIT         "-gitignore"
 #define KEYWORD_INNO        "-innosetup"

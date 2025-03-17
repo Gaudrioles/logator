@@ -46,18 +46,36 @@ int main(int argc, char *argv[])
 	}
 	else if(strcmp(argv[1], KEYWORD_NEW) == 0)
 	{
-		if(argc < 3)
+		if(argc < 4)
+		{
+			printf_new();
+			return -1;			
+		}
+		
+		ST_logator st;
+		int versionType = 0;
+		if(!loadResourceToStruct(RESOURCE_H_FILE, &st))
+		{
+			return -1;
+		}
+
+		if(strcmp(argv[2], KEYWORD_MAJOR) == 0)
+		{
+			versionType = 1;
+		}
+		else if(strcmp(argv[2], KEYWORD_MINOR) == 0)
+		{
+			versionType = 0;
+		}
+		else
 		{
 			printf_new();
 			return -1;			
 		}
 
-		ST_logator st;
-		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+		st.AppVersion = newVersion(versionType, st.AppVersion);
 
-		st.AppVersion += 0.1f;
-
-		if(add_new_changelog(CHANGELOG_FILE, st.AppVersion, argv[2]) != true)
+		if(add_new_changelog(CHANGELOG_FILE, st.AppVersion, argv[3]) != true)
 		{
 			printf_new();
 			return -1;
@@ -88,7 +106,10 @@ int main(int argc, char *argv[])
 		}
 
 		ST_logator st;
-		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+		if(!loadResourceToStruct(RESOURCE_H_FILE, &st))
+		{
+			return -1;
+		}
 		
 		if(creation_fichier_resource_rc(RESOURCE_RC_FILE, argv[2], &st) != true)
 		{
@@ -123,7 +144,10 @@ int main(int argc, char *argv[])
 		}
 
 		ST_logator st;
-		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
+		if(!loadResourceToStruct(RESOURCE_H_FILE, &st))
+		{
+			return -1;
+		}
 
 		if((strcmp(argv[2], "TRUE") == 0) || (strcmp(argv[2], "true") == 0))
 		{
@@ -150,16 +174,18 @@ int main(int argc, char *argv[])
 	else if(strcmp(argv[1], KEYWORD_REMOVE) == 0)
 	{
 		ST_logator st;
-		chargement_fichier_resource_h(RESOURCE_H_FILE, &st);
-		if(st.AppVersion > 0.1f)
+		if(!loadResourceToStruct(RESOURCE_H_FILE, &st))
 		{
-			st.AppVersion -= 0.1f;
+			return -1;
 		}
-		else
+
+		if(st.AppVersion < 0.1f)
 		{
 			printf_msg_empty();
 			return -1;
 		}
+
+		st.AppVersion = ReadLastValue(CHANGELOG_FILE);
 
 		if(remove_last_changelog_entry(CHANGELOG_FILE) != true)
 		{

@@ -60,6 +60,91 @@ char* get_date_annee(void)
 
 #endif
 
+// Renvoie la partie entière d'un nombre
+int GetWholePart(double x)
+{
+    return (int)x;
+}
+
+// Renvoie la partie décimale d'un nombre en tant qu'entier
+int GetDecimalPart(double x)
+{
+    double partie_decimale = x - (int)x;
+    return (int)(partie_decimale * 1000 + 0.5);
+}
+
+// Convertit un entier représentant la partie décimale en une valeur décimale
+double GoToDecimal(int x)
+{
+    return (double)x / 1000;
+}
+
+int nombreDeLigne(FILE *fichier)
+{
+    if (fichier == NULL)
+    {
+        return 0;
+    }
+
+    int ret = 0;
+    char buffer[SIZE_BUFFER]; // Taille de buffer ajustable pour optimiser les lectures
+
+    // Lire le fichier par blocs pour réduire les appels à fgetc
+    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
+    {
+        for (char *p = buffer; *p != '\0'; p++)
+        {
+            if (*p == '\n')
+            {
+                ret++;
+            }
+        }
+    }
+
+    return ret;
+}
+
+double newVersion(int versionType, double OldVersion)
+{
+    int partie_entiere = GetWholePart(OldVersion);
+    int partie_decimale = GetDecimalPart(OldVersion);
+
+    if (versionType == 0)
+    {
+        return partie_entiere + GoToDecimal(partie_decimale + 1);
+    }
+    if (versionType == 1)
+    {
+        return partie_entiere + 1;
+    }
+    
+    return 0;
+}
+
+double RemoveVersion(int versionType, double OldVersion)
+{
+    int partie_entiere = GetWholePart(OldVersion);
+    int partie_decimale = GetDecimalPart(OldVersion);
+
+    if (versionType == 0)
+    {
+        partie_decimale--;
+        if(partie_decimale == -1)
+        {
+            partie_entiere--;
+            partie_decimale = 999;
+        }
+
+        return partie_entiere + GoToDecimal(partie_decimale);
+    }
+    if (versionType == 1)
+    {
+        return partie_entiere - 1;
+    }
+    
+    return 0;
+}
+
 bool update_innosetup(ST_logator* st)
 {
     if(!st)
@@ -168,7 +253,7 @@ bool add_new_changelog(const char* path, double AppVersion,const char* commentai
 		return false;
 	}
 
-	fprintf(fichier, "BUILD %.1f\n%s%s;\n", AppVersion, "-*- Add -*- ", commentaire);
+	fprintf(fichier, "BUILD %.3f\n%s%s;\n", AppVersion, "-*- Add -*- ", commentaire);
 
 	fclose(fichier);
 
@@ -221,92 +306,98 @@ char* get_last_changelog(const char* path)
     return _strdup(buffer);
 }
 
-char* changelog_file_to_char_cut(const char* path)
+bool changelog_file_to_char_cut(const char* path)
 {
-    FILE* fichier = NULL;
-    
-    char* buffer = NULL;
-
-    int nombre_ligne = 0;
-    int caractereActuel = 0;
-    int compteur = 0;
-    int i = 0;
-
-    size_t len = 0;
+    FILE *fichier = NULL;
+    int nbligne = 0;
 
     /* Ouverture du fichier */
     fichier = fopen(path, "r");
-    if(fichier == NULL)
+    if (fichier == NULL)
     {
-        return NULL;
+        return false;
     }
 
-    /* Nombre de ligne */
-    do
-    {
-        caractereActuel = fgetc(fichier);
-        if(caractereActuel == '\n')
-        {
-            nombre_ligne++;
-        }
-
-    } while (caractereActuel != EOF);
-    
-    /* Retour au debut */
-    rewind(fichier);
-    nombre_ligne = nombre_ligne - 2;
-
-    /* Taille du buffer */
-    do
-    {
-        caractereActuel = fgetc(fichier);
-        if(caractereActuel == '\n')
-        {
-            compteur++;
-        }
-        if(compteur < nombre_ligne)
-        {
-            len++;
-        }
-
-    } while (caractereActuel != EOF);
-
-    len++;
-    compteur = 0;
-    rewind(fichier);
-
-    buffer = malloc(len * sizeof(char));
-    if(buffer == NULL)
+    /* Comptage des lignes et allocation du buffer */
+    char **bufferArray = malloc(SIZE_BUFFER * sizeof(char*));
+    if (!bufferArray)
     {
         fclose(fichier);
-        return NULL;
+        return false; // Erreur d'allocation mémoire
     }
 
-    /* Fichier vers buffer */
-    do
-    {
-        caractereActuel = fgetc(fichier);
-        if(caractereActuel == '\n')
-        {
-            compteur++;
-        }
-        if(compteur < nombre_ligne)
-        {
-            buffer[i] = (char)caractereActuel;
-            i++;
-        }
-
-    } while (caractereActuel != EOF);
+    char buffer[SIZE_BUFFER];
     
-    buffer[i] = '\0';
-    fclose(fichier);    
+    // Lire les lignes et compter les lignes du fichier
+    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
+    {
+        if (nbligne >= SIZE_BUFFER) // Limiter le nombre de lignes dans le buffer
+        {
+            bufferArray = realloc(bufferArray, (nbligne + 1) * sizeof(char*));
+            if (!bufferArray)
+            {
+                fclose(fichier);
+                return false; // Erreur d'allocation mémoire
+            }
+        }
+        bufferArray[nbligne] = _strdup(buffer);  // Copier la ligne dans le tableau
+        if (!bufferArray[nbligne])
+        {
+            fclose(fichier);
+            return false; // Erreur d'allocation mémoire
+        }
+        nbligne++;
+    }
 
-    return buffer;
+    fclose(fichier);
+
+    // Vérification du nombre de lignes
+    if (nbligne < 9)
+    {
+        // Libérer la mémoire avant de quitter
+        for (int i = 0; i < nbligne; i++)
+        {
+            free(bufferArray[i]);
+        }
+        free(bufferArray);
+        return false;
+    }
+
+    /* Réécriture du fichier sans les 2 dernières lignes */
+    fichier = fopen(path, "w+");
+    if (!fichier)
+    {
+        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
+        // Libérer la mémoire avant de quitter
+        for (int i = 0; i < nbligne; i++)
+        {
+            free(bufferArray[i]);
+        }
+        free(bufferArray);
+        return false;
+    }
+
+    // Réécrire les lignes, en excluant les 2 dernières
+    for (int i = 0; i < (nbligne - 2); i++)
+    {
+        fprintf(fichier, "%s", bufferArray[i]);
+    }
+
+    fclose(fichier);
+
+    // Libération de la mémoire
+    for (int i = 0; i < nbligne; i++)
+    {
+        free(bufferArray[i]);
+    }
+    free(bufferArray);
+
+    return true;
 }
+
 
 bool remove_last_changelog_entry(const char* path)
 {
-    FILE* fichier = NULL;
     char* buffer = NULL;
 	
     if(VerifExiste(path) != true)
@@ -328,24 +419,10 @@ bool remove_last_changelog_entry(const char* path)
 
     free(buffer);
 
-    buffer = changelog_file_to_char_cut(path);
-    if(buffer == NULL)
+    if(!changelog_file_to_char_cut(path))
     {
         return false;
     }
-    
-    fichier = fopen(path, "w+");
-    if(!fichier)
-    {
-        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
-        free(buffer);
-        return false;
-    }
-
-    fprintf(fichier, "%s\n", buffer);
-
-    fclose(fichier);
-    free(buffer);
 
     return true;
 }
@@ -365,4 +442,52 @@ bool Printf__changelog(const char* path)
     free(buffer);
 
     return true;
+}
+
+double ReadLastValue(const char *filename)
+{
+    FILE *fichier = fopen(filename, "r");
+    if (!fichier)
+    {
+        printf("Ouverture du fichier %s impossible\n", filename);
+        return 0;
+    }
+
+    // Variables pour la lecture
+    char buffer[SIZE_BUFFER];
+    int nbligne = 0;
+    int compteur = 0;
+
+    nbligne = nombreDeLigne(fichier);
+    if(nbligne == 0 || nbligne < 9)
+    {
+        printf("nombreDeLigne %d\n", nbligne);
+        return 0;
+    }
+
+    rewind(fichier);
+
+    // Lire le fichier ligne par ligne en comptant les lignes
+    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
+    {
+        compteur++;
+        if(compteur == (nbligne - 3))
+        {
+            break;
+        }
+    }
+    
+    char *str = buffer + 6; // Sauter "BUILD "
+    char *endptr;
+    double value = strtod(str, &endptr);
+    
+    fclose(fichier);
+    
+    // Vérification de la validité de la conversion
+    if (endptr != str)
+    {
+        return value;
+    }
+    
+    return 0;
 }
