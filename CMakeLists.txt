@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.11)
 
 PROJECT(logator)
+FILE(GLOB SRC_FILES     "*.c")
 
 IF(MSVC)
     MESSAGE(STATUS"Microsoft Visual C")
@@ -20,8 +21,8 @@ ELSE()
 ENDIF()
 
 IF (WIN32)
-    ADD_EXECUTABLE(${PROJECT_NAME} main.c fonction.c fichier.c message.c Resource.rc)
+    ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_FILES} Resource.rc)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} ucrt)
 ELSE()
-    ADD_EXECUTABLE(${PROJECT_NAME} main.c fonction.c fichier.c message.c)
+    ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_FILES})
 ENDIF()

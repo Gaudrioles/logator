@@ -61,5 +61,5 @@ BUILD 3.6
 -*- Add -*- Update CMakeLists.txt;
 BUILD 3.7
 -*- Add -*- Ajout KEYWORD in main.h et Correction bug remove;
-BUILD 4.000
+BUILD 4.0
 -*- Add -*- Ajout fonction Major / Minor Version;

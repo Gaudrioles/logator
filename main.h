@@ -26,4 +26,17 @@ typedef struct
     bool AppInno;
 }ST_logator;
 
+typedef struct
+{
+    char appVersion[SIZE_BUFFER];
+    char appName[SIZE_BUFFER];
+    char innoSetup[SIZE_BUFFER];
+} ResourceData;
+
+typedef enum
+{
+    versionAdd = 0,
+    versionRem = 1
+} VersionModif;
+
 #endif // MAIN_H_INCLUDED

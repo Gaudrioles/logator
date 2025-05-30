@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "main.h"
-#include "fonction.h"
+#include "tool.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -89,161 +89,16 @@ bool DemandeAccordFichier(const char *FichierNom, int valeur)
     return true;
 }
 
-bool loadResourceToStruct(const char *path, ST_logator *st)
+bool creation_fichier_resource_h(const char *path, ResourceData *data)
 {
-    if(!st)
+    /* Check */
+    if(!data)
 	{
 		return false;
 	}
-    FILE *fichier = NULL;
-    char buffer[SIZE_BUFFER] = {0};
-    char bufferVersion[SIZE_BUFFER] = {0};
-    char bufferName[SIZE_BUFFER] = {0};
-    char bufferInno[SIZE_BUFFER] = {0};
-    char *zBuffer = NULL;
-    int compteur = 0;
-    
-    fichier = fopen(path, "r");
-    if(!fichier)
-    {
-        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
-        return false;
-    }
 
-    while(fgets(buffer, SIZE_BUFFER, fichier) != NULL)
-    {
-        switch (compteur)
-        {
-            case 3:
-                zBuffer = buffer + 21;
-                strncpy(bufferVersion, zBuffer, SIZE_BUFFER);
-                removeQuote(bufferVersion);
-                break;
-            case 4:
-                zBuffer = buffer + 18;
-                strncpy(bufferName, zBuffer, SIZE_BUFFER);
-                removeQuote(bufferName);                
-                break;
-            case 5:
-                zBuffer = buffer + 19;
-                strncpy(bufferInno, zBuffer, SIZE_BUFFER);
-                removeQuote(bufferInno);
-                break;
-            
-            default:
-                break;
-        }
-
-        compteur++;
-    }
-
-    fclose(fichier);
-
-    /* APP_VERSION */
-    char *endptr = NULL;
-    st->AppVersion = strtod(bufferVersion, &endptr);
-    
-    if (endptr == bufferVersion)
-    {
-        return false;
-    }
-    
-    /* APP_NAME */
-    strncpy(st->AppName, bufferName, SIZE_BUFFER);
-    
-    /* INNOSETUP */
-    if(strcmp(bufferInno, "TRUE") == 0)
-    {
-        st->AppInno = true;
-    }
-    else
-    {
-        st->AppInno = false;
-    }
-
-    return true;
-}
-
-bool loadResourceToVariable(const char *path, char *AppName, double *AppVersion, bool *AppInno)
-{
-    FILE *fichier = NULL;
-    char buffer[SIZE_BUFFER] = {0};
-    char bufferVersion[SIZE_BUFFER] = {0};
-    char bufferName[SIZE_BUFFER] = {0};
-    char bufferInno[SIZE_BUFFER] = {0};
-    char *zBuffer = NULL;
-    int compteur = 0;
-    
-    fichier = fopen(path, "r");
-    if(!fichier)
-    {
-        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
-        return false;
-    }
-
-    while(fgets(buffer, SIZE_BUFFER, fichier) != NULL)
-    {
-        switch (compteur)
-        {
-            case 3:
-                zBuffer = buffer + 21;
-                strncpy(bufferVersion, zBuffer, SIZE_BUFFER);
-                removeQuote(bufferVersion);
-                break;
-            case 4:
-                zBuffer = buffer + 18;
-                strncpy(bufferName, zBuffer, SIZE_BUFFER);
-                removeQuote(bufferName);                
-                break;
-            case 5:
-                zBuffer = buffer + 19;
-                strncpy(bufferInno, zBuffer, SIZE_BUFFER);
-                removeQuote(bufferInno);
-                break;
-            
-            default:
-                break;
-        }
-
-        compteur++;
-    }
-
-    fclose(fichier);
-
-    /* APP_VERSION */
-    char *endptr = NULL;
-    *AppVersion = strtod(bufferVersion, &endptr);
-    
-    if (endptr == bufferVersion)
-    {
-        return false;
-    }
-    
-    /* APP_NAME */
-    strncpy(AppName, bufferName, SIZE_BUFFER);
-    
-    /* INNOSETUP */
-    if(strcmp(bufferInno, "TRUE") == 0)
-    {
-        *AppInno = true;
-    }
-    else
-    {
-        *AppInno = false;
-    }
-
-    return true;
-}
-
-bool creation_fichier_resource_h(const char *path, ST_logator *st)
-{
-    if(!st)
-	{
-		return false;
-	}
 	FILE *fichier = NULL;
-
-	if(VerifExiste(path) == true)
+    if(VerifExiste(path) == true)
 	{
 		fprintf(stdout, "%s ", path);
 		if(!DemandeAccordFichier(path, 1))
@@ -261,9 +116,9 @@ bool creation_fichier_resource_h(const char *path, ST_logator *st)
 
     fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
     fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
-    fprintf(fichier, "#define APP_VERSION \"%.1f\"\n", st->AppVersion);
-    fprintf(fichier, "#define APP_NAME \"%s\"\n", st->AppName);
-    fprintf(fichier, "#define INNOSETUP \"%s\"\n\n",  st->AppInno ? "TRUE" : "FALSE");
+    fprintf(fichier, "#define APP_VERSION \"%sf\"\n", data->appVersion);
+    fprintf(fichier, "#define APP_NAME \"%s\"\n", data->appName);
+    fprintf(fichier, "#define INNOSETUP \"%s\"\n\n",  data->innoSetup);
     fprintf(fichier, "#endif /* !RESOURCE_H_INCLUDED */\n");
 
     fclose(fichier);
@@ -271,16 +126,13 @@ bool creation_fichier_resource_h(const char *path, ST_logator *st)
     return true;
 }
 
-bool write_fichier_resource_h(const char *path, ST_logator *st)
+bool write_fichier_resource_h(const char *path, ResourceData *data)
 {
-    if(!st)
+    if(!data || !path)
 	{
 		return false;
 	}
-    if(!st)
-	{
-		return false;
-	}
+
     FILE *fichier = NULL;
 
     fichier = fopen(path, "w");
@@ -292,9 +144,9 @@ bool write_fichier_resource_h(const char *path, ST_logator *st)
 
     fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
     fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
-    fprintf(fichier, "#define APP_VERSION \"%.3f\"\n", st->AppVersion);
-    fprintf(fichier, "#define APP_NAME \"%s\"\n", st->AppName);
-    fprintf(fichier, "#define INNOSETUP \"%s\"\n\n",  st->AppInno ? "TRUE" : "FALSE");
+    fprintf(fichier, "#define APP_VERSION \"%s\"\n", data->appVersion);
+    fprintf(fichier, "#define APP_NAME \"%s\"\n", data->appName);
+    fprintf(fichier, "#define INNOSETUP \"%s\"\n\n",  data->innoSetup);
     fprintf(fichier, "#endif /* !RESOURCE_H_INCLUDED */\n");
 
     fclose(fichier);
@@ -322,19 +174,20 @@ bool creation_fichier_changelog(const char *path)
 	}
 
 	fprintf(fichier, "---------------------------------------------\n-----             CHANGELOG             -----\n---------------------------------------------\n\n");
-	fprintf(fichier, "#  -*- Add -*-  ;\n\n\nBUILD 0.001\n-*- Add -*- premiere version realisee;\n");
+	fprintf(fichier, "#  -*- Add -*-  ;\n\n\nBUILD 0.1\n-*- Add -*- premiere version realisee;\n");
 
 	fclose(fichier);
 
 	return true;
 }
 
-bool creation_fichier_resource_rc(const char *path, const char *Description, ST_logator *st)
+bool creation_fichier_resource_rc(const char *path, const char *Description, ResourceData *data)
 {
-    if(!st)
+    if(!data)
 	{
 		return false;
 	}
+
 	FILE *fichier = NULL;
 	char *tampon = NULL;
 
@@ -394,7 +247,7 @@ bool creation_fichier_resource_rc(const char *path, const char *Description, ST_
 					"    BEGIN\n"
 					"        VALUE \"Translation\", 0x40c, 1200\n"
 					"    END\n"
-					"END\n", Description, tampon, st->AppName, st->AppName);
+					"END\n", Description, tampon, data->appName, data->appName);
 	fclose(fichier);
 
 	free(tampon);
@@ -500,4 +353,87 @@ char *FichierToChar(const char *FichierNom)
     fclose(fichier);
     
     return chaine;
+}
+
+bool parseResourceFile(const char *filePath, ResourceData *data)
+{
+    if (!filePath || !data)
+    {
+        return false;
+    }
+
+    FILE *fichier = fopen(filePath, "r");
+    if (!fichier)
+    {
+        return false;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), fichier))
+    {
+        if (strncmp(line, "#define", 7) == 0)
+        {
+            char key[128], value[128];
+            if (sscanf(line, "#define %s \"%[^\"]\"", key, value) == 2)
+            {
+                if (strcmp(key, "APP_VERSION") == 0)
+                {
+                    snprintf(data->appVersion, sizeof(data->appVersion), "%s", value);
+                }
+                else if (strcmp(key, "APP_NAME") == 0)
+                {
+                    snprintf(data->appName, sizeof(data->appName), "%s", value);
+                }
+                else if (strcmp(key, "INNOSETUP") == 0)
+                {
+                    snprintf(data->innoSetup, sizeof(data->innoSetup), "%s", value);
+                }
+            }
+        }
+    }
+    fclose(fichier);
+    
+    return true;
+}
+
+char *GetLastValue(void)
+{
+    FILE *fichier = fopen(CHANGELOG_FILE, "r");
+    if (!fichier)
+    {
+        return NULL; // Impossible d'ouvrir le fichier
+    }
+
+    int ligne = nombreDeLigne(fichier);
+    if(ligne == 0)
+    {
+        fclose(fichier);
+        return NULL;
+    }
+
+    rewind(fichier);
+
+    char buffer[SIZE_BUFFER];
+    int compteur = 0;
+
+    // Parcours du fichier ligne par ligne
+    while (fgets(buffer, sizeof(buffer), fichier))
+    {
+        if(compteur == (ligne - 2))
+        {
+            // Stocker la dernière ligne contenant "BUILD"
+            if (strncmp(buffer, "BUILD ", 6) == 0)
+            {
+                // Supprimer le saut de ligne
+                buffer[strcspn(buffer, "\n")] = '\0';
+                break;                
+            }                
+        }
+        
+        compteur++;
+    }
+
+    fclose(fichier);
+
+    return strdup(buffer + 6);
 }
