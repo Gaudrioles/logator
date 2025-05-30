@@ -14,7 +14,7 @@ void printf_aide(void)
     fprintf(stdout, "\t*                logator -creation \"AppName\"                                                *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Ajout de nouvelle version :                                                    *\n");
-    fprintf(stdout, "\t*                logator -new \"commentaire\"                                                 *\n");
+    fprintf(stdout, "\t*                logator -new -Major/-minor \"commentaire\"                                   *\n");
     fprintf(stdout, "\t*                                                                                           *\n");
     fprintf(stdout, "\t*         -> Creation fichier Resource.rc                                                   *\n");
     fprintf(stdout, "\t*                logator -resource \"FileDescription\"                                        *\n");
@@ -45,7 +45,7 @@ void printf_err_msg(void)
 void printf_new(void)
 {
     printf_err_msg();
-    fprintf(stdout, "logator -new \"commentaire\"\n");
+    fprintf(stdout, "logator -new -Major/-minor \"commentaire\"\n");
 
     return;
 }

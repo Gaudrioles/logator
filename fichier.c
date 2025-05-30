@@ -18,6 +18,16 @@
 #include <unistd.h>
 #endif
 
+void removeQuote(char *chaine)
+{
+    if (chaine == NULL || strlen(chaine) < 2)
+    {
+        return; // Aucun traitement si la chaîne est NULL ou trop courte
+    }
+
+    size_t len = strlen(chaine);
+    chaine[len - 2] = '\0'; // Supprime les deux derniers caractères
+}
 
 bool VerifExiste(const char *path)
 {
@@ -79,22 +89,25 @@ bool DemandeAccordFichier(const char *FichierNom, int valeur)
     return true;
 }
 
-bool chargement_fichier_resource_h(const char *path, ST_logator *st)
+bool loadResourceToStruct(const char *path, ST_logator *st)
 {
     if(!st)
 	{
 		return false;
 	}
     FILE *fichier = NULL;
-    char buffer[SIZE_BUFFER];
-    char zbuffer[SIZE_BUFFER];
+    char buffer[SIZE_BUFFER] = {0};
+    char bufferVersion[SIZE_BUFFER] = {0};
+    char bufferName[SIZE_BUFFER] = {0};
+    char bufferInno[SIZE_BUFFER] = {0};
+    char *zBuffer = NULL;
     int compteur = 0;
     
     fichier = fopen(path, "r");
     if(!fichier)
     {
         fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     while(fgets(buffer, SIZE_BUFFER, fichier) != NULL)
@@ -102,33 +115,124 @@ bool chargement_fichier_resource_h(const char *path, ST_logator *st)
         switch (compteur)
         {
             case 3:
-                sscanf(buffer, "#define APP_VERSION \"%lf\"", &st->AppVersion);
+                zBuffer = buffer + 21;
+                strncpy(bufferVersion, zBuffer, SIZE_BUFFER);
+                removeQuote(bufferVersion);
                 break;
             case 4:
-                sscanf(buffer, "#define APP_NAME \"%s", st->AppName);
-                st->AppName[strlen(st->AppName) - 1] = '\0';
+                zBuffer = buffer + 18;
+                strncpy(bufferName, zBuffer, SIZE_BUFFER);
+                removeQuote(bufferName);                
                 break;
             case 5:
-                sscanf(buffer, "#define INNOSETUP %s", zbuffer);
-                if(strcmp(zbuffer, "\"FALSE\"") == 0)
-                {
-                    st->AppInno = false;
-                }
-                else if(strcmp(zbuffer, "\"TRUE\"") == 0)
-                {
-                    st->AppInno = true;
-                }
+                zBuffer = buffer + 19;
+                strncpy(bufferInno, zBuffer, SIZE_BUFFER);
+                removeQuote(bufferInno);
                 break;
             
             default:
                 break;
         }
+
         compteur++;
     }
 
     fclose(fichier);
 
-    return st;
+    /* APP_VERSION */
+    char *endptr = NULL;
+    st->AppVersion = strtod(bufferVersion, &endptr);
+    
+    if (endptr == bufferVersion)
+    {
+        return false;
+    }
+    
+    /* APP_NAME */
+    strncpy(st->AppName, bufferName, SIZE_BUFFER);
+    
+    /* INNOSETUP */
+    if(strcmp(bufferInno, "TRUE") == 0)
+    {
+        st->AppInno = true;
+    }
+    else
+    {
+        st->AppInno = false;
+    }
+
+    return true;
+}
+
+bool loadResourceToVariable(const char *path, char *AppName, double *AppVersion, bool *AppInno)
+{
+    FILE *fichier = NULL;
+    char buffer[SIZE_BUFFER] = {0};
+    char bufferVersion[SIZE_BUFFER] = {0};
+    char bufferName[SIZE_BUFFER] = {0};
+    char bufferInno[SIZE_BUFFER] = {0};
+    char *zBuffer = NULL;
+    int compteur = 0;
+    
+    fichier = fopen(path, "r");
+    if(!fichier)
+    {
+        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
+        return false;
+    }
+
+    while(fgets(buffer, SIZE_BUFFER, fichier) != NULL)
+    {
+        switch (compteur)
+        {
+            case 3:
+                zBuffer = buffer + 21;
+                strncpy(bufferVersion, zBuffer, SIZE_BUFFER);
+                removeQuote(bufferVersion);
+                break;
+            case 4:
+                zBuffer = buffer + 18;
+                strncpy(bufferName, zBuffer, SIZE_BUFFER);
+                removeQuote(bufferName);                
+                break;
+            case 5:
+                zBuffer = buffer + 19;
+                strncpy(bufferInno, zBuffer, SIZE_BUFFER);
+                removeQuote(bufferInno);
+                break;
+            
+            default:
+                break;
+        }
+
+        compteur++;
+    }
+
+    fclose(fichier);
+
+    /* APP_VERSION */
+    char *endptr = NULL;
+    *AppVersion = strtod(bufferVersion, &endptr);
+    
+    if (endptr == bufferVersion)
+    {
+        return false;
+    }
+    
+    /* APP_NAME */
+    strncpy(AppName, bufferName, SIZE_BUFFER);
+    
+    /* INNOSETUP */
+    if(strcmp(bufferInno, "TRUE") == 0)
+    {
+        *AppInno = true;
+    }
+    else
+    {
+        *AppInno = false;
+    }
+
+    return true;
 }
 
 bool creation_fichier_resource_h(const char *path, ST_logator *st)
@@ -188,7 +292,7 @@ bool write_fichier_resource_h(const char *path, ST_logator *st)
 
     fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
     fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
-    fprintf(fichier, "#define APP_VERSION \"%.1f\"\n", st->AppVersion);
+    fprintf(fichier, "#define APP_VERSION \"%.3f\"\n", st->AppVersion);
     fprintf(fichier, "#define APP_NAME \"%s\"\n", st->AppName);
     fprintf(fichier, "#define INNOSETUP \"%s\"\n\n",  st->AppInno ? "TRUE" : "FALSE");
     fprintf(fichier, "#endif /* !RESOURCE_H_INCLUDED */\n");
@@ -218,7 +322,7 @@ bool creation_fichier_changelog(const char *path)
 	}
 
 	fprintf(fichier, "---------------------------------------------\n-----             CHANGELOG             -----\n---------------------------------------------\n\n");
-	fprintf(fichier, "#  -*- Add -*-  ;\n\n\nBUILD 1.0\n-*- Add -*- premiere version realisee;\n");
+	fprintf(fichier, "#  -*- Add -*-  ;\n\n\nBUILD 0.001\n-*- Add -*- premiere version realisee;\n");
 
 	fclose(fichier);
 
