@@ -8,6 +8,12 @@
 #include "message.h"
 #include "main.h"
 
+#ifdef _WIN32
+#define OS "WINDOWS"
+#elif __linux__
+#define OS "LINUX"
+#endif
+
 #if defined(__GNUC__) || defined(__GNUG__)
 #include <time.h>
 
@@ -60,31 +66,6 @@ char *get_date_annee(void)
 
 #endif
 
-int nombreDeLigne(FILE *fichier)
-{
-    if (fichier == NULL)
-    {
-        return 0;
-    }
-
-    int ret = 0;
-    char buffer[SIZE_BUFFER]; // Taille de buffer ajustable pour optimiser les lectures
-
-    // Lire le fichier par blocs pour réduire les appels à fgetc
-    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
-    {
-        for (char *p = buffer; *p != '\0'; p++)
-        {
-            if (*p == '\n')
-            {
-                ret++;
-            }
-        }
-    }
-
-    return ret;
-}
-
 /* int to double */
 double GoToDecimal(int x)
 {
@@ -104,54 +85,27 @@ double GoToDecimal(int x)
     return -1.0;
 }
 
-void getNewVersion(char *appVersion, int versionType, int entier, int decimal, VersionModif modif)
+void getNewVersion(char *appVersion, int versionType, int entier, int decimal)
 {
-    if (versionType == 0) // Gestion avec partie décimale
+    if (versionType == 0)
     {
         int newDecimal = decimal;
 
-        if (modif == versionAdd)
+        newDecimal++;
+        if (newDecimal >= 1000) /* Si >999 Passage à l'entier suivant */
         {
-            newDecimal++;
-            if (newDecimal >= 1000) // Passage à l'entier suivant
-            {
-                entier++;
-                snprintf(appVersion, SIZE_BUFFER, "%d.0", entier);
-                return;
-            }
-        }
-        else // VersionModif == versionRem
-        {
-            if (decimal == 0)
-            {
-                newDecimal = 999; // Retourne à 999 dans la partie décimale
-                entier--;
-            }
-            else
-            {
-                newDecimal--;
-            }
+            entier++;
+            snprintf(appVersion, SIZE_BUFFER, "%d.0", entier);
+            return;
         }
         
         snprintf(appVersion, SIZE_BUFFER, "%d.%d", entier, newDecimal);
         return;
     }
-    else if (versionType == 1) // Gestion entière sans partie décimale
+    else if (versionType == 1)
     {
-        switch (modif)
-        {
-            case versionAdd:
-                entier++;
-                snprintf(appVersion, SIZE_BUFFER, "%d.0", entier);
-                break;
-            case versionRem:
-                entier--;
-                snprintf(appVersion, SIZE_BUFFER, "%d.0", entier);
-                break;
-            default:
-                break;
-        }
-        
+        entier++;
+        snprintf(appVersion, SIZE_BUFFER, "%d.0", entier);
         return;
     }
 
@@ -213,10 +167,8 @@ bool update_innosetup(ResourceData *data)
 	FILE *fichier       = NULL;
 	FILE *fichierTampon = NULL;
     
-    char chaine[SIZE_BUFFER]     = {0};
+    char ligne[SIZE_BUFFER]     = {0};
     char fichierPath[SIZE_BUFFER] = {0};
-
-	int compteur = 0;
     
     /* File Path */
     if (strlen(data->appName) > SIZE_BUFFER - 5) // 5 pour ".iss\0"
@@ -235,26 +187,24 @@ bool update_innosetup(ResourceData *data)
 
 	/* Open file */
     fichier = fopen(fichierPath, "r");
-	fichierTampon = fopen("update_innosetup.old", "w");
+	fichierTampon = fopen(T_INNOSETUP, "w");
 	if (!fichier || !fichierTampon)
 	{
-        fprintf(stderr, "Ouverture %s %s impossible\n", fichierPath, "update_innosetup.old");
+        fprintf(stderr, "Ouverture %s %s impossible\n", fichierPath, T_INNOSETUP);
 		return false;
 	}
 	
 	/* Read File */
-    while(fgets(chaine, sizeof(chaine), fichier) != NULL)
+    while(fgets(ligne, sizeof(ligne), fichier) != NULL)
 	{
-		if(compteur == 4)
+        if (strncmp(ligne, "#define MyAppVersion", 20) == 0)
 		{
 			fprintf(fichierTampon, "#define MyAppVersion \"%s\"\n", data->appVersion);
 		}
 		else
 		{
-			fprintf(fichierTampon, "%s", chaine);
+			fprintf(fichierTampon, "%s", ligne);
 		}
-
-		compteur++;
 	}
 
 	/* Close file */
@@ -269,9 +219,9 @@ bool update_innosetup(ResourceData *data)
 	}
 
     /* Rename */
-	if (rename("update_innosetup.old", fichierPath) != 0)
+	if (rename(T_INNOSETUP, fichierPath) != 0)
 	{
-		fprintf(stderr, "renommage update_innosetup.old impossible\n");
+		fprintf(stderr, "renommage %s impossible\n", T_INNOSETUP);
 		return false;
 	}
 
@@ -303,6 +253,14 @@ bool add_new_changelog(const char *path, const char *appVersion, const char *com
 	{
 		return false;
 	}
+
+    /* Compatibility */
+    if(strcmp(OS, detectEOLType(path)) != 0)
+    {
+        fprintf(stderr, "Fichier %s incompatible avec OS\n", path);
+        fprintf(stderr, "Fichier LF -> CRLF");
+        return false;
+    }  
     
     /* Open file */
     FILE *fichier = NULL;
@@ -310,7 +268,7 @@ bool add_new_changelog(const char *path, const char *appVersion, const char *com
 	if(!fichier)
 	{
 		return false;
-	}
+	}  
 
 	/* Write DATA */
     fprintf(fichier, "BUILD %s\n%s%s;\n", appVersion, "-*- Add -*- ", commentaire);
@@ -332,6 +290,14 @@ char *get_last_changelog(const char *path)
     if(!fichier)
     {
         fprintf(stderr, "Ouverture %s impossible\n", path);
+        return NULL;
+    }
+
+    /* Compatibility */
+    if(strcmp(OS, detectEOLType(path)) != 0)
+    {
+        fprintf(stderr, "Fichier %s incompatible avec OS\n", path);
+        fprintf(stderr, "Fichier LF -> CRLF");
         return NULL;
     }
 
@@ -367,120 +333,86 @@ char *get_last_changelog(const char *path)
     return lastLine;
 }
 
-bool changelog_file_to_char_cut(const char *path)
+bool removeLastEntry(const char *path)
 {
-    FILE *fichier = NULL;
-    int nbligne = 0;
+    char buffer[SIZE_BUFFER] = {0};
+    int compteur = 0;
 
-    /* Ouverture du fichier */
-    fichier = fopen(path, "r");
-    if (fichier == NULL)
-    {
-        return false;
-    }
-
-    /* Comptage des lignes et allocation du buffer */
-    char **bufferArray = malloc(SIZE_BUFFER * sizeof(char*));
-    if (!bufferArray)
-    {
-        fclose(fichier);
-        return false; // Erreur d'allocation mémoire
-    }
-
-    char buffer[SIZE_BUFFER];
-    
-    // Lire les lignes et compter les lignes du fichier
-    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
-    {
-        if (nbligne >= SIZE_BUFFER) // Limiter le nombre de lignes dans le buffer
-        {
-            bufferArray = realloc(bufferArray, (nbligne + 1) * sizeof(char*));
-            if (!bufferArray)
-            {
-                fclose(fichier);
-                return false; // Erreur d'allocation mémoire
-            }
-        }
-        bufferArray[nbligne] = _strdup(buffer);  // Copier la ligne dans le tableau
-        if (!bufferArray[nbligne])
-        {
-            fclose(fichier);
-            return false; // Erreur d'allocation mémoire
-        }
-        nbligne++;
-    }
-
-    fclose(fichier);
-
-    // Vérification du nombre de lignes
-    if (nbligne < 9)
-    {
-        // Libérer la mémoire avant de quitter
-        for (int i = 0; i < nbligne; i++)
-        {
-            free(bufferArray[i]);
-        }
-        free(bufferArray);
-        return false;
-    }
-
-    /* Réécriture du fichier sans les 2 dernières lignes */
-    fichier = fopen(path, "w+");
+    /* Open */
+    FILE *fichier = fopen(path, "r");
     if (!fichier)
     {
-        fprintf(stderr, "Ouverture impossible du fichier %s\n", path);
-        // Libérer la mémoire avant de quitter
-        for (int i = 0; i < nbligne; i++)
-        {
-            free(bufferArray[i]);
-        }
-        free(bufferArray);
+        return false;
+    }
+    
+    FILE *fichierTemp = fopen(T_CHANGELOG_FILE, "w");
+    if (!fichierTemp)
+    {
+        fclose(fichier);
         return false;
     }
 
-    // Réécrire les lignes, en excluant les 2 dernières
-    for (int i = 0; i < (nbligne - 2); i++)
+    /* Nombre de ligne */
+    int nombreLigne = getNombreDeLigne(fichier);
+    if(nombreLigne < 9)
     {
-        fprintf(fichier, "%s", bufferArray[i]);
+        fclose(fichier);
+        fclose(fichierTemp);
+        return false;
     }
 
+    /* Lire le fichier et conserver les deux dernières lignes */
+    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
+    {
+        if (compteur < (nombreLigne - 2))
+        {
+            fprintf(fichierTemp, "%s", buffer);
+        }
+
+        compteur++;
+    }
+
+    /* Cleanup */
     fclose(fichier);
+    fclose(fichierTemp);
 
-    // Libération de la mémoire
-    for (int i = 0; i < nbligne; i++)
+    /* Remplacer le fichier original par le fichier temporaire */
+    if (remove(path) != 0 || rename(T_CHANGELOG_FILE, path) != 0)
     {
-        free(bufferArray[i]);
+        return false;
     }
-    free(bufferArray);
 
     return true;
 }
 
-
 bool remove_last_changelog_entry(const char *path)
 {
-    char *buffer = NULL;
-	
-    if(VerifExiste(path) != true)
+    /* Verif */
+    if(!VerifExiste(path))
 	{
+        fprintf(stderr, "%s existe pas\n", path);
 		return false;
 	}
 
+    /* Get Last changelog */
+    char *buffer = NULL;
     buffer = get_last_changelog(path);
     if(!buffer)
     {
         return false;
     }
 
+    /* Oui / Non */
     if(!DemandeAccordFichier(buffer, 0))
     {
         free(buffer);
         return false;
     }
 
+    /* Cleanup */
     free(buffer);
 
-    if(!changelog_file_to_char_cut(path))
+    if(!removeLastEntry(path))
     {
         return false;
     }

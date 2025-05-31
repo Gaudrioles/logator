@@ -54,7 +54,7 @@ bool newVersion_fonction(int versionType, const char *commentaire)
     extractNumbers(data.appVersion, &entier, &decimal);
 
     /* int to char */
-    getNewVersion(data.appVersion, versionType, entier, decimal, versionAdd);
+    getNewVersion(data.appVersion, versionType, entier, decimal);
     
     if(!add_new_changelog(CHANGELOG_FILE, data.appVersion, commentaire))
     {

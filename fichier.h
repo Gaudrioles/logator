@@ -1,6 +1,7 @@
 #ifndef FICHIER_H_INCLUDED
 #define FICHIER_H_INCLUDED
 #include <stdbool.h>
+#include <stdio.h>
 #include "main.h"
 
 bool DemandeAccordFichier(const char *FichierNom, int valeur);
@@ -14,7 +15,11 @@ bool creation_fichier_resource_rc(const char *path, const char *Description, Res
 bool creation_fichier_gitignore(const char *path);
 bool parseResourceFile(const char *filePath, ResourceData *data);
 
+int getNombreDeLigne(FILE *fichier);
+
 char *FichierToChar(const char *FichierNom);
 char *GetLastValue(void);
+
+const char *detectEOLType(const char *path);
 
 #endif // FICHIER_H_INCLUDED

@@ -11,7 +11,6 @@
 #include <tchar.h>
 #include <direct.h>
 #include <io.h>
-
 #define F_OK 0
 #define access _access
 #elif __linux__
@@ -396,35 +395,61 @@ bool parseResourceFile(const char *filePath, ResourceData *data)
     return true;
 }
 
+int getNombreDeLigne(FILE *fichier)
+{
+    if (fichier == NULL)
+    {
+        return 0;
+    }
+
+    int ret = 0;
+    char buffer[SIZE_BUFFER];
+
+    /* Lecture du fichier */
+    while (fgets(buffer, sizeof(buffer), fichier) != NULL)
+    {
+        for (char *p = buffer; *p != '\0'; p++)
+        {
+            if (*p == '\n')
+            {
+                ret++;
+            }
+        }
+    }
+
+    /* Reset */
+    rewind(fichier);
+
+    return ret;
+}
+
 char *GetLastValue(void)
 {
     FILE *fichier = fopen(CHANGELOG_FILE, "r");
     if (!fichier)
     {
-        return NULL; // Impossible d'ouvrir le fichier
+        return NULL;
     }
 
-    int ligne = nombreDeLigne(fichier);
+    int ligne = getNombreDeLigne(fichier);
     if(ligne == 0)
     {
         fclose(fichier);
         return NULL;
     }
 
-    rewind(fichier);
-
     char buffer[SIZE_BUFFER];
     int compteur = 0;
 
-    // Parcours du fichier ligne par ligne
+    /* Parcours du fichier ligne par ligne */
     while (fgets(buffer, sizeof(buffer), fichier))
     {
         if(compteur == (ligne - 2))
         {
-            // Stocker la dernière ligne contenant "BUILD"
+            /* Stocker la dernière ligne contenant "BUILD" */
             if (strncmp(buffer, "BUILD ", 6) == 0)
             {
-                // Supprimer le saut de ligne
+                /* Supprimer le saut de ligne */
                 buffer[strcspn(buffer, "\n")] = '\0';
                 break;                
             }                
@@ -436,4 +461,38 @@ char *GetLastValue(void)
     fclose(fichier);
 
     return strdup(buffer + 6);
+}
+
+const char *detectEOLType(const char *path)
+{
+    int prevChar = 0;
+    int currentChar = 0;
+
+    /* Open */
+    FILE *fichier = fopen(path, "r");
+    if(!fichier)
+    {
+        return "UNKNOWN";
+    }
+
+    /* Lire le fichier caractère par caractère */ 
+    while ((currentChar = fgetc(fichier)) != EOF)
+    {
+        if (prevChar == '\r' && currentChar == '\n')
+        {
+            fclose(fichier);
+            return "WINDOWS"; /* Windows-style (CRLF) */
+        }
+        else if (currentChar == '\n')
+        {
+            fclose(fichier);
+            return "LINUX"; /* Unix-style (LF) */
+        }
+
+        prevChar = currentChar;
+    }
+
+    /* Close */
+    fclose(fichier);
+    return "UNKNOWN";
 }

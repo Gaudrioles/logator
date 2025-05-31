@@ -5,6 +5,8 @@
 #define RESOURCE_H_FILE     "resource.h"
 #define RESOURCE_RC_FILE    "Resource.rc"
 #define GITIGNORE_FILE      ".gitignore"
+#define T_CHANGELOG_FILE    "temp_CHANGELOG.md"
+#define T_INNOSETUP         "temp_INNO.iss"
 
 #define KEYWORD_HELP        "-help"
 #define KEYWORD_CREATE      "-creation"
@@ -32,11 +34,5 @@ typedef struct
     char appName[SIZE_BUFFER];
     char innoSetup[SIZE_BUFFER];
 } ResourceData;
-
-typedef enum
-{
-    versionAdd = 0,
-    versionRem = 1
-} VersionModif;
 
 #endif // MAIN_H_INCLUDED

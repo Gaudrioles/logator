@@ -63,3 +63,5 @@ BUILD 3.7
 -*- Add -*- Ajout KEYWORD in main.h et Correction bug remove;
 BUILD 4.0
 -*- Add -*- Ajout fonction Major / Minor Version;
+BUILD 4.1
+-*- Add -*- Modification fonction update_innosetup;
