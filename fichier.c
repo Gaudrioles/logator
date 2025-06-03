@@ -7,14 +7,15 @@
 #include "tool.h"
 
 #ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
-#include <direct.h>
-#include <io.h>
-#define F_OK 0
-#define access _access
+    #include <windows.h>
+    #include <tchar.h>
+    #include <direct.h>
+    #include <io.h>
+    #define F_OK 0
+    #define access _access
 #elif __linux__
-#include <unistd.h>
+    #include <unistd.h>
+    #define _strdup strdup
 #endif
 
 void removeQuote(char *chaine)
@@ -460,7 +461,7 @@ char *GetLastValue(void)
 
     fclose(fichier);
 
-    return strdup(buffer + 6);
+    return _strdup(buffer + 6);
 }
 
 const char *detectEOLType(const char *path)
