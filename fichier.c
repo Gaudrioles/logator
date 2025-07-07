@@ -466,34 +466,44 @@ char *GetLastValue(void)
 
 const char *detectEOLType(const char *path)
 {
+    FILE *fichier = fopen(path, "rb");
+    if (!fichier)
+    {
+        return "ERROR";
+    }
+
     int prevChar = 0;
     int currentChar = 0;
 
-    /* Open */
-    FILE *fichier = fopen(path, "r");
-    if(!fichier)
-    {
-        return "UNKNOWN";
-    }
+    int countLF = 0;
+    int countCRLF = 0;
 
-    /* Lire le fichier caractère par caractère */ 
     while ((currentChar = fgetc(fichier)) != EOF)
     {
         if (prevChar == '\r' && currentChar == '\n')
         {
-            fclose(fichier);
-            return "WINDOWS"; /* Windows-style (CRLF) */
+            countCRLF++;
+            currentChar = 0; // évite double comptage du \n
         }
-        else if (currentChar == '\n')
+        else if (prevChar != '\r' && currentChar == '\n')
         {
-            fclose(fichier);
-            return "LINUX"; /* Unix-style (LF) */
+            countLF++;
         }
 
         prevChar = currentChar;
     }
 
-    /* Close */
     fclose(fichier);
+
+    int nonZeroTypes = (countLF > 0) + (countCRLF > 0);
+
+    if (nonZeroTypes > 1)
+        return "MIXED";
+
+    if (countCRLF > 0)
+        return "WINDOWS";
+    if (countLF > 0)
+        return "UNIX";
+
     return "UNKNOWN";
 }

@@ -65,3 +65,5 @@ BUILD 4.0
 -*- Add -*- Ajout fonction Major / Minor Version;
 BUILD 4.1
 -*- Add -*- Modification fonction update_innosetup;
+BUILD 4.2
+-*- Add -*- Ajout fonction detectEOLType;
