@@ -252,15 +252,7 @@ bool add_new_changelog(const char *path, const char *appVersion, const char *com
     if(!VerifExiste(path))
 	{
 		return false;
-	}
-
-    /* Compatibility */
-    if(strcmp(OS, detectEOLType(path)) != 0)
-    {
-        fprintf(stderr, "Fichier %s incompatible avec OS\n", path);
-        fprintf(stderr, "Fichier LF -> CRLF");
-        return false;
-    }  
+	} 
     
     /* Open file */
     FILE *fichier = NULL;
@@ -290,14 +282,6 @@ char *get_last_changelog(const char *path)
     if(!fichier)
     {
         fprintf(stderr, "Ouverture %s impossible\n", path);
-        return NULL;
-    }
-
-    /* Compatibility */
-    if(strcmp(OS, detectEOLType(path)) != 0)
-    {
-        fprintf(stderr, "Fichier %s incompatible avec OS\n", path);
-        fprintf(stderr, "Fichier LF -> CRLF");
         return NULL;
     }
 

@@ -66,4 +66,4 @@ BUILD 4.0
 BUILD 4.1
 -*- Add -*- Modification fonction update_innosetup;
 BUILD 4.2
--*- Add -*- Ajout fonction detectEOLType;
+-*- Add -*- Correction de Bug;

@@ -116,7 +116,7 @@ bool creation_fichier_resource_h(const char *path, ResourceData *data)
 
     fprintf(fichier, "#ifndef RESOURCE_H_INCLUDED\n");
     fprintf(fichier, "#define RESOURCE_H_INCLUDED\n\n");
-    fprintf(fichier, "#define APP_VERSION \"%sf\"\n", data->appVersion);
+    fprintf(fichier, "#define APP_VERSION \"%s\"\n", data->appVersion);
     fprintf(fichier, "#define APP_NAME \"%s\"\n", data->appName);
     fprintf(fichier, "#define INNOSETUP \"%s\"\n\n",  data->innoSetup);
     fprintf(fichier, "#endif /* !RESOURCE_H_INCLUDED */\n");
@@ -462,48 +462,4 @@ char *GetLastValue(void)
     fclose(fichier);
 
     return _strdup(buffer + 6);
-}
-
-const char *detectEOLType(const char *path)
-{
-    FILE *fichier = fopen(path, "rb");
-    if (!fichier)
-    {
-        return "ERROR";
-    }
-
-    int prevChar = 0;
-    int currentChar = 0;
-
-    int countLF = 0;
-    int countCRLF = 0;
-
-    while ((currentChar = fgetc(fichier)) != EOF)
-    {
-        if (prevChar == '\r' && currentChar == '\n')
-        {
-            countCRLF++;
-            currentChar = 0; // évite double comptage du \n
-        }
-        else if (prevChar != '\r' && currentChar == '\n')
-        {
-            countLF++;
-        }
-
-        prevChar = currentChar;
-    }
-
-    fclose(fichier);
-
-    int nonZeroTypes = (countLF > 0) + (countCRLF > 0);
-
-    if (nonZeroTypes > 1)
-        return "MIXED";
-
-    if (countCRLF > 0)
-        return "WINDOWS";
-    if (countLF > 0)
-        return "UNIX";
-
-    return "UNKNOWN";
 }

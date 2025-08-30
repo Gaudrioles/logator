@@ -20,6 +20,4 @@ int getNombreDeLigne(FILE *fichier);
 char *FichierToChar(const char *FichierNom);
 char *GetLastValue(void);
 
-const char *detectEOLType(const char *path);
-
 #endif // FICHIER_H_INCLUDED
